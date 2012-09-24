@@ -79,7 +79,8 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetHeight(100.0f);
 	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
 	m_pUIWindow->SetAlpha(0.5f);
-	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
+	//m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
+	m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
 }
 //-----------------------------------------------------------------------------

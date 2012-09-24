@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI¿Ø¼þËùÊ¹ÓÃµÄÌùÍ¼
+ï»¿//-----------------------------------------------------------------------------
+// GGUIæŽ§ä»¶æ‰€ä½¿ç”¨çš„è´´å›¾
 // (C) oil
 // 2012-09-02
 //-----------------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace GGUI
 	{
 		if (!GGUITextureContainer::GetInstance()->IsOperationByTextureContainer())
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUITextureContainerÀ´´´½¨GGUITexture£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUITextureContaineræ¥åˆ›å»ºGGUITextureï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 		//
 		CreateVertexBuffer();
@@ -32,7 +32,7 @@ namespace GGUI
 		//
 		if (!GGUITextureContainer::GetInstance()->IsOperationByTextureContainer())
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUITextureContainerÀ´ÊÍ·ÅGGUITexture£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUITextureContaineræ¥é‡Šæ”¾GGUITextureï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -42,23 +42,23 @@ namespace GGUI
 		{
 			return false;
 		}
-		//³¢ÊÔÉ¾³ý¾ÉÌùÍ¼¡£
+		//å°è¯•åˆ é™¤æ—§è´´å›¾ã€‚
 		SAFE_D3D_RELEASE(m_pTexture);
-		//¿í¸ßÊ¹ÓÃÍ¼Æ¬µÄ¿í¸ß£¬²¢ÇÒ²»Òªµ÷Õûµ½2µÄÃÝ¡£
+		//å®½é«˜ä½¿ç”¨å›¾ç‰‡çš„å®½é«˜ï¼Œå¹¶ä¸”ä¸è¦è°ƒæ•´åˆ°2çš„å¹‚ã€‚
 		SoUInt uiWidth = D3DX_DEFAULT_NONPOW2;
 		SoUInt uiHeight = D3DX_DEFAULT_NONPOW2;
-		//²»Ó¦¸ÃÊ¹ÓÃMipMap¡£
+		//ä¸åº”è¯¥ä½¿ç”¨MipMapã€‚
 		SoUInt uiMipLevels = 1;
-		//ÓÃÍ¾£¬Ê¹ÓÃÄ¬ÈÏÖµ¡£
+		//ç”¨é€”ï¼Œä½¿ç”¨é»˜è®¤å€¼ã€‚
 		SoUInt uiUsage = 0;
-		//ÏñËØ¸ñÊ½¡£
+		//åƒç´ æ ¼å¼ã€‚
 		D3DFORMAT eFormat = D3DFMT_UNKNOWN;
-		//Ê¹ÓÃÍÐ¹ÜÄÚ´æ³Ø£¬ÒòÎªÌùÍ¼µÄÊý¾Ý²»»á±»Æµ·±¸Ä±ä£¨ÉõÖÁ²»»á¸Ä±ä£©£¬ÓÃÍÐ¹ÜÄÚ´æ³ØµÄºÃ´¦ÊÇÉè±¸¶ªÊ§ºó²»±ØÖØÐÂ´´½¨¡£
+		//ä½¿ç”¨æ‰˜ç®¡å†…å­˜æ± ï¼Œå› ä¸ºè´´å›¾çš„æ•°æ®ä¸ä¼šè¢«é¢‘ç¹æ”¹å˜ï¼ˆç”šè‡³ä¸ä¼šæ”¹å˜ï¼‰ï¼Œç”¨æ‰˜ç®¡å†…å­˜æ± çš„å¥½å¤„æ˜¯è®¾å¤‡ä¸¢å¤±åŽä¸å¿…é‡æ–°åˆ›å»ºã€‚
 		D3DPOOL ePool = D3DPOOL_MANAGED;
-		//Í¼Æ¬¹ýÂË·½Ê½¡£²»ÐèÒª¹ýÂË£¬ÒòÎªTexture²¢Ã»ÓÐ×öËõ·Å¡£
+		//å›¾ç‰‡è¿‡æ»¤æ–¹å¼ã€‚ä¸éœ€è¦è¿‡æ»¤ï¼Œå› ä¸ºTextureå¹¶æ²¡æœ‰åšç¼©æ”¾ã€‚
 		SoUInt uiFilter = D3DX_FILTER_NONE; //D3DX_FILTER_LINEAR;
 		SoUInt uiMipFilter = D3DX_FILTER_NONE;
-		//²»Ê¹ÓÃ¹Ø¼üÉ«Ìæ»»¡£
+		//ä¸ä½¿ç”¨å…³é”®è‰²æ›¿æ¢ã€‚
 		D3DCOLOR dwColorKey = 0;
 		HRESULT hr = D3DXCreateTextureFromFileEx(GGUISystem::GetInstance()->GetD3DDevice(), pFileName,
 			uiWidth, uiHeight, uiMipLevels, uiUsage, eFormat, ePool, uiFilter, uiMipFilter, dwColorKey,
@@ -117,18 +117,15 @@ namespace GGUI
 		}
 		IDirect3DDevice9* pD3DDevice = GGUISystem::GetInstance()->GetD3DDevice();
 
-		//´ò¿ªÈÚºÏÔËËã
+		//æ‰“å¼€Alphaèžåˆè¿ç®—
 		pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-		//ÉèÖÃÈÚºÏÔËËãµÄÀàÐÍ
+		//è®¾ç½®Alphaèžåˆè¿ç®—çš„ç±»åž‹
 		pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 		pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-		//ÉèÖÃAlphaÊýÖµµÄÀ´Ô´
-		//Ê¹ÓÃ¶¥µãÑÕÉ«µÄAlphaÖµ
-		//pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-		//pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-
-		pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-		pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		//è®¾ç½®Alphaæ•°å€¼çš„æ¥æºï¼Œæ¥æºäºŽè´´å›¾Alphaå€¼å’Œé¡¶ç‚¹è‰²çš„Alphaå€¼ã€‚
+		pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 
 		pD3DDevice->SetTexture(0, m_pTexture);
 		pD3DDevice->SetStreamSource(0, m_pVertex, 0, sizeof(SVertexType));
@@ -141,10 +138,10 @@ namespace GGUI
 	{
 		if (ms_pTextureIB)
 		{
-			//Ë÷Òý»º³åÇøÒÑ¾­´´½¨¹ýÁË£¬Ö±½Ó·µ»Ø¡£
+			//ç´¢å¼•ç¼“å†²åŒºå·²ç»åˆ›å»ºè¿‡äº†ï¼Œç›´æŽ¥è¿”å›žã€‚
 			return true;
 		}
-		//Ë÷Òý»º³åÇø
+		//ç´¢å¼•ç¼“å†²åŒº
 		SoIndexBufferUnit index[2] = { {0,1,2}, {0,2,3} };
 		SoUInt SizeOfIndex = (SoUInt)sizeof(index);
 
@@ -184,16 +181,16 @@ namespace GGUI
 		}
 		else
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUITextureContainerÀ´¸³ÖµTextureID£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUITextureContaineræ¥èµ‹å€¼TextureIDï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUITexture::CreateVertexBuffer()
 	{
 		SoUInt uiSize = 4 * (SoUInt)(sizeof(SVertexType));
-		//¶¥µã»º´æÇøµÄÊý¾Ý»á±»Æµ·±ÐÞ¸Ä£¬ËùÒÔÊ¹ÓÃD3DUSAGE_DYNAMIC¡£
+		//é¡¶ç‚¹ç¼“å­˜åŒºçš„æ•°æ®ä¼šè¢«é¢‘ç¹ä¿®æ”¹ï¼Œæ‰€ä»¥ä½¿ç”¨D3DUSAGE_DYNAMICã€‚
 		SoUInt uiUsage = D3DUSAGE_DYNAMIC;
-		//¶¥µã»º´æÇøµÄÊý¾Ý»á±»Æµ·±ÐÞ¸Ä£¬ËùÒÔÊ¹ÓÃD3DPOOL_DEFAULT¡£
+		//é¡¶ç‚¹ç¼“å­˜åŒºçš„æ•°æ®ä¼šè¢«é¢‘ç¹ä¿®æ”¹ï¼Œæ‰€ä»¥ä½¿ç”¨D3DPOOL_DEFAULTã€‚
 		D3DPOOL ePool = D3DPOOL_DEFAULT;
 		HRESULT hr = GGUISystem::GetInstance()->GetD3DDevice()->CreateVertexBuffer(
 			uiSize, uiUsage, ms_TextureFVF, ePool, &m_pVertex, NULL);
