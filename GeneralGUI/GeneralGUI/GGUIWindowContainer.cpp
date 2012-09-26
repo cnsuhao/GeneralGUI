@@ -85,5 +85,27 @@ namespace GGUI
 			//Wait for add log
 		}
 	}
+	//-----------------------------------------------------------------------------
+	bool GGUIWindowContainer::Next(SoInt& nIndex, GGUIWindow*& pWindow)
+	{
+		if (nIndex >= 0 && nIndex < m_nIndexEnd)
+		{
+			if (m_pWindowID2Object[nIndex])
+			{
+				pWindow = m_pWindowID2Object[nIndex];
+				return true;
+			}
+			else
+			{
+				++nIndex;
+				return Next(nIndex, pWindow);
+			}
+		}
+		else
+		{
+			pWindow = NULL;
+			return false;
+		}
+	}
 }
 //-----------------------------------------------------------------------------

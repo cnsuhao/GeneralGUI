@@ -1,23 +1,21 @@
 //-----------------------------------------------------------------------------
-// GGUI用户输入管理类
+// GGUI用户窗口的客户区参数
 // (C) oil
 // 2012-09-16
 //-----------------------------------------------------------------------------
-#ifndef _GGUIInputManager_h_
-#define _GGUIInputManager_h_
+#ifndef _GGUIScreenParam_h_
+#define _GGUIScreenParam_h_
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
-	class GGUIInputManager
+	class GGUIScreenParam
 	{
 	public:
-		GGUIInputManager();
-		~GGUIInputManager();
-
-	private:
+		static SoFloat ms_fScreenWidth;
+		static SoFloat ms_fScreenHeight;
 
 	};
 }
 //-----------------------------------------------------------------------------
-#endif //_GGUIInputManager_h_
+#endif //_GGUIScreenParam_h_
 //-----------------------------------------------------------------------------

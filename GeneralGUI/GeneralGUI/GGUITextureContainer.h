@@ -6,8 +6,6 @@
 #ifndef _GGUITextureContainer_h_
 #define _GGUITextureContainer_h_
 //-----------------------------------------------------------------------------
-#include "GGUITextureDefine.h"
-//-----------------------------------------------------------------------------
 namespace GGUI
 {
 	class GGUITexture;

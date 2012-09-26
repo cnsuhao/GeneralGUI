@@ -175,6 +175,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIInputProcess.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIInputProcess.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIScreenParam.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIScreenParam.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIStdAfx.cpp"
 			>
 		</File>

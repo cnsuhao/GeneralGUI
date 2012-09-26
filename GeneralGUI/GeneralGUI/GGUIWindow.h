@@ -6,9 +6,6 @@
 #ifndef _GGUIWindow_h_
 #define _GGUIWindow_h_
 //-----------------------------------------------------------------------------
-#include "GGUIWindowDefine.h"
-#include "GGUITextureDefine.h"
-//-----------------------------------------------------------------------------
 namespace GGUI
 {
 	class GGUIWindow
@@ -45,6 +42,9 @@ namespace GGUI
 		WindowID GetWindowID();
 		TextureID GetTextureID();
 
+		//根据鼠标坐标，判断鼠标是否落在本窗口内部。
+		bool IsContainMouse(SoFloat fMousePosX, SoFloat fMousePosY);
+
 	protected:
 		void SetWindowID(WindowID theID);
 
@@ -71,6 +71,18 @@ namespace GGUI
 		//只有SoTrue和SoFalse两种状态。
 		SoBool m_bShouldUpdateUITexture;
 	};
+	//-----------------------------------------------------------------------------
+	inline bool GGUIWindow::IsContainMouse(SoFloat fMousePosX, SoFloat fMousePosY)
+	{
+		if (fMousePosX > m_fPositionX && fMousePosX < m_fPositionX + m_fWidth)
+		{
+			if (fMousePosY > m_fPositionY && fMousePosY < m_fPositionY + m_fHeight)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
 //-----------------------------------------------------------------------------
 #endif //_GGUIWindow_h_

@@ -6,8 +6,6 @@
 #ifndef _GGUIWindowContainer_h_
 #define _GGUIWindowContainer_h_
 //-----------------------------------------------------------------------------
-#include "GGUIWindowDefine.h"
-//-----------------------------------------------------------------------------
 namespace GGUI
 {
 	class GGUIWindow;
@@ -26,6 +24,13 @@ namespace GGUI
 		void ReleaseUIWindow(WindowID theWindowID);
 		GGUIWindow* GetUIWindow(WindowID theWindowID);
 		bool IsOperationByWindowContainer();
+
+		//如果nIndex索引号的元素为有效值，则返回该元素；
+		//如果是无效值，则使nIndex自增，当找到有效元素时，返回该元素和nIndex；
+		//如果遍历数组完毕也没有找到有效元素，则返回NULL。
+		//--nIndex [In][Out]
+		//--pWindow [Out]
+		bool Next(SoInt& nIndex, GGUIWindow*& pWindow);
 
 	private:
 		//一个WindowID对应着一个GGUIWindow对象。

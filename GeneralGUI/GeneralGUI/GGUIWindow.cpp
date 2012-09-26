@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI´°¿Ú»ùÀà
+ï»¿//-----------------------------------------------------------------------------
+// GGUIçª—å£åŸºç±»
 // (C) oil
 // 2012-09-16
 //-----------------------------------------------------------------------------
@@ -27,7 +27,7 @@ namespace GGUI
 	{
 		if (!GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUIWindowContainerÀ´´´½¨GGUIWindow£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUIWindowContaineræ¥åˆ›å»ºGGUIWindowï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace GGUI
 		ReleaseUITexture();
 		if (!GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUIWindowContainerÀ´ÊÍ·ÅGGUIWindow£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUIWindowContaineræ¥é‡Šæ”¾GGUIWindowï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -185,7 +185,7 @@ namespace GGUI
 		}
 		else
 		{
-			::MessageBox(NULL, TEXT("Ò»¶¨ÒªÊ¹ÓÃGGUIWindowContainerÀ´¸³ÖµWindowID£¡"), TEXT("GGUI Error"), MB_OK);
+			::MessageBox(NULL, TEXT("ä¸€å®šè¦ä½¿ç”¨GGUIWindowContaineræ¥èµ‹å€¼WindowIDï¼"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------
