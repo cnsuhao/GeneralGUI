@@ -167,14 +167,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\GGUIInputManager.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIInputManager.h"
-			>
-		</File>
-		<File
 			RelativePath=".\GGUIInputProcess.cpp"
 			>
 		</File>

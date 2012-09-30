@@ -13,7 +13,9 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	GGUIInputProcess::GGUIInputProcess()
 	:m_eCurrentMouseOpState(MouseOp_None)
-	,m_theWindowForMouseOpHover(Invalid_WindowID)
+	,m_fMousePosX(0.0f)
+	,m_fMousePosY(0.0f)
+	,m_theWindowContainMouse(Invalid_WindowID)
 	{
 
 	}
@@ -35,67 +37,68 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIInputProcess::OnMouseMove(SoFloat fNewPosX, SoFloat fNewPosY)
 	{
+		m_fMousePosX = fNewPosX;
+		m_fMousePosY = fNewPosY;
+		//
 		bool bResult = false;
 		//判断鼠标是否落在了用户窗口的外面。
 		bool bOutOfScreen = IsMouseOutOfScreen(fNewPosX, fNewPosY);
 		//判断鼠标落在了哪个窗口内部。
-		WindowID theWindowWhoContainMouse = Invalid_WindowID;
+		WindowID theOldWindowWhoContainMouse = m_theWindowContainMouse;
+		WindowID theNewWindowWhoContainMouse = Invalid_WindowID;
 		if (!bOutOfScreen)
 		{
-			//如果之前鼠标操作状态为MouseOp_Hover，则先判断鼠标是否仍然落在那个窗口内。
-			if (m_eCurrentMouseOpState == MouseOp_Hover)
+			//如果之前鼠标落在了一个窗口内，则先判断鼠标是否仍然落在那个窗口内。
+			//这里没有考虑那个窗口是否有子窗口。
+			if (theOldWindowWhoContainMouse != Invalid_WindowID)
 			{
-				GGUIWindow* pPreWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(m_theWindowForMouseOpHover);
-				if (pPreWindow && pPreWindow->IsContainMouse(fNewPosX, fNewPosY))
+				GGUIWindow* pOldWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theOldWindowWhoContainMouse);
+				if (pOldWindow && pOldWindow->CheckMouseInWindowArea(fNewPosX, fNewPosY))
 				{
-					theWindowWhoContainMouse = m_theWindowForMouseOpHover;
+					theNewWindowWhoContainMouse = theOldWindowWhoContainMouse;
 				}
 			}
 			//如果不确定鼠标落在哪个窗口内，则遍历所有的窗口。
-			if (theWindowWhoContainMouse == Invalid_WindowID)
+			if (theNewWindowWhoContainMouse == Invalid_WindowID)
 			{
-				theWindowWhoContainMouse = GetWindowWhoContainMouse(fNewPosX, fNewPosY);
+				theNewWindowWhoContainMouse = GetWindowWhoContainMouse(fNewPosX, fNewPosY);
 			}
 		}
-
-		switch (m_eCurrentMouseOpState)
+		//处理“鼠标落入了一个窗口矩形范围”的逻辑。
+		if (theOldWindowWhoContainMouse != theNewWindowWhoContainMouse)
 		{
-		case MouseOp_None:
+			m_theWindowContainMouse = theNewWindowWhoContainMouse;
+			if (theOldWindowWhoContainMouse != Invalid_WindowID)
 			{
-				if (theWindowWhoContainMouse != Invalid_WindowID)
-				{
-					MouseOpHoverBegin(theWindowWhoContainMouse);
-				}
+				MouseLeaveWindowArea(theOldWindowWhoContainMouse);
+				bResult = true;
 			}
-			break;
-		case MouseOp_Hover:
+			if (theNewWindowWhoContainMouse != Invalid_WindowID)
 			{
-				if (theWindowWhoContainMouse != m_theWindowForMouseOpHover)
-				{
-					MouseOpHoverEnd();
-				}
-				if (theWindowWhoContainMouse != Invalid_WindowID)
-				{
-					MouseOpHoverBegin(theWindowWhoContainMouse);
-				}
+				MouseEnterWindowArea(theNewWindowWhoContainMouse);
+				bResult = true;
 			}
-			break;
-		default:
-			break;
 		}
+		//
 		return bResult;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIInputProcess::MouseOpHoverBegin(WindowID theWindowID)
+	void GGUIInputProcess::MouseEnterWindowArea(WindowID theWindow)
 	{
-		m_eCurrentMouseOpState = MouseOp_Hover;
-		m_theWindowForMouseOpHover = theWindowID;
+		GGUIWindow* pWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theWindow);
+		if (pWindow)
+		{
+			pWindow->OnMouseEnterWindowArea();
+		}
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIInputProcess::MouseOpHoverEnd()
+	void GGUIInputProcess::MouseLeaveWindowArea(WindowID theWindow)
 	{
-		m_eCurrentMouseOpState = MouseOp_None;
-		m_theWindowForMouseOpHover = Invalid_WindowID;
+		GGUIWindow* pWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theWindow);
+		if (pWindow)
+		{
+			pWindow->OnMouseLeaveWindowArea();
+		}
 	}
 	//-----------------------------------------------------------------------------
 	WindowID GGUIInputProcess::GetWindowWhoContainMouse(SoFloat fMousePosX, SoFloat fMousePosY)
@@ -106,7 +109,7 @@ namespace GGUI
 		GGUIWindow* pWindow = NULL;
 		while (pWindowContainer->Next(nIndex, pWindow))
 		{
-			if (pWindow->IsContainMouse(fMousePosX, fMousePosY))
+			if (pWindow->CheckMouseInWindowArea(fMousePosX, fMousePosY))
 			{
 				theResult = pWindow->GetWindowID();
 				break;

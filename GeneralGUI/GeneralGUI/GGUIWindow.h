@@ -11,6 +11,7 @@ namespace GGUI
 	class GGUIWindow
 	{
 		friend class GGUIWindowContainer;
+		friend class GGUIInputProcess;
 	public:
 		GGUIWindow();
 		virtual ~GGUIWindow();
@@ -30,30 +31,34 @@ namespace GGUI
 		void SetAlpha(SoFloat fAlpha);
 		void SetImage(IDirect3DTexture9* pTexture);
 		bool SetImageByFileName(const tchar* pFileName);
+		void SetVisible(bool bVisible);
 
 		//获取属性函数
-		SoFloat GetPositionX();
-		SoFloat GetPositionY();
-		SoFloat GetPositionZ();
-		SoFloat GetWidth();
-		SoFloat GetHeight();
-		void GetColor(SoFloat& fR, SoFloat& fG, SoFloat& fB);
-		SoFloat GetAlpha();
-		WindowID GetWindowID();
-		TextureID GetTextureID();
+		SoFloat GetPositionX() const;
+		SoFloat GetPositionY() const;
+		SoFloat GetPositionZ() const;
+		SoFloat GetWidth() const;
+		SoFloat GetHeight() const;
+		void GetColor(SoFloat& fR, SoFloat& fG, SoFloat& fB) const;
+		SoFloat GetAlpha() const;
+		WindowID GetWindowID() const;
+		TextureID GetTextureID() const;
+		bool GetVisible() const;
 
-		//根据鼠标坐标，判断鼠标是否落在本窗口内部。
-		bool IsContainMouse(SoFloat fMousePosX, SoFloat fMousePosY);
+		//根据鼠标坐标和本窗口的矩形区域，判断鼠标是否落在本窗口内部。
+		bool CheckMouseInWindowArea(SoFloat fMousePosX, SoFloat fMousePosY) const;
 
 	protected:
 		void SetWindowID(WindowID theID);
+		void OnMouseEnterWindowArea();
+		void OnMouseLeaveWindowArea();
 
 		//UITexture的操作
 		void CreateUITexture();
 		void ReleaseUITexture();
 		void UpdateUITexture();
 
-	private:
+	protected:
 		SoFloat m_fPositionX;
 		SoFloat m_fPositionY;
 		SoFloat m_fPositionZ;
@@ -68,11 +73,13 @@ namespace GGUI
 		//本窗口有一个UITexture对象，记录它的TextureID。
 		TextureID m_nMyTextureID;
 		//记录是否需要更新UITexture对象。
-		//只有SoTrue和SoFalse两种状态。
-		SoBool m_bShouldUpdateUITexture;
+		bool m_bShouldUpdateUITexture;
+		//记录窗口是否可见。
+		bool m_bVisible;
+
 	};
 	//-----------------------------------------------------------------------------
-	inline bool GGUIWindow::IsContainMouse(SoFloat fMousePosX, SoFloat fMousePosY)
+	inline bool GGUIWindow::CheckMouseInWindowArea(SoFloat fMousePosX, SoFloat fMousePosY) const
 	{
 		if (fMousePosX > m_fPositionX && fMousePosX < m_fPositionX + m_fWidth)
 		{

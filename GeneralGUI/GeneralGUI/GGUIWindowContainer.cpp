@@ -93,6 +93,7 @@ namespace GGUI
 			if (m_pWindowID2Object[nIndex])
 			{
 				pWindow = m_pWindowID2Object[nIndex];
+				++nIndex;
 				return true;
 			}
 			else

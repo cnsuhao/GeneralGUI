@@ -31,15 +31,13 @@ namespace GGUI
 		enum eMouseOpState
 		{
 			MouseOp_None, //没有鼠标操作。
-			MouseOp_Hover, //鼠标悬浮在一个窗口上；这个窗口正在响应鼠标的悬浮状态。
-
+			//MouseOp_Hover, //鼠标悬浮在一个窗口上；这个窗口正在响应鼠标的悬浮状态。
 		};
 
 	private:
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-		//鼠标操作状态改变时处理函数
-		void MouseOpHoverBegin(WindowID theWindowID);
-		void MouseOpHoverEnd();
+		void MouseEnterWindowArea(WindowID theWindow);
+		void MouseLeaveWindowArea(WindowID theWindow);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 		bool IsMouseOutOfScreen(SoFloat fMousePosX, SoFloat fMousePosY);
@@ -49,8 +47,13 @@ namespace GGUI
 	private:
 		//记录当前的鼠标操作状态。
 		eMouseOpState m_eCurrentMouseOpState;
-		//如果鼠标处于MouseOp_Hover中，则记录哪个窗口正在响应鼠标的悬浮状态。
-		WindowID m_theWindowForMouseOpHover;
+		//记录最新的鼠标坐标。
+		SoFloat m_fMousePosX;
+		SoFloat m_fMousePosY;
+		//记录鼠标落在哪个窗口内部。
+		//如果窗口发生重叠的话，则鼠标可能落在多个窗口内部。
+		//目前认为窗口没有重叠，只考虑最简单的情况。
+		WindowID m_theWindowContainMouse;
 	};
 	//-----------------------------------------------------------------------------
 	inline GGUIInputProcess* GGUIInputProcess::GetInstance()

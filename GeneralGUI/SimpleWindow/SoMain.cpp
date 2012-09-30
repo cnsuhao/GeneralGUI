@@ -1,82 +1,79 @@
 //-----------------------------------------------------------------------------
-//                                  SoMain.cpp
-//
-//                                                   (C) oil
+// SoMain.cpp
+// (C) oil
+// 2012-09-30
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "SoD3DApp.h"
 #include "SoDefines.h"
 #include "SoEngine.h"
-//-------------------------------- 全局变量 -----------------------------------
-//应用程序对象
-SoD3DApp* pTheD3DApp = NULL;
-HWND      hMainHWND = NULL;
 //-----------------------------------------------------------------------------
-// 主窗口消息处理
+//应用程序对象
+SoD3DApp* g_pTheD3DApp = NULL;
+HWND g_hMainHWND = NULL;
+//-----------------------------------------------------------------------------
+//主窗口消息处理
 LRESULT CALLBACK WinProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //-----------------------------------------------------------------------------
-
-// WinMain程序入口
-int WINAPI WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//WinMain程序入口
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-
-	pTheD3DApp = SoD3DApp::CreateInstance();
-	if(NULL==pTheD3DApp)
+	g_pTheD3DApp = SoD3DApp::CreateInstance();
+	if (NULL == g_pTheD3DApp)
 		return 0;
 
-	if( !pTheD3DApp->Initialize(hInstance) )
+	if (!g_pTheD3DApp->Initialize(hInstance))
 	{
-		SAFE_DELETE(pTheD3DApp);
+		SAFE_DELETE(g_pTheD3DApp);
 		return 0;
 	}
 
     //-------------------- 创建窗口函数组 -------------------
-	pTheD3DApp->BeforeCreateWindow();
-	hMainHWND = pTheD3DApp->CreateTheWindow(WinProc);
-	if(NULL==hMainHWND)
+	g_pTheD3DApp->BeforeCreateWindow();
+	g_hMainHWND = g_pTheD3DApp->CreateTheWindow(WinProc);
+	if (NULL == g_hMainHWND)
 	{
-		SAFE_DELETE(pTheD3DApp);
+		SAFE_DELETE(g_pTheD3DApp);
 		return 0;
 	}
-	//pTheD3DApp->AfterCreateWindow();
+	//g_pTheD3DApp->AfterCreateWindow();
 
 
 	//--------------------- 创建D3D函数组 -----------------
-	//pTheD3DApp->BeforeCreateD3D();
-	if( !pTheD3DApp->CreateD3D() )
+	//g_pTheD3DApp->BeforeCreateD3D();
+	if (!g_pTheD3DApp->CreateD3D())
 	{
-		SAFE_DELETE(pTheD3DApp);
+		SAFE_DELETE(g_pTheD3DApp);
 		return 0;
 	}
-	//pTheD3DApp->AfterCreateD3D();
+	//g_pTheD3DApp->AfterCreateD3D();
 	
 	//------------------- 创建SoEngine --------------
-	if(NULL==SoEngine::CreateInstance())
+	if (NULL==SoEngine::CreateInstance())
 	{
 		goto _EXIT_APP_1;
 	}
-	if( !SoEngine::Instance()->InitEngine() )
+	if (!SoEngine::Instance()->InitEngine())
 	{
 		goto _EXIT_APP_1;
 	}
 
 	//------------------- 加载资源 --------------
-	if( !pTheD3DApp->InitResource() )
+	if (!g_pTheD3DApp->InitResource())
 	{
 		goto _EXIT_APP_2;
 	}
 
-
-	ShowWindow(hMainHWND,1);
-    UpdateWindow( hMainHWND );
+	//ShowWindow(g_hMainHWND,1);
+    //UpdateWindow( g_hMainHWND );
 
 
     // 运行消息机制
-    MSG msg; 
+    MSG msg;
 	memset(&msg, 0, sizeof(msg));
     while( msg.message != WM_QUIT)
     {
-		if(pTheD3DApp->IsMinimize())  //处于最小化状态
+		if(g_pTheD3DApp->IsMinimize())  //处于最小化状态
 		{
 			if( GetMessage( &msg, NULL, 0U, 0U ) )
 			{
@@ -93,14 +90,14 @@ int WINAPI WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 			}
 			else
 			{
-				//pTheD3DApp->BeforeUpdate();
-				pTheD3DApp->Update();
+				//g_pTheD3DApp->BeforeUpdate();
+				g_pTheD3DApp->Update();
 
-				pTheD3DApp->PreRender();
-				pTheD3DApp->Render();
-				pTheD3DApp->AfterRender();
+				g_pTheD3DApp->PreRender();
+				g_pTheD3DApp->Render();
+				g_pTheD3DApp->AfterRender();
 			}
-			//if( pTheD3DApp->GetActive() )
+			//if( g_pTheD3DApp->GetActive() )
 			//{
 			//}
 		}
@@ -113,7 +110,7 @@ int WINAPI WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 _EXIT_APP_2:
 
 	//-------------- 清除资源 --------------
-	pTheD3DApp->ClearResource();
+	g_pTheD3DApp->ClearResource();
 
 //goto跳转点
 _EXIT_APP_1:
@@ -122,7 +119,7 @@ _EXIT_APP_1:
 	SoEngine::ReleaseInstance();
 
 	//-------------- 结束D3D环境 -----------
-	SAFE_DELETE(pTheD3DApp);
+	SAFE_DELETE(g_pTheD3DApp);
 
 	return (int)msg.wParam;
 }//WinMain()结束
@@ -131,15 +128,12 @@ _EXIT_APP_1:
 // 主窗口消息处理
 LRESULT CALLBACK WinProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//pTheD3DApp肯定是有效指针
-	if( pTheD3DApp->MsgProcess( uMsg,wParam,lParam) )
+	if( g_pTheD3DApp->MsgProcess( uMsg,wParam,lParam) )
 		return 0;
 
-
-	//销毁窗口消息的处理
 	if( uMsg == WM_CLOSE )
 	{
-		DestroyWindow( hMainHWND );
+		DestroyWindow( g_hMainHWND );
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 

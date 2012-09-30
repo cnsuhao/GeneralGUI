@@ -23,7 +23,8 @@ namespace GGUI
 	,m_fColorA(0.0f)
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyTextureID(Invalid_TextureID)
-	,m_bShouldUpdateUITexture(SoFalse)
+	,m_bShouldUpdateUITexture(false)
+	,m_bVisible(true)
 	{
 		if (!GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
 		{
@@ -44,13 +45,18 @@ namespace GGUI
 	{
 		if (m_bShouldUpdateUITexture)
 		{
-			m_bShouldUpdateUITexture = SoFalse;
+			m_bShouldUpdateUITexture = false;
 			UpdateUITexture();
 		}
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::RenderWindow()
 	{
+		if (!m_bVisible)
+		{
+			return;
+		}
+
 		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
 		if (pUITexture)
 		{
@@ -61,31 +67,31 @@ namespace GGUI
 	void GGUIWindow::SetPositionX(SoFloat fPosX)
 	{
 		m_fPositionX = fPosX;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetPositionY(SoFloat fPosY)
 	{
 		m_fPositionY = fPosY;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetPositionZ(SoFloat fPosZ)
 	{
 		m_fPositionZ = fPosZ;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWidth(SoFloat fWidth)
 	{
 		m_fWidth = fWidth;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetHeight(SoFloat fHeight)
 	{
 		m_fHeight = fHeight;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetColor(SoFloat fR, SoFloat fG, SoFloat fB)
@@ -93,13 +99,13 @@ namespace GGUI
 		m_fColorR = fR;
 		m_fColorG = fG;
 		m_fColorB = fB;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetAlpha(SoFloat fAlpha)
 	{
 		m_fColorA = fAlpha;
-		m_bShouldUpdateUITexture = SoTrue;
+		m_bShouldUpdateUITexture = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetImage(IDirect3DTexture9* pTexture)
@@ -130,51 +136,61 @@ namespace GGUI
 		return bResult;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetPositionX()
+	void GGUIWindow::SetVisible(bool bVisible)
+	{
+		m_bVisible = bVisible;
+	}
+	//-----------------------------------------------------------------------------
+	SoFloat GGUIWindow::GetPositionX() const
 	{
 		return m_fPositionX;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetPositionY()
+	SoFloat GGUIWindow::GetPositionY() const
 	{
 		return m_fPositionY;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetPositionZ()
+	SoFloat GGUIWindow::GetPositionZ() const
 	{
 		return m_fPositionZ;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetWidth()
+	SoFloat GGUIWindow::GetWidth() const
 	{
 		return m_fWidth;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetHeight()
+	SoFloat GGUIWindow::GetHeight() const
 	{
 		return m_fHeight;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::GetColor(SoFloat& fR, SoFloat& fG, SoFloat& fB)
+	void GGUIWindow::GetColor(SoFloat& fR, SoFloat& fG, SoFloat& fB) const
 	{
 		fR = m_fColorR;
 		fG = m_fColorG;
 		fB = m_fColorB;
 	}
 	//-----------------------------------------------------------------------------
-	SoFloat GGUIWindow::GetAlpha()
+	SoFloat GGUIWindow::GetAlpha() const
 	{
 		return m_fColorA;
 	}
 	//-----------------------------------------------------------------------------
-	WindowID GGUIWindow::GetWindowID()
+	WindowID GGUIWindow::GetWindowID() const
 	{
 		return m_nMyWindowID;
 	}
 	//-----------------------------------------------------------------------------
-	TextureID GGUIWindow::GetTextureID()
+	TextureID GGUIWindow::GetTextureID() const
 	{
 		return m_nMyTextureID;
+	}
+	//-----------------------------------------------------------------------------
+	bool GGUIWindow::GetVisible() const
+	{
+		return m_bVisible;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWindowID(WindowID theID)
@@ -187,6 +203,16 @@ namespace GGUI
 		{
 			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来赋值WindowID！"), TEXT("GGUI Error"), MB_OK);
 		}
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseEnterWindowArea()
+	{
+		SetColor(2.0f,2.0f,2.0f);
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseLeaveWindowArea()
+	{
+		SetAlpha(1.0f);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::CreateUITexture()

@@ -123,7 +123,7 @@ public:
 
     //处理主窗口消息(消息循环机制)
 	//处理了消息则返回TRUE, 没有处理消息则返回FALSE
-    virtual bool MsgProcess( UINT uMsg, WPARAM wParam, LPARAM lParam );
+    virtual LRESULT MsgProcess( UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 
 

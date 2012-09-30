@@ -3,6 +3,9 @@
 #include "../SoComponent/SoUnicode.h"
 using namespace SoComponent;
 
+#include "../GeneralGUI/GGUIInputDefine.h"
+#include "../GeneralGUI/GGUITextureDefine.h"
+#include "../GeneralGUI/GGUIWindowDefine.h"
 #include "../GeneralGUI/GGUISystem.h"
 #include "../GeneralGUI/GGUIWindow.h"
 #include "../GeneralGUI/GGUIWindowContainer.h"

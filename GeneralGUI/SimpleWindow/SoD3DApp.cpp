@@ -100,7 +100,8 @@ HWND SoD3DApp::CreateTheWindow(WNDPROC WinProc)
 		return NULL;	
 	}
 
-	DWORD dwWinStyle = WS_BORDER|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX; //|WS_MAXIMIZEBOX|WS_THICKFRAME
+	//DWORD dwWinStyle = WS_BORDER|WS_CAPTION|WS_SYSMENU|WS_MINIMIZEBOX; //|WS_MAXIMIZEBOX|WS_THICKFRAME
+	DWORD dwWinStyle = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE;
 	//根据m_bSizeAble的值,对窗口风格进行调整
 	if(m_bSizeAble)
 		dwWinStyle |= WS_THICKFRAME;
@@ -231,14 +232,14 @@ void SoD3DApp::Draw(void)
 
 }
 //-----------------------------------------------------------------------------
-bool SoD3DApp::MsgProcess( UINT uMsg, WPARAM wParam, LPARAM lParam )
+LRESULT SoD3DApp::MsgProcess( UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     switch( uMsg )
     {
     //窗口激活状态消息的处理
 	case WM_ACTIVATEAPP:
 		m_bActive = ((BOOL)wParam)? true: false;
-		 return true;
+		return true;
 
     //窗口大小改变之后,就会得到这个消息
 	case WM_SIZE:
@@ -301,7 +302,8 @@ void SoD3DApp::AdjustTheWindow(bool IsMenu,bool IsStatusBar)
 	y1=(y1-WindowH)/2;
 
     //根据上面的值,调整窗口的位置  //BOOL AdjustWindowRect()
-    SetWindowPos( m_hMainHWND, HWND_NOTOPMOST,x1, y1, WindowW, WindowH, SWP_HIDEWINDOW );
+	MoveWindow(m_hMainHWND, x1, y1, WindowW, WindowH, TRUE);
+	ShowWindow(m_hMainHWND, SW_SHOW);
 }
 //-----------------------------------------------------------------------------
 void SoD3DApp::Get_ClientRect(RECT* pRect)

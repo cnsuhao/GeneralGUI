@@ -22,6 +22,9 @@ public:
 	virtual void Draw(void);
 
 protected:
+	virtual LRESULT MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+protected:
 	void CreateUIWindowA();
 	void ReleaseUIWindowA();
 
