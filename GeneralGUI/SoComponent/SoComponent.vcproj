@@ -197,6 +197,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="FastDelegate"
+			>
+			<File
+				RelativePath=".\FastDelegate.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FastDelegateBind.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

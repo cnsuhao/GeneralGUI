@@ -25,6 +25,9 @@ namespace GGUI
 		//返回ture表示这个事件被本系统响应并处理了；
 		//返回false表示本系统不关心并没有处理这个事件。
 		bool OnMouseMove(SoFloat fNewPosX, SoFloat fNewPosY);
+		//
+		bool OnMouseLeftButtonDown();
+		bool OnMouseLeftButtonUp();
 
 	private:
 		//标记鼠标的各个操作状态。同一时刻，鼠标只能处于一个操作状态中。

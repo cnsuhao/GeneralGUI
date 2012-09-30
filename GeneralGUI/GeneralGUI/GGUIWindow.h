@@ -10,7 +10,7 @@ namespace GGUI
 {
 	class GGUIWindow
 	{
-		friend class GGUIWindowContainer;
+		friend class GGUIWindowManager;
 		friend class GGUIInputProcess;
 	public:
 		GGUIWindow();
@@ -32,6 +32,7 @@ namespace GGUI
 		void SetImage(IDirect3DTexture9* pTexture);
 		bool SetImageByFileName(const tchar* pFileName);
 		void SetVisible(bool bVisible);
+		virtual void SetEnable(bool bEnable);
 
 		//获取属性函数
 		SoFloat GetPositionX() const;
@@ -44,19 +45,26 @@ namespace GGUI
 		WindowID GetWindowID() const;
 		TextureID GetTextureID() const;
 		bool GetVisible() const;
+		bool GetEnable() const;
 
 		//根据鼠标坐标和本窗口的矩形区域，判断鼠标是否落在本窗口内部。
 		bool CheckMouseInWindowArea(SoFloat fMousePosX, SoFloat fMousePosY) const;
 
 	protected:
-		void SetWindowID(WindowID theID);
-		void OnMouseEnterWindowArea();
-		void OnMouseLeaveWindowArea();
+		//事件响应函数
+		virtual void OnMouseEnterWindowArea();
+		virtual void OnMouseLeaveWindowArea();
+		virtual void OnMouseLeftButtonClickDown();
+		virtual void OnMouseLeftButtonClickUp();
 
+	protected:
+		void SetWindowID(WindowID theID);
+		//在绘制之前，对Mesh顶点信息做最终的更新。
+		void PostUpdateWindow();
 		//UITexture的操作
 		void CreateUITexture();
 		void ReleaseUITexture();
-		void UpdateUITexture();
+		virtual void UpdateUITexture();
 
 	protected:
 		SoFloat m_fPositionX;
@@ -68,6 +76,8 @@ namespace GGUI
 		SoFloat m_fColorG;
 		SoFloat m_fColorB;
 		SoFloat m_fColorA;
+		//本窗口的类型。
+		eWindowType m_eMyWindowType;
 		//本窗口的ID。
 		WindowID m_nMyWindowID;
 		//本窗口有一个UITexture对象，记录它的TextureID。
@@ -76,6 +86,10 @@ namespace GGUI
 		bool m_bShouldUpdateUITexture;
 		//记录窗口是否可见。
 		bool m_bVisible;
+		//记录窗口是否可用。
+		bool m_bEnable;
+		//记录鼠标的坐标是否落在本窗口的矩形区域内。
+		bool m_bMouseInWindowArea;
 
 	};
 	//-----------------------------------------------------------------------------

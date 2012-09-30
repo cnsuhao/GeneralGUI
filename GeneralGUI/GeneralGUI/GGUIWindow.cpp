@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------
 #include "GGUIStdAfx.h"
 #include "GGUIWindow.h"
-#include "GGUIWindowContainer.h"
+#include "GGUIWindowManager.h"
 #include "GGUITexture.h"
 #include "GGUITextureContainer.h"
 //-----------------------------------------------------------------------------
@@ -21,12 +21,15 @@ namespace GGUI
 	,m_fColorG(0.0f)
 	,m_fColorB(0.0f)
 	,m_fColorA(0.0f)
+	,m_eMyWindowType(WindowType_Base)
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyTextureID(Invalid_TextureID)
 	,m_bShouldUpdateUITexture(false)
 	,m_bVisible(true)
+	,m_bEnable(true)
+	,m_bMouseInWindowArea(false)
 	{
-		if (!GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
+		if (!GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
 		{
 			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来创建GGUIWindow！"), TEXT("GGUI Error"), MB_OK);
 		}
@@ -35,7 +38,7 @@ namespace GGUI
 	GGUIWindow::~GGUIWindow()
 	{
 		ReleaseUITexture();
-		if (!GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
+		if (!GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
 		{
 			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来释放GGUIWindow！"), TEXT("GGUI Error"), MB_OK);
 		}
@@ -43,11 +46,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::UpdateWindow(SoFloat fFrameTime)
 	{
-		if (m_bShouldUpdateUITexture)
-		{
-			m_bShouldUpdateUITexture = false;
-			UpdateUITexture();
-		}
+
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::RenderWindow()
@@ -141,6 +140,11 @@ namespace GGUI
 		m_bVisible = bVisible;
 	}
 	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetEnable(bool bEnable)
+	{
+		m_bEnable = bEnable;
+	}
+	//-----------------------------------------------------------------------------
 	SoFloat GGUIWindow::GetPositionX() const
 	{
 		return m_fPositionX;
@@ -193,9 +197,34 @@ namespace GGUI
 		return m_bVisible;
 	}
 	//-----------------------------------------------------------------------------
+	bool GGUIWindow::GetEnable() const
+	{
+		return m_bEnable;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseEnterWindowArea()
+	{
+		m_bMouseInWindowArea = true;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseLeaveWindowArea()
+	{
+		m_bMouseInWindowArea = false;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseLeftButtonClickDown()
+	{
+
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::OnMouseLeftButtonClickUp()
+	{
+
+	}
+	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWindowID(WindowID theID)
 	{
-		if (GGUIWindowContainer::GetInstance()->IsOperationByWindowContainer())
+		if (GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
 		{
 			m_nMyWindowID = theID;
 		}
@@ -205,14 +234,13 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::OnMouseEnterWindowArea()
+	void GGUIWindow::PostUpdateWindow()
 	{
-		SetColor(2.0f,2.0f,2.0f);
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIWindow::OnMouseLeaveWindowArea()
-	{
-		SetAlpha(1.0f);
+		if (m_bShouldUpdateUITexture)
+		{
+			m_bShouldUpdateUITexture = false;
+			UpdateUITexture();
+		}
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::CreateUITexture()

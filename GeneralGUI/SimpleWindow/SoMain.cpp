@@ -73,37 +73,35 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	memset(&msg, 0, sizeof(msg));
     while( msg.message != WM_QUIT)
     {
-		if(g_pTheD3DApp->IsMinimize())  //处于最小化状态
+		//if(g_pTheD3DApp->IsMinimize())  //处于最小化状态
+		//{
+		//	if( GetMessage( &msg, NULL, 0U, 0U ) )
+		//	{
+		//		TranslateMessage( &msg );
+		//		DispatchMessage( &msg );
+		//	}
+		//}
+		//else
 		{
-			if( GetMessage( &msg, NULL, 0U, 0U ) )
+			//if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+			if( GetMessage( &msg, NULL, 0U, 0U) )
 			{
 				TranslateMessage( &msg );
 				DispatchMessage( &msg );
-			}
-		}
-		else
-		{
-			if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
-			}
-			else
-			{
-				//g_pTheD3DApp->BeforeUpdate();
-				g_pTheD3DApp->Update();
-
-				g_pTheD3DApp->PreRender();
-				g_pTheD3DApp->Render();
-				g_pTheD3DApp->AfterRender();
-			}
-			//if( g_pTheD3DApp->GetActive() )
-			//{
 			//}
+			//else
+			//{
+				if (!g_pTheD3DApp->IsMinimize())
+				{
+					//g_pTheD3DApp->BeforeUpdate();
+					g_pTheD3DApp->Update();
+
+					g_pTheD3DApp->PreRender();
+					g_pTheD3DApp->Render();
+					g_pTheD3DApp->AfterRender();
+				}
+			}
 		}
-
-
-
 	}  
 
 //goto跳转点

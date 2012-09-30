@@ -6,7 +6,7 @@
 #include "GGUIStdAfx.h"
 #include "GGUIInputProcess.h"
 #include "GGUIWindow.h"
-#include "GGUIWindowContainer.h"
+#include "GGUIWindowManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -52,7 +52,7 @@ namespace GGUI
 			//这里没有考虑那个窗口是否有子窗口。
 			if (theOldWindowWhoContainMouse != Invalid_WindowID)
 			{
-				GGUIWindow* pOldWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theOldWindowWhoContainMouse);
+				GGUIWindow* pOldWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theOldWindowWhoContainMouse);
 				if (pOldWindow && pOldWindow->CheckMouseInWindowArea(fNewPosX, fNewPosY))
 				{
 					theNewWindowWhoContainMouse = theOldWindowWhoContainMouse;
@@ -83,9 +83,37 @@ namespace GGUI
 		return bResult;
 	}
 	//-----------------------------------------------------------------------------
+	bool GGUIInputProcess::OnMouseLeftButtonDown()
+	{
+		bool bResult = false;
+		if (m_theWindowContainMouse != Invalid_WindowID)
+		{
+			GGUIWindow* pTheWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_theWindowContainMouse);
+			if (pTheWindow)
+			{
+				pTheWindow->OnMouseLeftButtonClickDown();
+			}
+		}
+		return bResult;
+	}
+	//-----------------------------------------------------------------------------
+	bool GGUIInputProcess::OnMouseLeftButtonUp()
+	{
+		bool bResult = false;
+		if (m_theWindowContainMouse != Invalid_WindowID)
+		{
+			GGUIWindow* pTheWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_theWindowContainMouse);
+			if (pTheWindow)
+			{
+				pTheWindow->OnMouseLeftButtonClickUp();
+			}
+		}
+		return bResult;
+	}
+	//-----------------------------------------------------------------------------
 	void GGUIInputProcess::MouseEnterWindowArea(WindowID theWindow)
 	{
-		GGUIWindow* pWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theWindow);
+		GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theWindow);
 		if (pWindow)
 		{
 			pWindow->OnMouseEnterWindowArea();
@@ -94,7 +122,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIInputProcess::MouseLeaveWindowArea(WindowID theWindow)
 	{
-		GGUIWindow* pWindow = GGUIWindowContainer::GetInstance()->GetUIWindow(theWindow);
+		GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theWindow);
 		if (pWindow)
 		{
 			pWindow->OnMouseLeaveWindowArea();
@@ -104,7 +132,7 @@ namespace GGUI
 	WindowID GGUIInputProcess::GetWindowWhoContainMouse(SoFloat fMousePosX, SoFloat fMousePosY)
 	{
 		WindowID theResult = Invalid_WindowID;
-		GGUIWindowContainer* pWindowContainer = GGUIWindowContainer::GetInstance();
+		GGUIWindowManager* pWindowContainer = GGUIWindowManager::GetInstance();
 		SoInt nIndex = 0;
 		GGUIWindow* pWindow = NULL;
 		while (pWindowContainer->Next(nIndex, pWindow))

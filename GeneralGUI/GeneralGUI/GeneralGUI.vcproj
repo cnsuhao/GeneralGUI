@@ -163,6 +163,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\GGUIButton.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIButton.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIInputDefine.h"
 			>
 		</File>
@@ -227,15 +235,15 @@
 			>
 		</File>
 		<File
-			RelativePath=".\GGUIWindowContainer.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIWindowContainer.h"
-			>
-		</File>
-		<File
 			RelativePath=".\GGUIWindowDefine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIWindowManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIWindowManager.h"
 			>
 		</File>
 	</Files>

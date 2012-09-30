@@ -1,26 +1,28 @@
 //-----------------------------------------------------------------------------
-// GGUI窗口的容器类
+// GGUI窗口的管理类
 // (C) oil
 // 2012-09-16
 //-----------------------------------------------------------------------------
-#ifndef _GGUIWindowContainer_h_
-#define _GGUIWindowContainer_h_
+#ifndef _GGUIWindowManager_h_
+#define _GGUIWindowManager_h_
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
 	class GGUIWindow;
 	//-----------------------------------------------------------------------------
-	class GGUIWindowContainer : public SoTSingleton<GGUIWindowContainer>
+	class GGUIWindowManager : public SoTSingleton<GGUIWindowManager>
 	{
 	public:
-		GGUIWindowContainer();
-		~GGUIWindowContainer();
-		static GGUIWindowContainer* GetInstance();
+		GGUIWindowManager();
+		~GGUIWindowManager();
+		static GGUIWindowManager* GetInstance();
 
-		bool InitWindowContainer();
-		void ReleaseWindowContainer();
+		bool InitWindowManager();
+		void ReleaseWindowManager();
+		void UpdateWindowManager(SoFloat fFrameTime);
+		void RenderWindowManager();
 
-		GGUIWindow* CreateUIWindow();
+		GGUIWindow* CreateUIWindow(eWindowType theType);
 		void ReleaseUIWindow(WindowID theWindowID);
 		GGUIWindow* GetUIWindow(WindowID theWindowID);
 		bool IsOperationByWindowContainer();
@@ -31,6 +33,9 @@ namespace GGUI
 		//--nIndex [In][Out]
 		//--pWindow [Out]
 		bool Next(SoInt& nIndex, GGUIWindow*& pWindow);
+
+	protected:
+		void PostUpdateWindowManager();
 
 	private:
 		//一个WindowID对应着一个GGUIWindow对象。
@@ -47,12 +52,12 @@ namespace GGUI
 		SoBool m_bOperationByWindowContainer;
 	};
 	//-----------------------------------------------------------------------------
-	inline GGUIWindowContainer* GGUIWindowContainer::GetInstance()
+	inline GGUIWindowManager* GGUIWindowManager::GetInstance()
 	{
-		return GGUIWindowContainer::Instance();
+		return GGUIWindowManager::Instance();
 	}
 	//-----------------------------------------------------------------------------
-	inline GGUIWindow* GGUIWindowContainer::GetUIWindow(WindowID theWindowID)
+	inline GGUIWindow* GGUIWindowManager::GetUIWindow(WindowID theWindowID)
 	{
 		if (theWindowID >= 0 && theWindowID < m_nIndexEnd)
 		{
@@ -64,11 +69,11 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	inline bool GGUIWindowContainer::IsOperationByWindowContainer()
+	inline bool GGUIWindowManager::IsOperationByWindowContainer()
 	{
 		return (m_bOperationByWindowContainer == SoTrue);
 	}
 }
 //-----------------------------------------------------------------------------
-#endif //_GGUIWindowContainer_h_
+#endif //_GGUIWindowManager_h_
 //-----------------------------------------------------------------------------

@@ -19,9 +19,13 @@ namespace GGUI
 		bool InitUISystem(IDirect3DDevice9* pDevice, SoFloat fScreenWidth, SoFloat fScreenHeight);
 		//释放GGUI系统。
 		void ReleaseUISystem();
-
 		//获取D3D设备指针。
 		IDirect3DDevice9* GetD3DDevice();
+
+		//更新。
+		void UpdateGGUI(SoFloat fFrameTime);
+		//绘制。
+		void RenderGGUI();
 
 		//注入一个键盘按键事件。
 		//返回ture表示这个按键事件被本系统响应并处理了；

@@ -8,7 +8,7 @@ using namespace SoComponent;
 #include "../GeneralGUI/GGUIWindowDefine.h"
 #include "../GeneralGUI/GGUISystem.h"
 #include "../GeneralGUI/GGUIWindow.h"
-#include "../GeneralGUI/GGUIWindowContainer.h"
+#include "../GeneralGUI/GGUIWindowManager.h"
 #include "../GeneralGUI/GGUITexture.h"
 #include "../GeneralGUI/GGUITextureContainer.h"
 using namespace GGUI;

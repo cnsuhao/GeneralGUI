@@ -56,16 +56,13 @@ void MyApp::ClearResource(void)
 //-----------------------------------------------------------------------------
 void MyApp::Update(void)
 {
-	m_pUIWindow->UpdateWindow(0.0f);
+	GGUISystem::GetInstance()->UpdateGGUI(0.0f);
 }
 
 //-----------------------------------------------------------------------------
 void MyApp::Draw(void)
 {
-	if (m_pUIWindow)
-	{
-		m_pUIWindow->RenderWindow();
-	}
+	GGUISystem::GetInstance()->RenderGGUI();
 }
 
 //-----------------------------------------------------------------------------
@@ -81,6 +78,16 @@ LRESULT MyApp::MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			GGUISystem::GetInstance()->InjectMouseEvent(MouseMove, Mouse_Invalid, (SoFloat)xPos, (SoFloat)yPos);
 		}
 		break;
+	case WM_LBUTTONDOWN:
+		{
+			GGUISystem::GetInstance()->InjectMouseEvent(ButtonDown, LeftMouse, 0.0f, 0.0f);
+		}
+		break;
+	case WM_LBUTTONUP:
+		{
+			GGUISystem::GetInstance()->InjectMouseEvent(ButtonUp, LeftMouse, 0.0f, 0.0f);
+		}
+		break;
 	default:
 		break;
 	}
@@ -91,7 +98,7 @@ LRESULT MyApp::MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 //-----------------------------------------------------------------------------
 void MyApp::CreateUIWindowA()
 {
-	m_pUIWindow = GGUIWindowContainer::GetInstance()->CreateUIWindow();
+	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Button);
 	m_pUIWindow->SetPositionX(10.0f);
 	m_pUIWindow->SetPositionY(10.0f);
 	m_pUIWindow->SetPositionZ(0.5f);
@@ -99,14 +106,14 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetHeight(300.0f);
 	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
 	m_pUIWindow->SetAlpha(1.0f);
-	//m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
-	m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
+	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
+	//m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
 }
 //-----------------------------------------------------------------------------
 void MyApp::ReleaseUIWindowA()
 {
-	GGUIWindowContainer::GetInstance()->ReleaseUIWindow(m_pUIWindow->GetWindowID());
+	GGUIWindowManager::GetInstance()->ReleaseUIWindow(m_pUIWindow->GetWindowID());
 }
 //-----------------------------------------------------------------------------
 //  MyApp.cpp

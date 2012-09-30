@@ -8,6 +8,7 @@
 #include "../SoComponent/SoTSingleton.h"
 #include "../SoComponent/SoBaseTypeDefine.h"
 #include "../SoComponent/SoUnicode.h"
+#include "../SoComponent/FastDelegate.h"
 using namespace SoComponent;
 
 //包含GGUI内部的常用头文件

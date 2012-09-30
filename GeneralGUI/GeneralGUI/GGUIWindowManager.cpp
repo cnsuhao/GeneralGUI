@@ -4,13 +4,14 @@
 // 2012-09-16
 //-----------------------------------------------------------------------------
 #include "GGUIStdAfx.h"
-#include "GGUIWindowContainer.h"
+#include "GGUIWindowManager.h"
 #include "GGUIWindow.h"
+#include "GGUIButton.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
 	//-----------------------------------------------------------------------------
-	GGUIWindowContainer::GGUIWindowContainer()
+	GGUIWindowManager::GGUIWindowManager()
 	:m_pWindowID2Object(0)
 	,m_nCapacity(0)
 	,m_nIndexEnd(0)
@@ -19,12 +20,12 @@ namespace GGUI
 
 	}
 	//-----------------------------------------------------------------------------
-	GGUIWindowContainer::~GGUIWindowContainer()
+	GGUIWindowManager::~GGUIWindowManager()
 	{
-		ReleaseWindowContainer();
+		ReleaseWindowManager();
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIWindowContainer::InitWindowContainer()
+	bool GGUIWindowManager::InitWindowManager()
 	{
 		m_nCapacity = 1000;
 		m_pWindowID2Object = new GGUIWindow*[m_nCapacity];
@@ -32,7 +33,7 @@ namespace GGUI
 		return true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindowContainer::ReleaseWindowContainer()
+	void GGUIWindowManager::ReleaseWindowManager()
 	{
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
@@ -46,7 +47,32 @@ namespace GGUI
 		m_pWindowID2Object = 0;
 	}
 	//-----------------------------------------------------------------------------
-	GGUIWindow* GGUIWindowContainer::CreateUIWindow()
+	void GGUIWindowManager::UpdateWindowManager(SoFloat fFrameTime)
+	{
+		for (SoInt i=0; i<m_nIndexEnd; ++i)
+		{
+			if (m_pWindowID2Object[i])
+			{
+				m_pWindowID2Object[i]->UpdateWindow(fFrameTime);
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindowManager::RenderWindowManager()
+	{
+		//绘制之前，对每个窗口的Mesh顶点做最后的更新。
+		PostUpdateWindowManager();
+		//
+		for (SoInt i=0; i<m_nIndexEnd; ++i)
+		{
+			if (m_pWindowID2Object[i])
+			{
+				m_pWindowID2Object[i]->RenderWindow();
+			}
+		}
+	}
+	//-----------------------------------------------------------------------------
+	GGUIWindow* GGUIWindowManager::CreateUIWindow(eWindowType theType)
 	{
 		if (m_nIndexEnd >= m_nCapacity)
 		{
@@ -61,14 +87,29 @@ namespace GGUI
 			m_pWindowID2Object = pNewArray;
 		}
 		m_bOperationByWindowContainer = SoTrue;
-		m_pWindowID2Object[m_nIndexEnd] = new GGUIWindow;
-		m_pWindowID2Object[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
+		GGUIWindow* pNewWindow = NULL;
+		switch (theType)
+		{
+		case WindowType_Base:
+			pNewWindow = new GGUIWindow;
+			break;
+		case WindowType_Button:
+			pNewWindow = new GGUIButton;
+			break;
+		default:
+			break;
+		}
+		if (pNewWindow)
+		{
+			m_pWindowID2Object[m_nIndexEnd] = pNewWindow;
+			m_pWindowID2Object[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
+			++m_nIndexEnd;
+		}
 		m_bOperationByWindowContainer = SoFalse;
-		++m_nIndexEnd;
-		return m_pWindowID2Object[m_nIndexEnd-1];
+		return pNewWindow;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindowContainer::ReleaseUIWindow(WindowID theWindowID)
+	void GGUIWindowManager::ReleaseUIWindow(WindowID theWindowID)
 	{
 		if (theWindowID >= 0 && theWindowID < m_nIndexEnd)
 		{
@@ -86,7 +127,7 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIWindowContainer::Next(SoInt& nIndex, GGUIWindow*& pWindow)
+	bool GGUIWindowManager::Next(SoInt& nIndex, GGUIWindow*& pWindow)
 	{
 		if (nIndex >= 0 && nIndex < m_nIndexEnd)
 		{
@@ -106,6 +147,17 @@ namespace GGUI
 		{
 			pWindow = NULL;
 			return false;
+		}
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindowManager::PostUpdateWindowManager()
+	{
+		for (SoInt i=0; i<m_nIndexEnd; ++i)
+		{
+			if (m_pWindowID2Object[i])
+			{
+				m_pWindowID2Object[i]->PostUpdateWindow();
+			}
 		}
 	}
 }
