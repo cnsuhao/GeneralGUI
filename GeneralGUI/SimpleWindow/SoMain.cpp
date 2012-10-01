@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			DispatchMessage( &msg );
 		}
 		//g_pTheD3DApp->BeforeUpdate();
-		g_pTheD3DApp->Update();
+		g_pTheD3DApp->Update(fAccTime, fFrameTime);
 		if (!g_pTheD3DApp->IsMinimize())
 		{
 			g_pTheD3DApp->PreRender();

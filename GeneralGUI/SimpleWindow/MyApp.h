@@ -18,7 +18,7 @@ public:
 	virtual bool InitResource(void);
 	virtual void ClearResource(void);
 
-	virtual void Update(void);
+	virtual void Update(float fAccTime, float fFrameTime);
 	virtual void Draw(void);
 
 protected:

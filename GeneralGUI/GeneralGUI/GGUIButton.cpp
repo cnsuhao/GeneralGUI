@@ -23,8 +23,11 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIButton::SetEnable(bool bEnable)
 	{
+		//把旧值保存下来。
+		bool bOldValue = m_bEnable;
 		__super::SetEnable(bEnable);
-		if (m_bEnable != bEnable)
+		//
+		if (bOldValue != bEnable)
 		{
 			eButtonState eDestState = bEnable ? ButtonState_Normal : ButtonState_Disable;
 			if (m_eButtonState != eDestState)

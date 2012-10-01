@@ -104,7 +104,7 @@ public:
 	//--------------------------------------------------------------¸üÐÂ
 
 	virtual void BeforeUpdate(void)  { };
-	virtual void Update(void)  { };
+	virtual void Update(float fAccTime, float fFrameTime)  { };
 
 
 	//--------------------------------------------------------------äÖÈ¾

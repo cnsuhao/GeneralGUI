@@ -54,9 +54,9 @@ void MyApp::ClearResource(void)
 }
 
 //-----------------------------------------------------------------------------
-void MyApp::Update(void)
+void MyApp::Update(float fAccTime, float fFrameTime)
 {
-	GGUISystem::GetInstance()->UpdateGGUI(0.0f);
+	GGUISystem::GetInstance()->UpdateGGUI(fFrameTime);
 }
 
 //-----------------------------------------------------------------------------

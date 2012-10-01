@@ -27,6 +27,9 @@ namespace GGUI
 
 		//
 		TextureID GetTextureID();
+		//获取图片源文件的宽高。
+		SoInt GetSourceWidth();
+		SoInt GetSourceHeight();
 
 	protected:
 		static bool CreateIndexBuffer();
@@ -36,6 +39,8 @@ namespace GGUI
 	private:
 		bool CreateVertexBuffer();
 		void ReleaseVertexBuffer();
+		//当得到新的IDirect3DTexture9对象后，获取新Texture的一些参数。
+		void RefreshTextureParam();
 
 	private:
 		//顶点数据格式。
@@ -62,11 +67,28 @@ namespace GGUI
 		IDirect3DVertexBuffer9* m_pVertex;
 		//每个Texture对象都有一个ID；Invalid_TextureID为ID的无效值。
 		TextureID m_nTextureID;
+		//Texture的宽高。
+		SoInt m_nWidth;
+		SoInt m_nHeight;
+		//记录Texture使用的内存类型。
+		D3DPOOL m_eThePool;
+		//记录Texture中是否有Alpha信息。
+		bool m_bAlphaExist;
 	};
 	//-----------------------------------------------------------------------------
 	inline TextureID GGUITexture::GetTextureID()
 	{
 		return m_nTextureID;
+	}
+	//-----------------------------------------------------------------------------
+	inline SoInt GGUITexture::GetSourceWidth()
+	{
+		return m_nWidth;
+	}
+	//-----------------------------------------------------------------------------
+	inline SoInt GGUITexture::GetSourceHeight()
+	{
+		return m_nHeight;
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

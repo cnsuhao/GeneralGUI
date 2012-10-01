@@ -16,6 +16,7 @@ namespace GGUI
 		WindowType_Invalid = -1, 
 		WindowType_Base = 0, //GGUIWindow类型
 		WindowType_Button, //GGUIButton类型
+		WindowType_Picture, //GGUIPicture类型
 		WindowType_Max,
 	};
 }

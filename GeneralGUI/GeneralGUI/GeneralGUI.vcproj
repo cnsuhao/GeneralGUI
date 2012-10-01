@@ -183,6 +183,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIPicture.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIPicture.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIScreenParam.cpp"
 			>
 		</File>
