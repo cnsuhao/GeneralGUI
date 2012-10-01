@@ -64,45 +64,48 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		goto _EXIT_APP_2;
 	}
 
-	//ShowWindow(g_hMainHWND,1);
-    //UpdateWindow( g_hMainHWND );
+	float fAccTime = 0.0f;
+	float fFrameTime = 0.0f;
+	float fMaxFPS = 60.0f;
+	float fDestFrameTime = 1.0f / fMaxFPS;
 
+	DWORD dwStartTime = GetTickCount();
+	DWORD dwDestFrameTime = (DWORD)(fDestFrameTime * 1000.0f);
 
-    // 运行消息机制
+    //运行消息机制
     MSG msg;
 	memset(&msg, 0, sizeof(msg));
-    while( msg.message != WM_QUIT)
+    while (msg.message != WM_QUIT)
     {
-		//if(g_pTheD3DApp->IsMinimize())  //处于最小化状态
-		//{
-		//	if( GetMessage( &msg, NULL, 0U, 0U ) )
-		//	{
-		//		TranslateMessage( &msg );
-		//		DispatchMessage( &msg );
-		//	}
-		//}
-		//else
+		if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
-			//if( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-			if( GetMessage( &msg, NULL, 0U, 0U) )
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
-			//}
-			//else
-			//{
-				if (!g_pTheD3DApp->IsMinimize())
-				{
-					//g_pTheD3DApp->BeforeUpdate();
-					g_pTheD3DApp->Update();
-
-					g_pTheD3DApp->PreRender();
-					g_pTheD3DApp->Render();
-					g_pTheD3DApp->AfterRender();
-				}
-			}
+			TranslateMessage( &msg );
+			DispatchMessage( &msg );
 		}
-	}  
+		//g_pTheD3DApp->BeforeUpdate();
+		g_pTheD3DApp->Update();
+		if (!g_pTheD3DApp->IsMinimize())
+		{
+			g_pTheD3DApp->PreRender();
+			g_pTheD3DApp->Render();
+			g_pTheD3DApp->AfterRender();
+		}
+
+		DWORD dwCurrentTime = GetTickCount();
+		DWORD dwElapsedFrameTime = dwCurrentTime - dwStartTime;
+		if (dwElapsedFrameTime < dwDestFrameTime)
+		{
+			Sleep(dwDestFrameTime - dwElapsedFrameTime);
+			fFrameTime = fDestFrameTime;
+			dwStartTime = GetTickCount();
+		}
+		else
+		{
+			fFrameTime = (float)dwElapsedFrameTime * 0.001f;
+			dwStartTime = dwCurrentTime;
+		}
+		fAccTime += fFrameTime;
+	}
 
 //goto跳转点
 _EXIT_APP_2:
