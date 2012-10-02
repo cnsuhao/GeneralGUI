@@ -1,6 +1,7 @@
 #include "../SoComponent/SoD3DDefine.h"
 #include "../SoComponent/SoTSingleton.h"
 #include "../SoComponent/SoUnicode.h"
+#include "../SoComponent/FastDelegate.h"
 using namespace SoComponent;
 
 #include "../GeneralGUI/GGUIInputDefine.h"

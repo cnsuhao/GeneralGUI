@@ -24,6 +24,7 @@ namespace GGUI
 	,m_eMyWindowType(WindowType_Base)
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyTextureID(Invalid_TextureID)
+	,m_nMyDelegateID(Invalid_DelegateID)
 	,m_bShouldUpdateUITexture(false)
 	,m_bVisible(true)
 	,m_bEnable(true)
@@ -192,6 +193,11 @@ namespace GGUI
 		return m_nMyTextureID;
 	}
 	//-----------------------------------------------------------------------------
+	DelegateID GGUIWindow::GetDelegateID() const
+	{
+		return m_nMyDelegateID;
+	}
+	//-----------------------------------------------------------------------------
 	bool GGUIWindow::GetVisible() const
 	{
 		return m_bVisible;
@@ -205,6 +211,7 @@ namespace GGUI
 	void GGUIWindow::OnMouseEnterWindowArea()
 	{
 		m_bMouseInWindowArea = true;
+		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyDelegateID, WindowEvent_MouseEnterWindowArea, 0, 0);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeaveWindowArea()
@@ -231,6 +238,18 @@ namespace GGUI
 		else
 		{
 			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来赋值WindowID！"), TEXT("GGUI Error"), MB_OK);
+		}
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetDelegateID(DelegateID theID)
+	{
+		if (GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
+		{
+			m_nMyDelegateID = theID;
+		}
+		else
+		{
+			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来赋值DelegateID！"), TEXT("GGUI Error"), MB_OK);
 		}
 	}
 	//-----------------------------------------------------------------------------

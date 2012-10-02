@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI Button¿Ø¼ş
+ï»¿//-----------------------------------------------------------------------------
+// GGUI Buttonæ§ä»¶
 // (C) oil
 // 2012-09-30
 //-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace GGUI
 			SoFloat fDestPosY = m_fPositionY;
 			SoFloat fDestWidth = m_fWidth;
 			SoFloat fDestHeight = m_fHeight;
-			//»ñÈ¡Í¼Æ¬Ô´ÎÄ¼şµÄ¿í¸ß¡£
+			//è·å–å›¾ç‰‡æºæ–‡ä»¶çš„å®½é«˜ã€‚
 			GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
 			if (pUITexture)
 			{
@@ -51,7 +51,7 @@ namespace GGUI
 				SoFloat fTextureHeightWidth = fTextureSourceHeight / fTextureSourceWidth;
 				if (fWindowHeightWidth > fTextureHeightWidth)
 				{
-					//¿í¶È²»±ä£¬¶Ô¸ß¶È½øĞĞµ÷Õû¡£
+					//å®½åº¦ä¸å˜ï¼Œå¯¹é«˜åº¦è¿›è¡Œè°ƒæ•´ã€‚
 					fDestHeight = m_fWidth * fTextureHeightWidth;
 					fDestPosY += (m_fHeight - fDestHeight) * 0.5f;
 				}
@@ -62,7 +62,7 @@ namespace GGUI
 				}
 				else
 				{
-					//Ê²Ã´¶¼²»×ö¡£
+					//ä»€ä¹ˆéƒ½ä¸åšã€‚
 				}
 			}
 			SoUInt32 uiColor = SoMakeColorRGBA(m_fColorR, m_fColorG, m_fColorB, m_fColorA);

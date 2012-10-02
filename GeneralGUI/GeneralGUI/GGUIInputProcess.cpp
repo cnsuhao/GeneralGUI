@@ -53,7 +53,7 @@ namespace GGUI
 			if (theOldWindowWhoContainMouse != Invalid_WindowID)
 			{
 				GGUIWindow* pOldWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theOldWindowWhoContainMouse);
-				if (pOldWindow && pOldWindow->CheckMouseInWindowArea(fNewPosX, fNewPosY))
+				if (pOldWindow && pOldWindow->GetVisible() && pOldWindow->CheckMouseInWindowArea(fNewPosX, fNewPosY))
 				{
 					theNewWindowWhoContainMouse = theOldWindowWhoContainMouse;
 				}
@@ -89,7 +89,7 @@ namespace GGUI
 		if (m_theWindowContainMouse != Invalid_WindowID)
 		{
 			GGUIWindow* pTheWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_theWindowContainMouse);
-			if (pTheWindow)
+			if (pTheWindow && pTheWindow->GetEnable())
 			{
 				pTheWindow->OnMouseLeftButtonClickDown();
 			}
@@ -103,7 +103,7 @@ namespace GGUI
 		if (m_theWindowContainMouse != Invalid_WindowID)
 		{
 			GGUIWindow* pTheWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_theWindowContainMouse);
-			if (pTheWindow)
+			if (pTheWindow && pTheWindow->GetEnable())
 			{
 				pTheWindow->OnMouseLeftButtonClickUp();
 			}
@@ -137,7 +137,7 @@ namespace GGUI
 		GGUIWindow* pWindow = NULL;
 		while (pWindowContainer->Next(nIndex, pWindow))
 		{
-			if (pWindow->CheckMouseInWindowArea(fMousePosX, fMousePosY))
+			if (pWindow->GetVisible() && pWindow->CheckMouseInWindowArea(fMousePosX, fMousePosY))
 			{
 				theResult = pWindow->GetWindowID();
 				break;

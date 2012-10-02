@@ -44,14 +44,17 @@ namespace GGUI
 		SoFloat GetAlpha() const;
 		WindowID GetWindowID() const;
 		TextureID GetTextureID() const;
+		DelegateID GetDelegateID() const;
 		bool GetVisible() const;
 		bool GetEnable() const;
 
 		//根据鼠标坐标和本窗口的矩形区域，判断鼠标是否落在本窗口内部。
+		//单纯的位置判断，不考虑窗口是否可见，是否被禁用等等。
 		bool CheckMouseInWindowArea(SoFloat fMousePosX, SoFloat fMousePosY) const;
 
 	protected:
-		//事件响应函数
+		//事件响应函数。在函数内部会执行用户注册的Delegate函数。
+		//派生类如果要重写这些函数的话，应该先执行自己的逻辑，再调用基类的事件响应函数。
 		virtual void OnMouseEnterWindowArea();
 		virtual void OnMouseLeaveWindowArea();
 		virtual void OnMouseLeftButtonClickDown();
@@ -59,6 +62,7 @@ namespace GGUI
 
 	protected:
 		void SetWindowID(WindowID theID);
+		void SetDelegateID(DelegateID theID);
 		//在绘制之前，对Mesh顶点信息做最终的更新。
 		void PostUpdateWindow();
 		//UITexture的操作
@@ -82,6 +86,8 @@ namespace GGUI
 		WindowID m_nMyWindowID;
 		//本窗口有一个UITexture对象，记录它的TextureID。
 		TextureID m_nMyTextureID;
+		//本窗口的Delegate事件响应函数的ID。
+		DelegateID m_nMyDelegateID;
 		//记录是否需要更新UITexture对象。
 		bool m_bShouldUpdateUITexture;
 		//记录窗口是否可见。

@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI´°¿ÚµÄÈİÆ÷Àà
+ï»¿//-----------------------------------------------------------------------------
+// GGUIçª—å£çš„å®¹å™¨ç±»
 // (C) oil
 // 2012-09-16
 //-----------------------------------------------------------------------------
@@ -12,10 +12,13 @@ namespace GGUI
 {
 	//-----------------------------------------------------------------------------
 	GGUIWindowManager::GGUIWindowManager()
-	:m_pWindowID2Object(0)
+	:m_pWindowID2Window(0)
 	,m_nCapacity(0)
 	,m_nIndexEnd(0)
 	,m_bOperationByWindowContainer(SoFalse)
+	,m_pDelegateID2Delegate(0)
+	,m_nDelegateCapacity(0)
+	,m_nDelegateIndexEnd(0)
 	{
 
 	}
@@ -27,9 +30,15 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIWindowManager::InitWindowManager()
 	{
-		m_nCapacity = 1000;
-		m_pWindowID2Object = new GGUIWindow*[m_nCapacity];
-		memset(m_pWindowID2Object, 0, sizeof(GGUIWindow*)*m_nCapacity);
+		//åˆå§‹åŒ–çª—å£æ•°ç»„ã€‚
+		m_nCapacity = 100;
+		m_pWindowID2Window = new GGUIWindow*[m_nCapacity];
+		memset(m_pWindowID2Window, 0, sizeof(GGUIWindow*)*m_nCapacity);
+		//åˆå§‹åŒ–Delegateæ•°ç»„ã€‚
+		m_nDelegateCapacity = 100;
+		m_pDelegateID2Delegate = new stWindowEventDelegate*[m_nDelegateCapacity];
+		memset(m_pDelegateID2Delegate, 0, sizeof(stWindowEventDelegate*)*m_nDelegateCapacity);
+
 		return true;
 	}
 	//-----------------------------------------------------------------------------
@@ -37,37 +46,47 @@ namespace GGUI
 	{
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
-			if (m_pWindowID2Object[i])
+			if (m_pWindowID2Window[i])
 			{
-				delete m_pWindowID2Object[i];
-				m_pWindowID2Object[i] = 0;
+				delete m_pWindowID2Window[i];
+				m_pWindowID2Window[i] = 0;
 			}
 		}
-		delete [] m_pWindowID2Object;
-		m_pWindowID2Object = 0;
+		delete [] m_pWindowID2Window;
+		m_pWindowID2Window = 0;
+		//
+		for (SoInt i=0; i<m_nDelegateIndexEnd; ++i)
+		{
+			if (m_pDelegateID2Delegate[i])
+			{
+				delete m_pDelegateID2Delegate[i];
+				m_pDelegateID2Delegate[i] = 0;
+			}
+		}
+		delete [] m_pDelegateID2Delegate;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::UpdateWindowManager(SoFloat fFrameTime)
 	{
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
-			if (m_pWindowID2Object[i])
+			if (m_pWindowID2Window[i])
 			{
-				m_pWindowID2Object[i]->UpdateWindow(fFrameTime);
+				m_pWindowID2Window[i]->UpdateWindow(fFrameTime);
 			}
 		}
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::RenderWindowManager()
 	{
-		//»æÖÆÖ®Ç°£¬¶ÔÃ¿¸ö´°¿ÚµÄMesh¶¥µã×ö×îºóµÄ¸üĞÂ¡£
+		//ç»˜åˆ¶ä¹‹å‰ï¼Œå¯¹æ¯ä¸ªçª—å£çš„Meshé¡¶ç‚¹åšæœ€åçš„æ›´æ–°ã€‚
 		PostUpdateWindowManager();
 		//
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
-			if (m_pWindowID2Object[i])
+			if (m_pWindowID2Window[i])
 			{
-				m_pWindowID2Object[i]->RenderWindow();
+				m_pWindowID2Window[i]->RenderWindow();
 			}
 		}
 	}
@@ -76,15 +95,15 @@ namespace GGUI
 	{
 		if (m_nIndexEnd >= m_nCapacity)
 		{
-			//m_pWindowID2ObjectÈİÆ÷¿Õ¼ä²»¹»ÁË£¬Ôò°ÑÈİÆ÷¿Õ¼äÀ©´óµ½Ô­À´µÄ2±¶¡£
+			//m_pWindowID2Objectå®¹å™¨ç©ºé—´ä¸å¤Ÿäº†ï¼Œåˆ™æŠŠå®¹å™¨ç©ºé—´æ‰©å¤§åˆ°åŸæ¥çš„2å€ã€‚
 			SoUInt sizeOfOldArray = sizeof(GGUIWindow*) * m_nCapacity;
 			m_nCapacity *= 2;
 			GGUIWindow** pNewArray = new GGUIWindow*[m_nCapacity];
 			SoUInt sizeOfNewArray = sizeof(GGUIWindow*) * m_nCapacity;
 			memset(pNewArray, 0, sizeOfNewArray);
-			memcpy_s(pNewArray, sizeOfNewArray, m_pWindowID2Object, sizeOfOldArray);
-			delete [] m_pWindowID2Object;
-			m_pWindowID2Object = pNewArray;
+			memcpy_s(pNewArray, sizeOfNewArray, m_pWindowID2Window, sizeOfOldArray);
+			delete [] m_pWindowID2Window;
+			m_pWindowID2Window = pNewArray;
 		}
 		m_bOperationByWindowContainer = SoTrue;
 		GGUIWindow* pNewWindow = NULL;
@@ -101,8 +120,8 @@ namespace GGUI
 		}
 		if (pNewWindow)
 		{
-			m_pWindowID2Object[m_nIndexEnd] = pNewWindow;
-			m_pWindowID2Object[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
+			m_pWindowID2Window[m_nIndexEnd] = pNewWindow;
+			m_pWindowID2Window[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
 			++m_nIndexEnd;
 		}
 		m_bOperationByWindowContainer = SoFalse;
@@ -113,11 +132,11 @@ namespace GGUI
 	{
 		if (theWindowID >= 0 && theWindowID < m_nIndexEnd)
 		{
-			if (m_pWindowID2Object[theWindowID])
+			if (m_pWindowID2Window[theWindowID])
 			{
 				m_bOperationByWindowContainer = SoTrue;
-				delete m_pWindowID2Object[theWindowID];
-				m_pWindowID2Object[theWindowID] = 0;
+				delete m_pWindowID2Window[theWindowID];
+				m_pWindowID2Window[theWindowID] = 0;
 				m_bOperationByWindowContainer = SoFalse;
 			}
 		}
@@ -127,13 +146,35 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
+	stWindowEventDelegate* GGUIWindowManager::GetWindowEventDelegate(WindowID theWindowID)
+	{
+		stWindowEventDelegate* pDelegate = NULL;
+		GGUIWindow* pTheWindow = GetUIWindow(theWindowID);
+		if (pTheWindow)
+		{
+			DelegateID theDelegateID = pTheWindow->GetDelegateID();
+			if (theDelegateID == Invalid_DelegateID)
+			{
+				theDelegateID = CreateDelegate();
+				m_bOperationByWindowContainer = SoTrue;
+				pTheWindow->SetDelegateID(theDelegateID);
+				m_bOperationByWindowContainer = SoFalse;
+			}
+			if (theDelegateID >= 0 && theDelegateID < m_nDelegateIndexEnd)
+			{
+				pDelegate = m_pDelegateID2Delegate[theDelegateID];
+			}
+		}
+		return pDelegate;
+	}
+	//-----------------------------------------------------------------------------
 	bool GGUIWindowManager::Next(SoInt& nIndex, GGUIWindow*& pWindow)
 	{
 		if (nIndex >= 0 && nIndex < m_nIndexEnd)
 		{
-			if (m_pWindowID2Object[nIndex])
+			if (m_pWindowID2Window[nIndex])
 			{
-				pWindow = m_pWindowID2Object[nIndex];
+				pWindow = m_pWindowID2Window[nIndex];
 				++nIndex;
 				return true;
 			}
@@ -154,11 +195,31 @@ namespace GGUI
 	{
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
-			if (m_pWindowID2Object[i])
+			if (m_pWindowID2Window[i])
 			{
-				m_pWindowID2Object[i]->PostUpdateWindow();
+				m_pWindowID2Window[i]->PostUpdateWindow();
 			}
 		}
+	}
+	//-----------------------------------------------------------------------------
+	DelegateID GGUIWindowManager::CreateDelegate()
+	{
+		if (m_nDelegateIndexEnd >= m_nDelegateCapacity)
+		{
+			//m_pDelegateID2Delegateå®¹å™¨ç©ºé—´ä¸å¤Ÿäº†ï¼Œåˆ™æŠŠå®¹å™¨ç©ºé—´æ‰©å¤§åˆ°åŸæ¥çš„2å€ã€‚
+			SoUInt sizeOfOldArray = sizeof(stWindowEventDelegate*) * m_nDelegateCapacity;
+			m_nDelegateCapacity *= 2;
+			stWindowEventDelegate** pNewArray = new stWindowEventDelegate*[m_nDelegateCapacity];
+			SoUInt sizeOfNewArray = sizeof(stWindowEventDelegate*) * m_nDelegateCapacity;
+			memset(pNewArray, 0, sizeOfNewArray);
+			memcpy_s(pNewArray, sizeOfNewArray, m_pDelegateID2Delegate, sizeOfOldArray);
+			delete [] m_pDelegateID2Delegate;
+			m_pDelegateID2Delegate = pNewArray;
+		}
+		//
+		m_pDelegateID2Delegate[m_nDelegateIndexEnd] = new stWindowEventDelegate;
+		++m_nDelegateIndexEnd;
+		return (m_nDelegateIndexEnd-1);
 	}
 }
 //-----------------------------------------------------------------------------

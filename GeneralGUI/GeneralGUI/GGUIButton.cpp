@@ -87,7 +87,6 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIButton::OnMouseEnterWindowArea()
 	{
-		__super::OnMouseEnterWindowArea();
 		if (m_bEnable)
 		{
 			if (m_eButtonState != ButtonState_Hover)
@@ -96,11 +95,11 @@ namespace GGUI
 				m_bShouldUpdateUITexture = true;
 			}
 		}
+		__super::OnMouseEnterWindowArea();
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIButton::OnMouseLeaveWindowArea()
 	{
-		__super::OnMouseLeaveWindowArea();
 		if (m_bEnable)
 		{
 			if (m_eButtonState != ButtonState_Normal)
@@ -109,11 +108,11 @@ namespace GGUI
 				m_bShouldUpdateUITexture = true;
 			}
 		}
+		__super::OnMouseLeaveWindowArea();
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIButton::OnMouseLeftButtonClickDown()
 	{
-		__super::OnMouseLeftButtonClickDown();
 		if (m_bEnable)
 		{
 			if (m_eButtonState != ButtonState_PushDown)
@@ -122,11 +121,11 @@ namespace GGUI
 				m_bShouldUpdateUITexture = true;
 			}
 		}
+		__super::OnMouseLeftButtonClickDown();
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIButton::OnMouseLeftButtonClickUp()
 	{
-		__super::OnMouseLeftButtonClickUp();
 		if (m_bEnable)
 		{
 			if (m_bMouseInWindowArea)
@@ -146,6 +145,7 @@ namespace GGUI
 				}
 			}
 		}
+		__super::OnMouseLeftButtonClickUp();
 	}
 }
 //-----------------------------------------------------------------------------

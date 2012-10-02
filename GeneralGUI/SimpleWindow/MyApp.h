@@ -23,6 +23,7 @@ public:
 
 protected:
 	virtual LRESULT MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void OnMouseClick(SoUInt uiParamA, SoUInt uiParamB);
 
 protected:
 	void CreateUIWindowA();

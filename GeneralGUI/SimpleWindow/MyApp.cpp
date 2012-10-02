@@ -96,6 +96,12 @@ LRESULT MyApp::MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //-----------------------------------------------------------------------------
+void MyApp::OnMouseClick(SoUInt uiParamA, SoUInt uiParamB)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 void MyApp::CreateUIWindowA()
 {
 	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Button);
@@ -109,6 +115,8 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
 	//m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
+
+	RegisterWindowEventB(m_pUIWindow->GetWindowID(), WindowEvent_MouseEnterWindowArea, this, &MyApp::OnMouseClick);
 }
 //-----------------------------------------------------------------------------
 void MyApp::ReleaseUIWindowA()
