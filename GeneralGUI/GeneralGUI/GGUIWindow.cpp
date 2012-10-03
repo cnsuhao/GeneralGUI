@@ -211,22 +211,23 @@ namespace GGUI
 	void GGUIWindow::OnMouseEnterWindowArea()
 	{
 		m_bMouseInWindowArea = true;
-		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyDelegateID, WindowEvent_MouseEnterWindowArea, 0, 0);
+		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseEnterWindowArea, 0);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeaveWindowArea()
 	{
 		m_bMouseInWindowArea = false;
+		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseLeaveWindowArea, 0);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeftButtonClickDown()
 	{
-
+		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseLeftButtonClickDown, 0);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeftButtonClickUp()
 	{
-
+		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseLeftButtonClickUp, 0);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWindowID(WindowID theID)

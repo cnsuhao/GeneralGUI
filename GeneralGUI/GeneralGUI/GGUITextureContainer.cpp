@@ -40,6 +40,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUITextureContainer::ReleaseTextureContainer()
 	{
+		m_bOperationByTextureContainer = SoTrue;
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
 			if (m_pTextureID2Object[i])
@@ -48,6 +49,7 @@ namespace GGUI
 				m_pTextureID2Object[i] = 0;
 			}
 		}
+		m_bOperationByTextureContainer = SoFalse;
 		delete [] m_pTextureID2Object;
 		m_pTextureID2Object = 0;
 		//

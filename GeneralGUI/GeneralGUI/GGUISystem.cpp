@@ -30,14 +30,14 @@ namespace GGUI
 		GGUIScreenParam::ms_fScreenWidth = fScreenWidth;
 		GGUIScreenParam::ms_fScreenHeight = fScreenHeight;
 		//
-		GGUIWindowManager::CreateInstance();
-		if (!GGUIWindowManager::GetInstance()->InitWindowManager())
+		GGUITextureContainer::CreateInstance();
+		if (!GGUITextureContainer::GetInstance()->InitTextureContainer())
 		{
 			return false;
 		}
 		//
-		GGUITextureContainer::CreateInstance();
-		if (!GGUITextureContainer::GetInstance()->InitTextureContainer())
+		GGUIWindowManager::CreateInstance();
+		if (!GGUIWindowManager::GetInstance()->InitWindowManager())
 		{
 			return false;
 		}
@@ -54,8 +54,8 @@ namespace GGUI
 	void GGUISystem::ReleaseUISystem()
 	{
 		GGUIInputProcess::ReleaseInstance();
-		GGUITextureContainer::ReleaseInstance();
 		GGUIWindowManager::ReleaseInstance();
+		GGUITextureContainer::ReleaseInstance();
 		m_pD3DDevice = 0;
 	}
 	//-----------------------------------------------------------------------------

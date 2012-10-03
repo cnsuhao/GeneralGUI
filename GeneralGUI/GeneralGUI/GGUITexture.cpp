@@ -20,7 +20,6 @@ namespace GGUI
 	,m_nWidth(0)
 	,m_nHeight(0)
 	,m_eThePool(D3DPOOL_DEFAULT)
-	,m_bAlphaExist(false)
 	{
 		if (!GGUITextureContainer::GetInstance()->IsOperationByTextureContainer())
 		{
@@ -220,7 +219,7 @@ namespace GGUI
 	{
 		m_nWidth = 0;
 		m_nHeight = 0;
-		m_bAlphaExist = false;
+		m_eThePool = D3DPOOL_DEFAULT;
 		if (m_pTexture)
 		{
 			D3DSURFACE_DESC stDesc;
@@ -229,12 +228,6 @@ namespace GGUI
 				m_nWidth = (SoInt)stDesc.Width;
 				m_nHeight = (SoInt)stDesc.Height;
 				m_eThePool = stDesc.Pool;
-				if (stDesc.Format == D3DFMT_A8R8G8B8 || stDesc.Format == D3DFMT_A1R5G5B5
-					|| stDesc.Format == D3DFMT_A4R4G4B4 || stDesc.Format == D3DFMT_A2B10G10R10
-					|| stDesc.Format == D3DFMT_A8B8G8R8)
-				{
-					m_bAlphaExist = true;
-				}
 			}
 		}
 	}

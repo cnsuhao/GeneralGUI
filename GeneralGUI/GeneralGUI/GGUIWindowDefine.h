@@ -48,11 +48,11 @@ namespace GGUI
 	};
 
 	//窗口事件的delegate函数。
-	typedef fastdelegate::FastDelegate2<SoUInt, SoUInt> DelegateForWindowEvent;
+	typedef fastdelegate::FastDelegate2<WindowID, SoUInt> DelegateForWindowEvent;
 	//
 	struct stWindowEventDelegate
 	{
-		DelegateForWindowEvent theFunction[WindowEvent_MouseLeftButtonClickUp];
+		DelegateForWindowEvent theFunction[WindowEvent_Max];
 	};
 }
 //-----------------------------------------------------------------------------

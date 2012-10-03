@@ -12,6 +12,9 @@ SoD3DApp* SoD3DApp::CreateInstance(void)
 MyApp::MyApp(void)
 :SoD3DApp()
 ,m_pUIWindow(NULL)
+,m_eTransformState(Transform_None)
+,m_nTransformWindowID(Invalid_WindowID)
+,m_fAccTimeForTransform(0.0f)
 {
 
 }
@@ -38,7 +41,8 @@ bool MyApp::InitResource(void)
 	GGUISystem::CreateInstance();
 	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), (SoFloat)m_lClientW, (SoFloat)m_lClientH);
 	//
-	CreateUIWindowA();
+	//CreateUIWindowA();
+	CreateWindowList();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	return true;
 }
@@ -47,7 +51,8 @@ bool MyApp::InitResource(void)
 void MyApp::ClearResource(void)
 {
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	ReleaseUIWindowA();
+	ReleaseWindowList();
+	//ReleaseUIWindowA();
 	//释放GGUI系统
 	GGUISystem::ReleaseInstance();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -56,6 +61,77 @@ void MyApp::ClearResource(void)
 //-----------------------------------------------------------------------------
 void MyApp::Update(float fAccTime, float fFrameTime)
 {
+	if (m_eTransformState != Transform_None)
+	{
+		m_fAccTimeForTransform += fFrameTime;
+		if (m_fAccTimeForTransform >= TransformTime)
+		{
+			if (m_eTransformState == Transform_Large)
+			{
+				ForceLarge(m_nTransformWindowID);
+				m_eTransformState = Transform_WaitForRestore;
+			}
+			else if (m_eTransformState == Transform_Restore)
+			{
+				ForceRestore(m_nTransformWindowID);
+				m_eTransformState = Transform_None;
+			}
+			m_nTransformWindowID = Invalid_WindowID;
+			m_fAccTimeForTransform = 0.0f;
+		}
+		else
+		{
+			float fDestPosLeft = 0.0f;
+			float fDestPosRight = 0.0f;
+			float fDestPosUp = 0.0f;
+			float fDestPosDown = 0.0f;
+			float fRemainTime = TransformTime - (m_fAccTimeForTransform-fFrameTime);
+			//
+			if (m_eTransformState == Transform_Large)
+			{
+				fDestPosLeft = 0.0f;
+				fDestPosRight = (float)m_lClientW;
+				fDestPosUp = 0.0f;
+				fDestPosDown = (float)m_lClientH;
+			}
+			else if (m_eTransformState == Transform_Restore)
+			{
+				int x = m_nTransformWindowID % PictureCountX;
+				int y = m_nTransformWindowID / PictureCountY;
+				fDestPosLeft = MarginX + x*(MarginX+PictureWindowWidth);
+				fDestPosRight = fDestPosLeft + PictureWindowWidth;
+				fDestPosUp = MarginY + y*(MarginY+PictureWindowHeight);
+				fDestPosDown = fDestPosUp + PictureWindowHeight;
+			}
+			//
+			GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_nTransformWindowID);
+			if (pWindow)
+			{
+				float fCurrentPosLeft = pWindow->GetPositionX();
+				float fCurrentPosRight = fCurrentPosLeft + pWindow->GetWidth();
+				float fCurrentPosUp = pWindow->GetPositionY();
+				float fCurrentPosDown = fCurrentPosUp + pWindow->GetHeight();
+				//求出矩形的四个顶点的移动速度，包含方向。
+				//值为正表示Transform_Large，值为负表示Transform_Restore。
+				float fSpeedLeft = (fDestPosLeft - fCurrentPosLeft) / fRemainTime;
+				float fSpeedRight = (fDestPosRight - fCurrentPosRight) / fRemainTime;
+				float fSpeedUp = (fDestPosUp - fCurrentPosUp) / fRemainTime;
+				float fSpeedDown = (fDestPosDown - fCurrentPosDown) / fRemainTime;
+				//
+				float fNewPosLeft = fCurrentPosLeft + fSpeedLeft * fFrameTime;
+				float fNewPosRight = fCurrentPosRight + fSpeedRight * fFrameTime;
+				float fNewPosUp = fCurrentPosUp + fSpeedUp * fFrameTime;
+				float fNewPosDown = fCurrentPosDown + fSpeedDown * fFrameTime;
+				//
+				pWindow->SetPositionX(fNewPosLeft);
+				pWindow->SetPositionY(fNewPosUp);
+				pWindow->SetWidth(fNewPosRight - fNewPosLeft);
+				pWindow->SetHeight(fNewPosDown - fNewPosUp);
+				pWindow->SetPositionZ(0.3f);
+			}
+		}
+	}
+
 	GGUISystem::GetInstance()->UpdateGGUI(fFrameTime);
 }
 
@@ -96,15 +172,64 @@ LRESULT MyApp::MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //-----------------------------------------------------------------------------
-void MyApp::OnMouseClick(SoUInt uiParamA, SoUInt uiParamB)
+void MyApp::OnMouseClick(WindowID theWindowID, SoUInt uiParam)
 {
 
 }
-
+//-----------------------------------------------------------------------------
+void MyApp::OnMouseClickWindowList(WindowID theWindowID, SoUInt uiParam)
+{
+	if (m_eTransformState == Transform_None)
+	{
+		m_eTransformState = Transform_Large;
+		m_nTransformWindowID = theWindowID;
+		m_fAccTimeForTransform = 0.0f;
+	}
+	else if (m_eTransformState == Transform_Large)
+	{
+		if (m_nTransformWindowID == theWindowID)
+		{
+			m_eTransformState = Transform_Restore;
+			m_nTransformWindowID = theWindowID;
+			m_fAccTimeForTransform = TransformTime - m_fAccTimeForTransform;
+		}
+		else
+		{
+			//立即恢复原状
+			ForceRestore(m_nTransformWindowID);
+			m_eTransformState = Transform_Large;
+			m_nTransformWindowID = theWindowID;
+			m_fAccTimeForTransform = 0.0f;
+		}
+	}
+	else if (m_eTransformState == Transform_WaitForRestore)
+	{
+		m_eTransformState = Transform_Restore;
+		m_nTransformWindowID = theWindowID;
+		m_fAccTimeForTransform = 0.0f;
+	}
+	else if (m_eTransformState == Transform_Restore)
+	{
+		if (m_nTransformWindowID == theWindowID)
+		{
+			m_eTransformState = Transform_Large;
+			m_nTransformWindowID = theWindowID;
+			m_fAccTimeForTransform = TransformTime - m_fAccTimeForTransform;
+		}
+		else
+		{
+			//立即恢复原状
+			ForceRestore(m_nTransformWindowID);
+			m_eTransformState = Transform_Large;
+			m_nTransformWindowID = theWindowID;
+			m_fAccTimeForTransform = 0.0f;
+		}
+	}
+}
 //-----------------------------------------------------------------------------
 void MyApp::CreateUIWindowA()
 {
-	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Button);
+	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Picture);
 	m_pUIWindow->SetPositionX(10.0f);
 	m_pUIWindow->SetPositionY(10.0f);
 	m_pUIWindow->SetPositionZ(0.5f);
@@ -121,7 +246,75 @@ void MyApp::CreateUIWindowA()
 //-----------------------------------------------------------------------------
 void MyApp::ReleaseUIWindowA()
 {
-	GGUIWindowManager::GetInstance()->ReleaseUIWindow(m_pUIWindow->GetWindowID());
+	if (m_pUIWindow)
+	{
+		GGUIWindowManager::GetInstance()->ReleaseUIWindow(m_pUIWindow->GetWindowID());
+	}
+}
+//-----------------------------------------------------------------------------
+void MyApp::CreateWindowList()
+{
+	tchar szBuff[56] = {0};
+	//
+	for (int y=0; y<PictureCountY; ++y)
+	{
+		for (int x=0; x<PictureCountX; ++x)
+		{
+			GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Picture);
+			pWindow->SetPositionX(MarginX + x*(MarginX+PictureWindowWidth));
+			pWindow->SetPositionY(MarginY + y*(MarginY+PictureWindowHeight));
+			pWindow->SetPositionZ(0.5f);
+			pWindow->SetWidth(PictureWindowWidth);
+			pWindow->SetHeight(PictureWindowHeight);
+			pWindow->SetColor(1.0f, 1.0f, 1.0f);
+			pWindow->SetAlpha(1.0f);
+			SoPrintf(szBuff, sizeof(szBuff), TEXT("%d.bmp"), y*PictureCountX+x);
+			pWindow->SetImageByFileName(szBuff);
+			RegisterWindowEventB(pWindow->GetWindowID(), WindowEvent_MouseLeftButtonClickDown, this, &MyApp::OnMouseClickWindowList);
+			m_theWindowList.push_back(pWindow->GetWindowID());
+		}
+	}
+}
+//-----------------------------------------------------------------------------
+void MyApp::ReleaseWindowList()
+{
+
+}
+//-----------------------------------------------------------------------------
+void MyApp::ForceRestore(WindowID theWindowID)
+{
+	GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theWindowID);
+	if (pWindow == NULL)
+	{
+		return;
+	}
+	//
+	int x = theWindowID % PictureCountX;
+	int y = theWindowID / PictureCountY;
+	pWindow->SetPositionX(MarginX + x*(MarginX+PictureWindowWidth));
+	pWindow->SetPositionY(MarginY + y*(MarginY+PictureWindowHeight));
+	pWindow->SetPositionZ(0.5f);
+	pWindow->SetWidth(PictureWindowWidth);
+	pWindow->SetHeight(PictureWindowHeight);
+	pWindow->SetColor(1.0f, 1.0f, 1.0f);
+	pWindow->SetAlpha(1.0f);
+}
+//-----------------------------------------------------------------------------
+void MyApp::ForceLarge(WindowID theWindowID)
+{
+	GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theWindowID);
+	if (pWindow == NULL)
+	{
+		return;
+	}
+	//
+	pWindow->SetPositionX(0.0f);
+	pWindow->SetPositionY(0.0f);
+	pWindow->SetPositionZ(0.3f);
+	pWindow->SetWidth((float)m_lClientW);
+	pWindow->SetHeight((float)m_lClientH);
+	pWindow->SetColor(1.0f, 1.0f, 1.0f);
+	pWindow->SetAlpha(1.0f);
 }
 //-----------------------------------------------------------------------------
 //  MyApp.cpp

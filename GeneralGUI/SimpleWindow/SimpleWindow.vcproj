@@ -98,11 +98,12 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="../Output/SimpleWindow/Release"
+			IntermediateDirectory="../Output/SimpleWindow/Release"
 			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
+			BuildLogFile="../Output/SimpleWindow/Release/BuildLog.htm"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -123,7 +124,8 @@
 				Name="VCCLCompilerTool"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="1"
+				PrecompiledHeaderFile="../Output/SimpleWindow/Release/SimpleWindow.pch"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -139,8 +141,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="d3d9.lib d3dx9.lib"
+				OutputFile="../Output/SimpleWindow/Release/SimpleWindow.exe"
 				LinkIncremental="1"
+				ManifestFile="../Output/SimpleWindow/Release/SimpleWindow.intermediate.manifest"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="../Output/SimpleWindow/Release/SimpleWindow.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -201,6 +207,14 @@
 			<File
 				RelativePath=".\SoEngine.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\SoEngine.h"
@@ -209,10 +223,26 @@
 			<File
 				RelativePath=".\SoMain.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\StdAfx.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\StdAfx.h"
@@ -225,6 +255,14 @@
 			<File
 				RelativePath=".\MyApp.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="2"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\MyApp.h"

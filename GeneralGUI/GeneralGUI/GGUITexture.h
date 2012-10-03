@@ -72,8 +72,7 @@ namespace GGUI
 		SoInt m_nHeight;
 		//记录Texture使用的内存类型。
 		D3DPOOL m_eThePool;
-		//记录Texture中是否有Alpha信息。
-		bool m_bAlphaExist;
+
 	};
 	//-----------------------------------------------------------------------------
 	inline TextureID GGUITexture::GetTextureID()

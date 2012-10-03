@@ -52,8 +52,10 @@ namespace GGUI
 		GGUIWindow* GetUIWindow(WindowID theWindowID);
 		bool IsOperationByWindowContainer();
 
+		//根据WindowID获取这个窗口所对应的Delegate结构体。
+		//如果这个窗口没有对应的Delegate，则为其申请一个。
 		stWindowEventDelegate* GetWindowEventDelegate(WindowID theWindowID);
-		void RaiseWindowEvent(DelegateID theDelegateID, eWindowEvent theEvent, SoUInt uiParamA, SoUInt uiParamB);
+		void RaiseWindowEvent(WindowID theWindowID, DelegateID theDelegateID, eWindowEvent theEvent, SoUInt uiParam);
 
 		//如果nIndex索引号的元素为有效值，则返回该元素；
 		//如果是无效值，则使nIndex自增，当找到有效元素时，返回该元素和nIndex；
@@ -122,13 +124,17 @@ namespace GGUI
 		return (m_bOperationByWindowContainer == SoTrue);
 	}
 	//-----------------------------------------------------------------------------
-	inline void GGUIWindowManager::RaiseWindowEvent(DelegateID theDelegateID, eWindowEvent theEvent, SoUInt uiParamA, SoUInt uiParamB)
+	inline void GGUIWindowManager::RaiseWindowEvent(WindowID theWindowID, DelegateID theDelegateID, eWindowEvent theEvent, SoUInt uiParam)
 	{
 		if (theDelegateID >= 0 && theDelegateID < m_nDelegateIndexEnd)
 		{
 			if (theEvent >= 0 && theEvent < WindowEvent_Max)
 			{
-				m_pDelegateID2Delegate[theDelegateID]->theFunction[theEvent](uiParamA, uiParamB);
+				DelegateForWindowEvent& theDelegate = m_pDelegateID2Delegate[theDelegateID]->theFunction[theEvent];
+				if (!theDelegate.empty())
+				{
+					theDelegate(theWindowID, uiParam);
+				}
 			}
 		}
 	}

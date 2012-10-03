@@ -7,6 +7,7 @@
 #include "GGUIWindowManager.h"
 #include "GGUIWindow.h"
 #include "GGUIButton.h"
+#include "GGUIPicture.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -44,6 +45,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::ReleaseWindowManager()
 	{
+		m_bOperationByWindowContainer = SoTrue;
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
 			if (m_pWindowID2Window[i])
@@ -52,9 +54,11 @@ namespace GGUI
 				m_pWindowID2Window[i] = 0;
 			}
 		}
+		m_bOperationByWindowContainer = SoFalse;
 		delete [] m_pWindowID2Window;
 		m_pWindowID2Window = 0;
 		//
+		m_bOperationByWindowContainer = SoTrue;
 		for (SoInt i=0; i<m_nDelegateIndexEnd; ++i)
 		{
 			if (m_pDelegateID2Delegate[i])
@@ -63,6 +67,7 @@ namespace GGUI
 				m_pDelegateID2Delegate[i] = 0;
 			}
 		}
+		m_bOperationByWindowContainer = SoFalse;
 		delete [] m_pDelegateID2Delegate;
 	}
 	//-----------------------------------------------------------------------------
@@ -114,6 +119,9 @@ namespace GGUI
 			break;
 		case WindowType_Button:
 			pNewWindow = new GGUIButton;
+			break;
+		case WindowType_Picture:
+			pNewWindow = new GGUIPicture;
 			break;
 		default:
 			break;

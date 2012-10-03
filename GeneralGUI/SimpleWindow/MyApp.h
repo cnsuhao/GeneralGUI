@@ -6,6 +6,15 @@
 #pragma once
 //-----------------------------------------------------------------------------
 #include "SoD3DApp.h"
+#include <vector>
+//-----------------------------------------------------------------------------
+#define PictureCountX 4
+#define PictureCountY 4
+#define PictureWindowWidth 160
+#define PictureWindowHeight 120
+#define MarginX 32
+#define MarginY 24
+#define TransformTime 0.5f
 //-----------------------------------------------------------------------------
 class MyApp : public SoD3DApp
 {
@@ -23,13 +32,32 @@ public:
 
 protected:
 	virtual LRESULT MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam);
-	void OnMouseClick(SoUInt uiParamA, SoUInt uiParamB);
+	void OnMouseClick(WindowID theWindowID, SoUInt uiParam);
+	void OnMouseClickWindowList(WindowID theWindowID, SoUInt uiParam);
 
 protected:
 	void CreateUIWindowA();
 	void ReleaseUIWindowA();
+	void CreateWindowList();
+	void ReleaseWindowList();
+	//
+	void ForceRestore(WindowID theWindowID);
+	void ForceLarge(WindowID theWindowID);
+
 
 private:
+	enum eTransformState
+	{
+		Transform_None,
+		Transform_Large,
+		Transform_WaitForRestore,
+		Transform_Restore,
+	};
+private:
 	GGUIWindow* m_pUIWindow;
-
+	std::vector<WindowID> m_theWindowList;
+	eTransformState m_eTransformState;
+	WindowID m_nTransformWindowID;
+	float m_fAccTimeForTransform;
 };
+

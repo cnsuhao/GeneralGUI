@@ -16,6 +16,7 @@
 //-----------------------------------------------------------------------------
 #include <tchar.h> //包含C运行期库的同时处理ANSI与Unicode字符集的头文件
 #include <iostream> //使用STL中的string
+#include <strsafe.h> //包含StringCbPrintfA等函数
 //-----------------------------------------------------------------------------
 namespace SoComponent
 {
@@ -30,8 +31,10 @@ namespace SoComponent
 
 #if defined(_UNICODE) || defined(UNICODE)
 	#define tstrlen wcslen
+	#define SoPrintf StringCbPrintfW
 #else
 	#define tstrlen strlen
+	#define SoPrintf StringCbPrintfA
 #endif
 
 } //namespace SoComponent
