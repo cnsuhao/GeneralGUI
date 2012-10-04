@@ -27,6 +27,7 @@ namespace GGUI
 
 		//
 		TextureID GetTextureID();
+		IDirect3DTexture9* GetDXTexture();
 		//获取图片源文件的宽高。
 		SoInt GetSourceWidth();
 		SoInt GetSourceHeight();
@@ -78,6 +79,11 @@ namespace GGUI
 	inline TextureID GGUITexture::GetTextureID()
 	{
 		return m_nTextureID;
+	}
+	//-----------------------------------------------------------------------------
+	inline IDirect3DTexture9* GGUITexture::GetDXTexture()
+	{
+		return m_pTexture;
 	}
 	//-----------------------------------------------------------------------------
 	inline SoInt GGUITexture::GetSourceWidth()

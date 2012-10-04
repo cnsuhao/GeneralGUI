@@ -1,7 +1,7 @@
 #include "../SoComponent/SoD3DDefine.h"
 #include "../SoComponent/SoTSingleton.h"
 #include "../SoComponent/SoUnicode.h"
-#include "../SoComponent/FastDelegate.h"
+#include "../ThirdParty/FastDelegate/FastDelegate.h"
 using namespace SoComponent;
 
 #include "../GeneralGUI/GGUIInputDefine.h"
@@ -12,6 +12,7 @@ using namespace SoComponent;
 #include "../GeneralGUI/GGUIWindowManager.h"
 #include "../GeneralGUI/GGUITexture.h"
 #include "../GeneralGUI/GGUITextureContainer.h"
+#include "../GeneralGUI/GGUIFontManager.h"
 using namespace GGUI;
 
 #include "SoDefines.h"

@@ -201,11 +201,11 @@
 			Name="FastDelegate"
 			>
 			<File
-				RelativePath=".\FastDelegate.h"
+				RelativePath="..\ThirdParty\FastDelegate\FastDelegate.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FastDelegateBind.h"
+				RelativePath="..\ThirdParty\FastDelegate\FastDelegateBind.h"
 				>
 			</File>
 		</Filter>

@@ -8,6 +8,10 @@
 #include "GGUIWindowManager.h"
 #include "GGUITexture.h"
 #include "GGUITextureContainer.h"
+//<<<<<<<<<<<
+#include "GGUIFontManager.h"
+#include "GGUIFreeTypeFont.h"
+//>>>>>>>>>>>
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -222,6 +226,19 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeftButtonClickDown()
 	{
+		//<<<<<<<<<<<
+		GGUIFreeTypeFont* pFont = GGUIFontManager::GetInstance()->GetFont(0);
+		if (pFont)
+		{
+			GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
+			if (pUITexture)
+			{
+				pFont->SetDrawParam(pUITexture->GetDXTexture(), 1.0f, 0.0f, 0.0f, true, 0.0f, 0.0f, 0.0f);
+				pFont->DrawString(TEXT("oil真棒！"), 6, 0, 0, 0, 0);
+			}
+		}
+		//>>>>>>>>>>>
+
 		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseLeftButtonClickDown, 0);
 	}
 	//-----------------------------------------------------------------------------

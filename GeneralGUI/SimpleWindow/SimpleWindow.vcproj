@@ -62,9 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="d3d9.lib d3dx9.lib"
+				AdditionalDependencies="d3d9.lib d3dx9.lib freetype249_D.lib"
 				OutputFile="../Output/SimpleWindow/Debug/SimpleWindow.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\ThirdParty\FreeType\lib_debug"
 				ManifestFile="../Output/SimpleWindow/Debug/SimpleWindow.intermediate.manifest"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="../Output/SimpleWindow/Debug/SimpleWindow.pdb"

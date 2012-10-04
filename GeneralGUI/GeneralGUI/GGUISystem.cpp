@@ -9,6 +9,7 @@
 #include "GGUITextureContainer.h"
 #include "GGUIInputProcess.h"
 #include "GGUIScreenParam.h"
+#include "GGUIFontManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -48,11 +49,14 @@ namespace GGUI
 			return false;
 		}
 		//
+		GGUIFontManager::CreateInstance();
+		//
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUISystem::ReleaseUISystem()
 	{
+		GGUIFontManager::ReleaseInstance();
 		GGUIInputProcess::ReleaseInstance();
 		GGUIWindowManager::ReleaseInstance();
 		GGUITextureContainer::ReleaseInstance();

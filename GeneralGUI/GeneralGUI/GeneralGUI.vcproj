@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\ThirdParty\FreeType\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -169,6 +170,22 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIFontManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIFontManager.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIFreeTypeFont.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIFreeTypeFont.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIInputDefine.h"
 			>
 		</File>
@@ -250,6 +267,14 @@
 		</File>
 		<File
 			RelativePath=".\GGUISystem.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUITextTexture.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUITextTexture.h"
 			>
 		</File>
 		<File

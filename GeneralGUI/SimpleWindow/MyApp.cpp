@@ -41,8 +41,10 @@ bool MyApp::InitResource(void)
 	GGUISystem::CreateInstance();
 	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), (SoFloat)m_lClientW, (SoFloat)m_lClientH);
 	//
-	//CreateUIWindowA();
-	CreateWindowList();
+	GGUIFontManager::GetInstance()->AddFont(0, "simhei.ttf", 0, 24, 20, 1);
+	//
+	CreateUIWindowA();
+	//CreateWindowList();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	return true;
 }
@@ -51,8 +53,8 @@ bool MyApp::InitResource(void)
 void MyApp::ClearResource(void)
 {
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	ReleaseWindowList();
-	//ReleaseUIWindowA();
+	//ReleaseWindowList();
+	ReleaseUIWindowA();
 	//ÊÍ·ÅGGUIÏµÍ³
 	GGUISystem::ReleaseInstance();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -233,8 +235,8 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetPositionX(10.0f);
 	m_pUIWindow->SetPositionY(10.0f);
 	m_pUIWindow->SetPositionZ(0.5f);
-	m_pUIWindow->SetWidth(300.0f);
-	m_pUIWindow->SetHeight(300.0f);
+	m_pUIWindow->SetWidth(500.0f);
+	m_pUIWindow->SetHeight(500.0f);
 	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
 	m_pUIWindow->SetAlpha(1.0f);
 	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
@@ -268,7 +270,7 @@ void MyApp::CreateWindowList()
 			pWindow->SetHeight(PictureWindowHeight);
 			pWindow->SetColor(1.0f, 1.0f, 1.0f);
 			pWindow->SetAlpha(1.0f);
-			SoPrintf(szBuff, sizeof(szBuff), TEXT("%d.bmp"), y*PictureCountX+x);
+			SoPrintf(szBuff, sizeof(szBuff), TEXT("Pic/%d.bmp"), y*PictureCountX+x);
 			pWindow->SetImageByFileName(szBuff);
 			RegisterWindowEventB(pWindow->GetWindowID(), WindowEvent_MouseLeftButtonClickDown, this, &MyApp::OnMouseClickWindowList);
 			m_theWindowList.push_back(pWindow->GetWindowID());
