@@ -234,7 +234,7 @@ namespace GGUI
 			if (pUITexture)
 			{
 				pFont->SetDrawParam(pUITexture->GetDXTexture(), 1.0f, 0.0f, 0.0f, true, 0.0f, 0.0f, 0.0f);
-				pFont->DrawString(TEXT("oil真棒！"), 6, 0, 0, 0, 0);
+				pFont->DrawString(TEXT("oil真棒！"), 6, 40, 20, 0, 0);
 			}
 		}
 		//>>>>>>>>>>>

@@ -41,7 +41,7 @@ bool MyApp::InitResource(void)
 	GGUISystem::CreateInstance();
 	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), (SoFloat)m_lClientW, (SoFloat)m_lClientH);
 	//
-	GGUIFontManager::GetInstance()->AddFont(0, "simhei.ttf", 0, 24, 20, 1);
+	GGUIFontManager::GetInstance()->AddFont(0, "simhei.ttf", 0, 24, 1);
 	//
 	CreateUIWindowA();
 	//CreateWindowList();
@@ -232,11 +232,11 @@ void MyApp::OnMouseClickWindowList(WindowID theWindowID, SoUInt uiParam)
 void MyApp::CreateUIWindowA()
 {
 	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Picture);
-	m_pUIWindow->SetPositionX(10.0f);
-	m_pUIWindow->SetPositionY(10.0f);
+	m_pUIWindow->SetPositionX(0.0f);
+	m_pUIWindow->SetPositionY(0.0f);
 	m_pUIWindow->SetPositionZ(0.5f);
-	m_pUIWindow->SetWidth(500.0f);
-	m_pUIWindow->SetHeight(500.0f);
+	m_pUIWindow->SetWidth(600.0f);
+	m_pUIWindow->SetHeight(403.0f);
 	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
 	m_pUIWindow->SetAlpha(1.0f);
 	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));

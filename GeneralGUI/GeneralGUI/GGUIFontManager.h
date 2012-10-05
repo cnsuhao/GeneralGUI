@@ -20,7 +20,7 @@ namespace GGUI
 		~GGUIFontManager();
 		static GGUIFontManager* GetInstance();
 
-		bool AddFont(SoInt nID, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt nFontSizeHeight, SoInt16 nEdge);
+		bool AddFont(SoInt nID, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge);
 		void RemoveFont(SoInt nID);
 		GGUIFreeTypeFont* GetFont(SoInt nID);
 

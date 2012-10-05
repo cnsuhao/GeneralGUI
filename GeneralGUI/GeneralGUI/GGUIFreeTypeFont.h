@@ -53,13 +53,19 @@ namespace GGUI
 		~GGUIFreeTypeFont();
 
 		//载入并打开字体文件，并没有把字体文件中的字符解析加载到内存中。
+		//只允许指定字号宽度，而没有字号高度，是因为每个字符的高度是不一样的。
+		//平均来讲，字号高度总是要大于字号宽度的。
+		//字号宽度为32的情况下，“真”的字符高度是36。
+		//字号宽度为60的情况下，“真”的字符高度是67。
+		//所以，如果字符宽度为N，且处于[0,32]之间，我们就把字符高度认定为(N+6)；
+		//如果处于[33,60]之间，我们就把字符高度认定为(N+10)；
+		//如果大于60，我们就把字符高度认定为(N+20)。
 		//--pFontFileName 字体文件完整路径。必须是ASCII字符。
 		//--nFontFaceIndex 使用字体的哪个字形，一般取默认值即可，默认值为0。
 		//--nFontSizeWidth 字号宽度。
-		//--nFontSizeHeight 字号高度。
 		//--nEdge 值为0表示不描边；大于0，表示描几个像素的边缘。
 		//返回是否执行成功。如果返回false，则本对象不能使用，外界应该删除掉。
-		bool InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt nFontSizeHeight, SoInt16 nEdge);
+		bool InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge);
 		//当你把一个字符串绘制到指定的贴图上时，在调用DrawCharacter()之前，
 		//你必须调用本函数设置必要的参数信息。
 		//--pDestTexture 目标纹理贴图。目标纹理必须是D3DFMT_A8R8G8B8格式。
@@ -70,6 +76,7 @@ namespace GGUI
 		//把一个字符串的字符图像绘制到指定贴图的指定位置上。
 		//字符串中可以有空格字符和Tab字符，步进长度分别是m_nSpaceAdvance和m_nTabAdvance。
 		//字符串中回车字符不会被解析，不支持回车字符的语义。
+		//字符串可以没有结束符，参数nValidCharCount保证了有几个有效字符。
 		//--pString 字符串指针。
 		//--nValidCharCount 有几个有效字符。
 		//--nStartX 从目标纹理上的哪个像素点开始绘制字符图像。

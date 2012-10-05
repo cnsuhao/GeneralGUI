@@ -30,7 +30,7 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIFontManager::AddFont(SoInt nID, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt nFontSizeHeight, SoInt16 nEdge)
+	bool GGUIFontManager::AddFont(SoInt nID, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge)
 	{
 		if (nID < 0 || nID >= GGUIMaxFontCount)
 		{
@@ -46,7 +46,7 @@ namespace GGUI
 			return false;
 		}
 		m_pFontList[nID] = new GGUIFreeTypeFont;
-		if (!m_pFontList[nID]->InitFont(pFontFileName, nFontFaceIndex, nFontSizeWidth, nFontSizeHeight, nEdge))
+		if (!m_pFontList[nID]->InitFont(pFontFileName, nFontFaceIndex, nFontSizeWidth, nEdge))
 		{
 			delete m_pFontList[nID];
 			m_pFontList[nID] = 0;

@@ -62,17 +62,30 @@ namespace GGUI
 		}
 	}
 	//--------------------------------------------------------------------
-	bool GGUIFreeTypeFont::InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt nFontSizeHeight, SoInt16 nEdge)
+	bool GGUIFreeTypeFont::InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge)
 	{
 		//检查参数
 		if (!pFontFileName)
 		{
 			return false;
 		}
-
 		m_nFontFaceIndex = nFontFaceIndex;
 		m_nFontSizeWidth = nFontSizeWidth<MinFontSize ? MinFontSize : nFontSizeWidth;
-		m_nFontSizeHeight = nFontSizeHeight<MinFontSize ? MinFontSize : nFontSizeHeight;
+		if (m_nFontSizeWidth <= 32)
+		{
+			//字符宽度处于[0,32]之间，我们就把字符高度认定为(N+6)。
+			m_nFontSizeHeight = m_nFontSizeWidth + 6;
+		}
+		else if (m_nFontSizeWidth <= 60)
+		{
+			//字符宽度处于[33,60]之间，我们就把字符高度认定为(N+10)。
+			m_nFontSizeHeight = m_nFontSizeWidth + 10;
+		}
+		else
+		{
+			//字符宽度大于60，我们就把字符高度认定为(N+20)。
+			m_nFontSizeHeight = m_nFontSizeWidth + 20;
+		}
 		m_nGlyphCountX = ms_nTextureWidth / m_nFontSizeWidth;
 		m_nGlyphCountY = ms_nTextureHeight / m_nFontSizeHeight;
 		m_nEdge = nEdge>0 ? nEdge : 0;
@@ -92,14 +105,12 @@ namespace GGUI
 			LoadSingleChar(i);
 		}
 
-		LoadSingleChar(L'珊');
-
 		//=======================================
-
-			char szBMPName[256] = {0};
-			StringCbPrintfA(szBMPName, sizeof(szBMPName), "D:\\FreeTypeAll.png");
-			D3DXSaveTextureToFileA(szBMPName, D3DXIFF_PNG, m_vecTexture[0], NULL);
-
+		LoadSingleChar(TEXT('真'));
+		LoadSingleChar(TEXT('棒'));
+		char szBMPName[256] = {0};
+		StringCbPrintfA(szBMPName, sizeof(szBMPName), "D:\\FreeTypeAll.png");
+		D3DXSaveTextureToFileA(szBMPName, D3DXIFF_PNG, m_vecTexture[0], NULL);
 		return true;
 	}
 	//--------------------------------------------------------------------
@@ -128,8 +139,11 @@ namespace GGUI
 		}
 		//把字符串遍历一次，确保每个字符都从字体文件中解析到了字体贴图中；
 		//同时，计算整个字符串将要占据的宽高。
+		//把字符从字体文件中解析到字体贴图中，需要对字体贴图做Lock操作；把字符从字体贴图
+		//上拷贝到目标纹理贴图上也要做Lock操作。所以，这里这样做可以避免“Lock之后再次Lock”
+		//的操作问题。
 		SoInt nStringAdvanceX = 0;
-		SoInt nStringAdvanceY = m_nFontSizeHeight;
+		SoInt nStringAdvanceY = 0;
 		wchar_t charSpace = 32;
 		wchar_t charTab = 23;
 		for (SoInt i=0; i<nValidCharCount; ++i)
@@ -148,6 +162,10 @@ namespace GGUI
 				if (pData && pData->theCharGlyphID != Invalid_CharGlyphID)
 				{
 					nStringAdvanceX += pData->AdvanceX;
+					if (nStringAdvanceY < pData->AdvanceY)
+					{
+						nStringAdvanceY = pData->AdvanceY;
+					}
 				}
 			}
 		}
@@ -194,6 +212,37 @@ namespace GGUI
 					SoInt nTextureIndex = -1;
 					SoInt nSlotIndexX = 0;
 					SoInt nSlotIndexY = 0;
+					//如果需要描边，则先描边。
+					if (m_bTempEdge)
+					{
+						GetThreeIndexByGlobalIndex(pData->theCharGlyphID+1, nTextureIndex, nSlotIndexX, nSlotIndexY);
+						if (nTextureIndex != nCurrentSrcTextureIndex)
+						{
+							//关闭旧的，打开新的。
+							if (nCurrentSrcTextureIndex != -1)
+							{
+								m_vecTexture[nCurrentSrcTextureIndex]->UnlockRect(uiLevel);
+							}
+							nCurrentSrcTextureIndex = nTextureIndex;
+							//把源字体贴图整个lock住。
+							if (m_vecTexture[nTextureIndex]->LockRect(uiLevel, &locked_SrcRect, NULL, D3DLOCK_READONLY) != D3D_OK)
+							{
+								//Error
+								nCurrentSrcTextureIndex = -1;
+								break;
+							}
+						}
+						SoInt16 nTopMargin = pData->TopMargin - m_nEdge;
+						SoInt16 nLeftMargin = pData->LeftMargin - m_nEdge;
+						if (nTopMargin < 0)
+							nTopMargin = 0;
+						if (nLeftMargin < 0)
+							nLeftMargin = 0;
+						unsigned char* pDestBits_Edge = ((unsigned char*)locked_DestRect.pBits) + nTopMargin * locked_DestRect.Pitch + (nCurrentAdvanceX+nLeftMargin) * 4;
+						unsigned char* pSrcBits_Edge = ((unsigned char*)locked_SrcRect.pBits) + ((nSlotIndexY * m_nFontSizeHeight) * locked_SrcRect.Pitch + nSlotIndexX * m_nFontSizeWidth);
+						DrawCharacter_Edge(pData->AdvanceX, pData->AdvanceY, pSrcBits_Edge, locked_SrcRect.Pitch, pDestBits_Edge, locked_DestRect.Pitch);
+					}
+					//绘制正文。
 					GetThreeIndexByGlobalIndex(pData->theCharGlyphID, nTextureIndex, nSlotIndexX, nSlotIndexY);
 					if (nTextureIndex != nCurrentSrcTextureIndex)
 					{
@@ -211,12 +260,8 @@ namespace GGUI
 							break;
 						}
 					}
-					unsigned char* pDestBits = (unsigned char*)locked_DestRect.pBits + nCurrentAdvanceX * 4;
+					unsigned char* pDestBits = ((unsigned char*)locked_DestRect.pBits) + (pData->TopMargin * locked_DestRect.Pitch) + (nCurrentAdvanceX+pData->LeftMargin) * 4;
 					unsigned char* pSrcBits = ((unsigned char*)locked_SrcRect.pBits) + ((nSlotIndexY * m_nFontSizeHeight) * locked_SrcRect.Pitch + nSlotIndexX * m_nFontSizeWidth);
-					if (m_bTempEdge)
-					{
-						DrawCharacter_Edge(pData->AdvanceX, pData->AdvanceY, pSrcBits+m_nFontSizeWidth, locked_SrcRect.Pitch, pDestBits, locked_DestRect.Pitch);
-					}
 					DrawCharacter(pData->AdvanceX, pData->AdvanceY, pSrcBits, locked_SrcRect.Pitch, pDestBits, locked_DestRect.Pitch);
 					nCurrentAdvanceX += pData->AdvanceX;
 				}
@@ -240,7 +285,7 @@ namespace GGUI
 				unsigned char* src_pixel = pSrcBits + nSrcPitch * y + x;
 				if (src_pixel[0] > 0)
 				{
-					//本像素不是透明的，src_pixel[3]就是透明度。
+					//本像素不是透明的，src_pixel[0]就是透明度。
 					unsigned char* dest_pixel = pDestBits + nDestPitch * y + x * 4;
 					if (src_pixel[0] == 0xFF)
 					{
@@ -274,7 +319,7 @@ namespace GGUI
 				unsigned char* src_pixel = pSrcBits + nSrcPitch * y + x;
 				if (src_pixel[0] > 0)
 				{
-					//本像素不是透明的，src_pixel[3]就是透明度。
+					//本像素不是透明的，src_pixel[0]就是透明度。
 					unsigned char* dest_pixel = pDestBits + nDestPitch * y + x * 4;
 					if (src_pixel[0] == 0xFF)
 					{
@@ -393,12 +438,12 @@ namespace GGUI
 		stData.Character = theChar;
 		//本类只生成横向排版字形，不处理竖向排版。在非等宽字体下，X方向上的步进是各不相同的。
 		stData.AdvanceX = (int)(theGlyph->advance.x >> 6);
-		//本类只生成横向排版字形，所以Y方向上的步进是固定的；如果是竖向排版，则X方向上的步进是固定的。
-		stData.AdvanceY = m_nFontSizeHeight;
 		stData.LeftMargin = theGlyph->bitmap_left;
 		stData.TopMargin = m_nFontSizeHeight - theGlyph->bitmap_top;
 		stData.BitmapWidth = theGlyph->bitmap.width;
 		stData.BitmapHeight = theGlyph->bitmap.rows;
+		//每个字符的AdvanceY值都不一样。
+		stData.AdvanceY = stData.TopMargin + stData.BitmapHeight;
 
 		//
 		const FT_Bitmap& bitmap = theGlyph->bitmap;
@@ -444,7 +489,8 @@ namespace GGUI
 
 		if (!pPixelBuffer)
 		{
-			//出错了。
+			//该字符没有像素数据。
+			//这是正常情况，例如空格字符，换行字符等等。
 			return &stData;
 		}
 
@@ -484,9 +530,9 @@ namespace GGUI
 
 		//Lock顶层贴图。
 		RECT dest_rect;
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + stData.LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + stData.TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, false);
 		return true;
@@ -508,118 +554,66 @@ namespace GGUI
 		}
 
 		RECT dest_rect;
-		short LeftMargin = 0;
-		short TopMargin = 0;
-		//向左偏移
-		LeftMargin = stData.LeftMargin - m_nEdge;
-		TopMargin = stData.TopMargin;
-		if (LeftMargin < 0)
+		SoInt nSingleEdgeX = m_nEdge;
+		SoInt nDoubleEdgeX = m_nEdge * 2;
+		SoInt nSingleEdgeY = m_nEdge;
+		SoInt nDoubleEdgeY = m_nEdge * 2;
+		if (nDoubleEdgeX + stData.BitmapWidth > m_nFontSizeWidth)
 		{
-			LeftMargin = 0;
+			nDoubleEdgeX = m_nFontSizeWidth - stData.BitmapWidth;
+			nSingleEdgeX = nDoubleEdgeX / 2;
 		}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		if (nDoubleEdgeY + stData.BitmapHeight > m_nFontSizeHeight)
+		{
+			nDoubleEdgeY = m_nFontSizeHeight - stData.BitmapHeight;
+			nSingleEdgeY = nDoubleEdgeY / 2;
+		}
+		//向左偏移
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + nSingleEdgeY;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向左上偏移
-		LeftMargin = stData.LeftMargin - m_nEdge;
-		TopMargin = stData.TopMargin - m_nEdge;
-		if (LeftMargin < 0)
-		{
-			LeftMargin = 0;
-		}
-		if (TopMargin < 0)
-		{
-			TopMargin = 0;
-		}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向上偏移
-		LeftMargin = stData.LeftMargin;
-		TopMargin = stData.TopMargin - m_nEdge;
-		if (TopMargin < 0)
-		{
-			TopMargin = 0;
-		}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + nSingleEdgeX;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向右上偏移
-		LeftMargin = stData.LeftMargin + m_nEdge;
-		TopMargin = stData.TopMargin - m_nEdge;
-		//if (LeftMargin + stData.BitmapWidth > m_nFontSizeWidth)
-		//{
-		//	LeftMargin = m_nFontSizeWidth - stData.BitmapWidth;
-		//}
-		if (TopMargin < 0)
-		{
-			TopMargin = 0;
-		}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + nDoubleEdgeX;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向右偏移
-		LeftMargin = stData.LeftMargin + m_nEdge;
-		TopMargin = stData.TopMargin;
-		//if (LeftMargin + stData.BitmapWidth > m_nFontSizeWidth)
-		//{
-		//	LeftMargin = m_nFontSizeWidth - stData.BitmapWidth;
-		//}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + nDoubleEdgeX;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + nSingleEdgeY;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向右下偏移
-		LeftMargin = stData.LeftMargin + m_nEdge;
-		TopMargin = stData.TopMargin + m_nEdge;
-		//if (LeftMargin + stData.BitmapWidth > m_nFontSizeWidth)
-		//{
-		//	LeftMargin = m_nFontSizeWidth - stData.BitmapWidth;
-		//}
-		//if (TopMargin + stData.BitmapHeight > m_nFontSizeHeight)
-		//{
-		//	TopMargin = m_nFontSizeHeight - stData.BitmapHeight;
-		//}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + nDoubleEdgeX;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + nDoubleEdgeY;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向下偏移
-		LeftMargin = stData.LeftMargin;
-		TopMargin = stData.TopMargin + m_nEdge;
-		//if (TopMargin + stData.BitmapHeight > m_nFontSizeHeight)
-		//{
-		//	TopMargin = m_nFontSizeHeight - stData.BitmapHeight;
-		//}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + nSingleEdgeX;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + nDoubleEdgeY;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		//向左下偏移
-		LeftMargin = stData.LeftMargin - m_nEdge;
-		TopMargin = stData.TopMargin + m_nEdge;
-		if (LeftMargin < 0)
-		{
-			LeftMargin = 0;
-		}
-		//if (TopMargin + stData.BitmapHeight > m_nFontSizeHeight)
-		//{
-		//	TopMargin = m_nFontSizeHeight - stData.BitmapHeight;
-		//}
-		dest_rect.left = nSlotIndexX * m_nFontSizeWidth + LeftMargin;
+		dest_rect.left = nSlotIndexX * m_nFontSizeWidth;
 		dest_rect.right = dest_rect.left + stData.BitmapWidth;
-		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + TopMargin;
+		dest_rect.top = nSlotIndexY * m_nFontSizeHeight + nDoubleEdgeY;
 		dest_rect.bottom = dest_rect.top + stData.BitmapHeight;
 		FillPixelData(pTexture, dest_rect, pPixelBuffer, stData.BitmapWidth, stData.BitmapHeight, true);
 		return true;
@@ -650,7 +644,7 @@ namespace GGUI
 				if (bEdge)
 				{
 					if (pDestBuffer[x] == 0 && pPixelBuffer[nIndex] > 0)
-						pDestBuffer[x] = 0x50;
+						pDestBuffer[x] = 0xFF; //pPixelBuffer[nIndex]; //测试，0x50;
 				}
 				else
 				{
