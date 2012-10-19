@@ -3,6 +3,9 @@
 // (C) oil
 // 2012-09-02
 //-----------------------------------------------------------------------------
+#include <vector>
+#include <map>
+
 //包含SoComponent中的内容
 #include "../SoComponent/SoD3DDefine.h"
 #include "../SoComponent/SoTSingleton.h"
@@ -15,4 +18,7 @@ using namespace SoComponent;
 #include "GGUIWindowDefine.h"
 #include "GGUITextureDefine.h"
 #include "GGUIInputDefine.h"
+#include "GGUIImagesetDefine.h"
+#include "GGUITinyString.h"
+#include "GGUIRect.h"
 //-----------------------------------------------------------------------------

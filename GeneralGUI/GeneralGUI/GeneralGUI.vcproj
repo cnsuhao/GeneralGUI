@@ -186,6 +186,18 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIImageset.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIImageset.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIImagesetDefine.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIInputDefine.h"
 			>
 		</File>
@@ -219,6 +231,14 @@
 		</File>
 		<File
 			RelativePath=".\GGUIPicture.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIRect.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIRect.h"
 			>
 		</File>
 		<File
@@ -311,6 +331,14 @@
 		</File>
 		<File
 			RelativePath=".\GGUITextureDefine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUITinyString.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUITinyString.h"
 			>
 		</File>
 		<File
