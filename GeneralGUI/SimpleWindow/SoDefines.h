@@ -25,12 +25,6 @@
 #define _IN
 #define _OUT
 
-//安全的删除一个对象
-#define SAFE_DELETE(p);        { if(p) { delete (p); (p)=NULL; } }
-//安全的删除一个对象数组,可以用来删除一个数组型字符串
-#define SAFE_DELETE_ARRAY(p);  { if(p) { delete[] (p); (p)=NULL; } }
-
-
 //正确的析构不再使用的SoRefObject对象
 //注意,是先引用计数减1,再判断引用计数是否小于等于0
 #define SoIncreaseRef(p);  { if(p) { (p)->IncRefCount(); } }

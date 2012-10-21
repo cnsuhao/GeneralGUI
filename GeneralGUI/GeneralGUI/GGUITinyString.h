@@ -17,7 +17,7 @@ namespace GGUI
 			m_szBuffer[0] = 0;
 		}
 		//-----------------------------------------------------------------------------
-		GGUITinyString(const char* pszString)
+		GGUITinyString(const tchar* pszString)
 		{
 			SetValue(pszString);
 		}
@@ -31,19 +31,19 @@ namespace GGUI
 		{
 		}
 		//-----------------------------------------------------------------------------
-		const char* GetValue() const
+		const tchar* GetValue() const
 		{
 			return m_szBuffer;
 		}
 		//-----------------------------------------------------------------------------
 		//注意，pszString字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
 		//如果大于的话，会被截断。
-		void SetValue(const char* pszString);
+		void SetValue(const tchar* pszString);
 		//
 		friend bool operator < (const GGUITinyString& left, const GGUITinyString& right);
 
 	protected:
-		char m_szBuffer[MaxSize_TinyString];
+		tchar m_szBuffer[MaxSize_TinyString];
 	};
 } //namespace GGUI
 //-----------------------------------------------------------------------------

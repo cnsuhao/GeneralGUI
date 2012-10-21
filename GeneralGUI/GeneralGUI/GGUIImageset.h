@@ -10,22 +10,27 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	class GGUIImageset
 	{
+		friend class GGUIImagesetManager;
 	public:
 		ImagesetID GetImagesetID() const;
 
 		//设置本Imageset的名字。
 		//注意，pszName字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
 		//如果大于的话，会被截断。
-		void SetImagesetName(const char* pszName);
+		void SetImagesetName(const tchar* pszName);
 		//获取本Imageset的名字。
-		const char* GetImagesetName() const;
+		const tchar* GetImagesetName() const;
 
-		//
-		void AddImageRect(const char* pszImageRectName);
+		//新增一个ImageRect。
+		//--strRectName ImageRect的名字。
+		//--fLeft,fRight,fTop,fBottom 纹理坐标。
+		//--pRectID 如果为有效值，不管函数返回true还是false，都会把得到的ImageRectID赋值给它。
+		//如果已经存在名字为strRectName的ImageRect，则返回false。
+		bool AddImageRect(const GGUITinyString& strRectName, SoFloat fLeft, SoFloat fRight, SoFloat fTop, SoFloat fBottom, ImageRectID* pRectID);
 		void RemoveImageRect(ImageRectID theRectID);
 		const GGUIRect* GetImageRect(ImageRectID theRectID);
-		ImageRectID GetImageRectIDByName(const char* pszImageRectName);
-
+		ImageRectID GetImageRectIDByName(const GGUITinyString& strRectName);
+		const GGUITinyString* GetImageRectNameByID(ImageRectID theRectID);
 
 	protected:
 		GGUIImageset();
@@ -58,9 +63,39 @@ namespace GGUI
 		return m_MyImagesetID;
 	}
 	//-----------------------------------------------------------------------------
-	const char* GGUIImageset::GetImagesetName() const
+	inline void GGUIImageset::SetImagesetName(const tchar* pszName)
+	{
+		m_MyImagesetName.SetValue(pszName);
+	}
+	//-----------------------------------------------------------------------------
+	inline const tchar* GGUIImageset::GetImagesetName() const
 	{
 		return m_MyImagesetName.GetValue();
+	}
+	//-----------------------------------------------------------------------------
+	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID)
+	{
+		if (theRectID >= 0 && theRectID < m_nIndexEnd)
+		{
+			return m_pImageRectID2Rect[theRectID];
+		}
+		else
+		{
+			return NULL;
+		}
+	}
+	//-----------------------------------------------------------------------------
+	inline ImageRectID GGUIImageset::GetImageRectIDByName(const GGUITinyString& strRectName)
+	{
+		mapRectName2RectID::iterator it = m_mapRectName2RectID.find(strRectName);
+		if (it == m_mapRectName2RectID.end())
+		{
+			return Invalid_ImageRectID;
+		}
+		else
+		{
+			return (it->second);
+		}
 	}
 	//-----------------------------------------------------------------------------
 	inline void GGUIImageset::SetImagesetID(ImagesetID theID)

@@ -198,6 +198,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIImagesetManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIImagesetManager.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIInputDefine.h"
 			>
 		</File>

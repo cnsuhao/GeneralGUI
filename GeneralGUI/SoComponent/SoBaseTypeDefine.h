@@ -33,6 +33,12 @@ namespace SoComponent
 	#define SoFalse 0
 	#define SoNone -1
 
+	//-----------------------------------------------------------------------------
+	//安全的删除一个对象。
+	#define SAFE_DELETE(p);  { if(p) { delete (p); (p)=NULL; } }
+	//安全的删除一个对象数组。
+	#define SAFE_DELETE_ARRAY(p);  { if(p) { delete [] (p); (p)=NULL; } }
+
 } //namespace SoComponent
 //-----------------------------------------------------------------------------
 #endif //_SoBaseTypeDefine_h_

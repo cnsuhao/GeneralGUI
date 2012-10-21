@@ -8,7 +8,7 @@
 namespace GGUI
 {
 	//-----------------------------------------------------------------------------
-	void GGUITinyString::SetValue(const char* pszString)
+	void GGUITinyString::SetValue(const tchar* pszString)
 	{
 		SoInt i = 0;
 		for (; i<MaxSize_TinyString; ++i)

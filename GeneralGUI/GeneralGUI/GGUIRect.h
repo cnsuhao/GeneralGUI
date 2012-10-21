@@ -16,6 +16,11 @@ namespace GGUI
 		{
 
 		}
+		GGUIRect(SoFloat fLeft, SoFloat fRight, SoFloat fTop, SoFloat fBottom)
+		:m_fLeft(fLeft), m_fRight(fRight), m_fTop(fTop), m_fBottom(fBottom)
+		{
+
+		}
 
 	public:
 		SoFloat m_fLeft;
