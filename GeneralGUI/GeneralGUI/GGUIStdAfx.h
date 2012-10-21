@@ -1,12 +1,12 @@
-//-----------------------------------------------------------------------------
-// Ô¤±àÒëÍ·ÎÄ¼ş
+ï»¿//-----------------------------------------------------------------------------
+// é¢„ç¼–è¯‘å¤´æ–‡ä»¶
 // (C) oil
 // 2012-09-02
 //-----------------------------------------------------------------------------
 #include <vector>
 #include <map>
 
-//°üº¬SoComponentÖĞµÄÄÚÈİ
+//åŒ…å«SoComponentä¸­çš„å†…å®¹
 #include "../SoComponent/SoD3DDefine.h"
 #include "../SoComponent/SoTSingleton.h"
 #include "../SoComponent/SoBaseTypeDefine.h"
@@ -14,11 +14,12 @@
 #include "../ThirdParty/FastDelegate/FastDelegate.h"
 using namespace SoComponent;
 
-//°üº¬GGUIÄÚ²¿µÄ³£ÓÃÍ·ÎÄ¼ş
+//åŒ…å«GGUIå†…éƒ¨çš„å¸¸ç”¨å¤´æ–‡ä»¶
 #include "GGUIWindowDefine.h"
 #include "GGUITextureDefine.h"
 #include "GGUIInputDefine.h"
 #include "GGUIImagesetDefine.h"
 #include "GGUITinyString.h"
 #include "GGUIRect.h"
+#include "GGUIDXTextureDefine.h"
 //-----------------------------------------------------------------------------

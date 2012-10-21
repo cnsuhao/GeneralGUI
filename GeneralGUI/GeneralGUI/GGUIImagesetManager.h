@@ -24,6 +24,8 @@ namespace GGUI
 		//--pImagesetID 如果为有效值，不管返回值为true还是false，都会把得到的ImagesetID赋值给它。
 		//如果指定的Imageset文件已经存在（已经加载），则返回false。
 		bool CreateImagesetByFile(const tchar* pszImagesetFile, ImagesetID* pImagesetID);
+		//临时函数。
+		bool CreateImagesetByTextureFile(const tchar* pszTextureFile, const GGUITinyString& strImagesetName, ImagesetID* pImagesetID, ImageRectID* pImageRectID);
 		//创建一个GGUIImageset对象。其ImageRect的个数为0.
 		//--strImagesetName 名字。
 		//--pImagesetID 如果为有效值，不管返回值为true还是false，都会把得到的ImagesetID赋值给它。

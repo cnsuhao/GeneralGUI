@@ -5,6 +5,7 @@
 #include "GGUIStdAfx.h"
 #include "GGUIImagesetManager.h"
 #include "GGUIImageset.h"
+#include "GGUIDXTextureManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -48,6 +49,42 @@ namespace GGUI
 	bool GGUIImagesetManager::CreateImagesetByFile(const tchar* pszImagesetFile, ImagesetID* pImagesetID)
 	{
 		return NULL;
+	}
+	//-----------------------------------------------------------------------------
+	bool GGUIImagesetManager::CreateImagesetByTextureFile(const tchar* pszTextureFile, const GGUITinyString& strImagesetName, ImagesetID* pImagesetID, ImageRectID* pImageRectID)
+	{
+		DXTextureID newDXTextureID = Invalid_DXTextureID;
+		bool bLoadTexture = GGUIDXTextureManager::GetInstance()->LoadTextureFromDisk(pszTextureFile, &newDXTextureID);
+		if (!bLoadTexture)
+		{
+			return false;
+		}
+		ImagesetID newImagesetID = Invalid_ImagesetID;
+		bool bCreateImageset = CreateImageset(strImagesetName, &newImagesetID);
+		if (!bCreateImageset)
+		{
+			GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(newDXTextureID);
+			return false;
+		}
+		GGUIImageset* pNewImageset = GetImageset(newImagesetID);
+		if (pNewImageset == NULL)
+		{
+			GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(newDXTextureID);
+			ReleaseImageset(newImagesetID);
+			return false;
+		}
+		pNewImageset->SetDXTextureID(newDXTextureID);
+		ImageRectID newImageRectID = Invalid_ImageRectID;
+		pNewImageset->AddImageRect(GGUITinyString(TEXT("default")), 0.0f, 1.0f, 0.0f, 1.0f, &newImageRectID);
+		if (pImagesetID)
+		{
+			*pImagesetID = newImagesetID;
+		}
+		if (pImageRectID)
+		{
+			*pImageRectID = newImageRectID;
+		}
+		return true;
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIImagesetManager::CreateImageset(const GGUITinyString& strImagesetName, ImagesetID* pImagesetID)

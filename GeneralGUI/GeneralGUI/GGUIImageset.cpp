@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 #include "GGUIStdAfx.h"
 #include "GGUIImageset.h"
+#include "GGUIDXTextureManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -89,7 +90,7 @@ namespace GGUI
 	GGUIImageset::GGUIImageset()
 	:m_MyImagesetID(Invalid_ImagesetID)
 	,m_MyImagesetName()
-	,m_pDXTexture(NULL)
+	,m_MyDXTextureID(Invalid_DXTextureID)
 	,m_pImageRectID2Rect(NULL)
 	,m_nCapacity(0)
 	,m_nIndexEnd(0)
@@ -103,7 +104,7 @@ namespace GGUI
 	GGUIImageset::~GGUIImageset()
 	{
 		//尝试删除贴图。
-		SAFE_D3D_RELEASE(m_pDXTexture);
+		GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(m_MyDXTextureID);
 		//
 		m_mapRectName2RectID.clear();
 		//
@@ -117,12 +118,12 @@ namespace GGUI
 		SAFE_DELETE_ARRAY(m_pImageRectID2Rect);
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIImageset::SetDXTexture(IDirect3DTexture9* pTexture)
+	void GGUIImageset::SetDXTextureID(DXTextureID theTextureID)
 	{
 		//尝试删除旧贴图。
-		SAFE_D3D_RELEASE(m_pDXTexture);
-		//保存新贴图。
-		m_pDXTexture = pTexture;
+		GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(theTextureID);
+		//
+		m_MyDXTextureID = theTextureID;
 	}
 	//-----------------------------------------------------------------------------
 } //namespace GGUI

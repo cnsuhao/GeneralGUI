@@ -13,13 +13,9 @@ namespace GGUI
 		friend class GGUIImagesetManager;
 	public:
 		ImagesetID GetImagesetID() const;
-
-		//设置本Imageset的名字。
-		//注意，pszName字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
-		//如果大于的话，会被截断。
-		void SetImagesetName(const tchar* pszName);
 		//获取本Imageset的名字。
-		const tchar* GetImagesetName() const;
+		const GGUITinyString& GetImagesetName() const;
+		DXTextureID GetDXTextureID() const;
 
 		//新增一个ImageRect。
 		//--strRectName ImageRect的名字。
@@ -36,9 +32,13 @@ namespace GGUI
 		GGUIImageset();
 		~GGUIImageset();
 		void SetImagesetID(ImagesetID theID);
-		//设置新的IDirect3DTexture9纹理。
-		//传入NULL表示删除现有的纹理。
-		void SetDXTexture(IDirect3DTexture9* pTexture);
+		//设置本Imageset的名字。
+		//注意，pszName字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
+		//如果大于的话，会被截断。
+		void SetImagesetName(const tchar* pszName);
+		//设置新的DXTextureID。
+		//传入无效值表示删除现有的纹理。
+		void SetDXTextureID(DXTextureID theTextureID);
 
 	private:
 		typedef std::map<GGUITinyString, ImageRectID> mapRectName2RectID;
@@ -46,7 +46,7 @@ namespace GGUI
 	private:
 		ImagesetID m_MyImagesetID;
 		GGUITinyString m_MyImagesetName;
-		IDirect3DTexture9* m_pDXTexture;
+		DXTextureID m_MyDXTextureID;
 		//存储从ImageRectName到ImageRectID的映射。
 		mapRectName2RectID m_mapRectName2RectID;
 		//
@@ -63,14 +63,14 @@ namespace GGUI
 		return m_MyImagesetID;
 	}
 	//-----------------------------------------------------------------------------
-	inline void GGUIImageset::SetImagesetName(const tchar* pszName)
+	inline const GGUITinyString& GGUIImageset::GetImagesetName() const
 	{
-		m_MyImagesetName.SetValue(pszName);
+		return m_MyImagesetName;
 	}
 	//-----------------------------------------------------------------------------
-	inline const tchar* GGUIImageset::GetImagesetName() const
+	inline DXTextureID GGUIImageset::GetDXTextureID() const
 	{
-		return m_MyImagesetName.GetValue();
+		return m_MyDXTextureID;
 	}
 	//-----------------------------------------------------------------------------
 	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID)
@@ -101,6 +101,11 @@ namespace GGUI
 	inline void GGUIImageset::SetImagesetID(ImagesetID theID)
 	{
 		m_MyImagesetID = theID;
+	}
+	//-----------------------------------------------------------------------------
+	inline void GGUIImageset::SetImagesetName(const tchar* pszName)
+	{
+		m_MyImagesetName.SetValue(pszName);
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

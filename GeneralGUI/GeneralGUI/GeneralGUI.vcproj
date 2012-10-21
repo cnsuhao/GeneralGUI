@@ -170,6 +170,26 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIDXRenderManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIDXRenderManager.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIDXTextureDefine.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIDXTextureManager.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIDXTextureManager.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIFontManager.cpp"
 			>
 		</File>
