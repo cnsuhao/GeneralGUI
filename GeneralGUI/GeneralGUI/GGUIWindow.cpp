@@ -28,6 +28,8 @@ namespace GGUI
 	,m_eMyWindowType(WindowType_Base)
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyTextureID(Invalid_TextureID)
+	,m_nMyImagesetID(Invalid_ImagesetID)
+	,m_nMyImageRectID(Invalid_ImageRectID)
 	,m_nMyDelegateID(Invalid_DelegateID)
 	,m_bShouldUpdateUITexture(false)
 	,m_bVisible(true)
@@ -140,6 +142,16 @@ namespace GGUI
 		return bResult;
 	}
 	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetImagesetID(ImagesetID theID)
+	{
+		m_nMyImagesetID = theID;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetImageRectID(ImageRectID theID)
+	{
+		m_nMyImageRectID = theID;
+	}
+	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetVisible(bool bVisible)
 	{
 		m_bVisible = bVisible;
@@ -195,6 +207,16 @@ namespace GGUI
 	TextureID GGUIWindow::GetTextureID() const
 	{
 		return m_nMyTextureID;
+	}
+	//-----------------------------------------------------------------------------
+	ImagesetID GGUIWindow::GetImagesetID() const
+	{
+		return m_nMyImagesetID;
+	}
+	//-----------------------------------------------------------------------------
+	ImageRectID GGUIWindow::GetImageRectID() const
+	{
+		return m_nMyImageRectID;
 	}
 	//-----------------------------------------------------------------------------
 	DelegateID GGUIWindow::GetDelegateID() const

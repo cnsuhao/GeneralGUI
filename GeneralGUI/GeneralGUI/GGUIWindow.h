@@ -31,6 +31,8 @@ namespace GGUI
 		void SetAlpha(SoFloat fAlpha);
 		void SetImage(IDirect3DTexture9* pTexture);
 		bool SetImageByFileName(const tchar* pFileName);
+		void SetImagesetID(ImagesetID theID);
+		void SetImageRectID(ImageRectID theID);
 		void SetVisible(bool bVisible);
 		virtual void SetEnable(bool bEnable);
 
@@ -44,6 +46,8 @@ namespace GGUI
 		SoFloat GetAlpha() const;
 		WindowID GetWindowID() const;
 		TextureID GetTextureID() const;
+		ImagesetID GetImagesetID() const;
+		ImageRectID GetImageRectID() const;
 		DelegateID GetDelegateID() const;
 		bool GetVisible() const;
 		bool GetEnable() const;
@@ -86,6 +90,9 @@ namespace GGUI
 		WindowID m_nMyWindowID;
 		//本窗口有一个UITexture对象，记录它的TextureID。
 		TextureID m_nMyTextureID;
+		//本窗口的贴图。
+		ImagesetID m_nMyImagesetID;
+		ImageRectID m_nMyImageRectID;
 		//本窗口的Delegate事件响应函数的ID。
 		DelegateID m_nMyDelegateID;
 		//记录是否需要更新UITexture对象。
