@@ -29,8 +29,6 @@ namespace GGUI
 		void SetHeight(SoFloat fHeight);
 		void SetColor(SoFloat fR, SoFloat fG, SoFloat fB);
 		void SetAlpha(SoFloat fAlpha);
-		void SetImage(IDirect3DTexture9* pTexture);
-		bool SetImageByFileName(const tchar* pFileName);
 		void SetImagesetID(ImagesetID theID);
 		void SetImageRectID(ImageRectID theID);
 		void SetVisible(bool bVisible);
@@ -45,7 +43,6 @@ namespace GGUI
 		void GetColor(SoFloat& fR, SoFloat& fG, SoFloat& fB) const;
 		SoFloat GetAlpha() const;
 		WindowID GetWindowID() const;
-		TextureID GetTextureID() const;
 		ImagesetID GetImagesetID() const;
 		ImageRectID GetImageRectID() const;
 		DelegateID GetDelegateID() const;
@@ -69,10 +66,6 @@ namespace GGUI
 		void SetDelegateID(DelegateID theID);
 		//在绘制之前，对Mesh顶点信息做最终的更新。
 		void PostUpdateWindow();
-		//UITexture的操作
-		void CreateUITexture();
-		void ReleaseUITexture();
-		virtual void UpdateUITexture();
 
 	protected:
 		SoFloat m_fPositionX;
@@ -88,15 +81,13 @@ namespace GGUI
 		eWindowType m_eMyWindowType;
 		//本窗口的ID。
 		WindowID m_nMyWindowID;
-		//本窗口有一个UITexture对象，记录它的TextureID。
-		TextureID m_nMyTextureID;
 		//本窗口的贴图。
 		ImagesetID m_nMyImagesetID;
 		ImageRectID m_nMyImageRectID;
 		//本窗口的Delegate事件响应函数的ID。
 		DelegateID m_nMyDelegateID;
 		//记录是否需要更新UITexture对象。
-		bool m_bShouldUpdateUITexture;
+		bool m_bDirty;
 		//记录窗口是否可见。
 		bool m_bVisible;
 		//记录窗口是否可用。

@@ -33,55 +33,8 @@ namespace GGUI
 			if (m_eButtonState != eDestState)
 			{
 				m_eButtonState = eDestState;
-				m_bShouldUpdateUITexture = true;
+				m_bDirty = true;
 			}
-		}
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIButton::UpdateUITexture()
-	{
-		static SoFloat s_fColorReduce = 1.0f;
-		static SoFloat s_fDeltaX = 2.0f;
-		static SoFloat s_fDeltaY = 2.0f;
-
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-		if (pUITexture)
-		{
-			SoFloat fDestColorR = m_fColorR;
-			SoFloat fDestColorG = m_fColorG;
-			SoFloat fDestColorB = m_fColorB;
-			SoFloat fDestPosX = m_fPositionX;
-			SoFloat fDestPosY = m_fPositionY;
-			switch (m_eButtonState)
-			{
-			case ButtonState_Normal:
-				break;
-			case ButtonState_Hover:
-				{
-					fDestColorR = m_fColorR * s_fColorReduce;
-					fDestColorG = m_fColorG * s_fColorReduce;
-					fDestPosX = m_fPositionX - s_fDeltaX;
-					fDestPosY = m_fPositionY - s_fDeltaY;
-				}
-				break;
-			case ButtonState_PushDown:
-				{
-					fDestColorG = m_fColorG * s_fColorReduce;
-					fDestColorB = m_fColorB * s_fColorReduce;
-					fDestPosX = m_fPositionX + s_fDeltaX;
-					fDestPosY = m_fPositionY + s_fDeltaY;
-				}
-				break;
-			case ButtonState_Disable:
-				{
-					fDestColorR = m_fColorR * s_fColorReduce;
-					fDestColorG = m_fColorG * s_fColorReduce;
-					fDestColorB = m_fColorB * s_fColorReduce;
-				}
-				break;
-			}
-			SoUInt32 uiColor = SoMakeColorRGBA(fDestColorR, fDestColorG, fDestColorB, m_fColorA);
-			pUITexture->UpdateVertexBuffer(fDestPosX, fDestPosY, m_fPositionZ, m_fWidth, m_fHeight, uiColor);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -92,7 +45,7 @@ namespace GGUI
 			if (m_eButtonState != ButtonState_Hover)
 			{
 				m_eButtonState = ButtonState_Hover;
-				m_bShouldUpdateUITexture = true;
+				m_bDirty = true;
 			}
 		}
 		__super::OnMouseEnterWindowArea();
@@ -105,7 +58,7 @@ namespace GGUI
 			if (m_eButtonState != ButtonState_Normal)
 			{
 				m_eButtonState = ButtonState_Normal;
-				m_bShouldUpdateUITexture = true;
+				m_bDirty = true;
 			}
 		}
 		__super::OnMouseLeaveWindowArea();
@@ -118,7 +71,7 @@ namespace GGUI
 			if (m_eButtonState != ButtonState_PushDown)
 			{
 				m_eButtonState = ButtonState_PushDown;
-				m_bShouldUpdateUITexture = true;
+				m_bDirty = true;
 			}
 		}
 		__super::OnMouseLeftButtonClickDown();
@@ -133,7 +86,7 @@ namespace GGUI
 				if (m_eButtonState != ButtonState_Hover)
 				{
 					m_eButtonState = ButtonState_Hover;
-					m_bShouldUpdateUITexture = true;
+					m_bDirty = true;
 				}
 			}
 			else
@@ -141,7 +94,7 @@ namespace GGUI
 				if (m_eButtonState != ButtonState_Normal)
 				{
 					m_eButtonState = ButtonState_Normal;
-					m_bShouldUpdateUITexture = true;
+					m_bDirty = true;
 				}
 			}
 		}

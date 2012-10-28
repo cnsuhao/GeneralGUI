@@ -27,11 +27,10 @@ namespace GGUI
 	,m_fColorA(0.0f)
 	,m_eMyWindowType(WindowType_Base)
 	,m_nMyWindowID(Invalid_WindowID)
-	,m_nMyTextureID(Invalid_TextureID)
 	,m_nMyImagesetID(Invalid_ImagesetID)
 	,m_nMyImageRectID(Invalid_ImageRectID)
 	,m_nMyDelegateID(Invalid_DelegateID)
-	,m_bShouldUpdateUITexture(false)
+	,m_bDirty(false)
 	,m_bVisible(true)
 	,m_bEnable(true)
 	,m_bMouseInWindowArea(false)
@@ -44,7 +43,6 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	GGUIWindow::~GGUIWindow()
 	{
-		ReleaseUITexture();
 		if (!GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
 		{
 			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来释放GGUIWindow！"), TEXT("GGUI Error"), MB_OK);
@@ -63,41 +61,36 @@ namespace GGUI
 			return;
 		}
 
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-		if (pUITexture)
-		{
-			pUITexture->RenderTexture();
-		}
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetPositionX(SoFloat fPosX)
 	{
 		m_fPositionX = fPosX;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetPositionY(SoFloat fPosY)
 	{
 		m_fPositionY = fPosY;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetPositionZ(SoFloat fPosZ)
 	{
 		m_fPositionZ = fPosZ;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWidth(SoFloat fWidth)
 	{
 		m_fWidth = fWidth;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetHeight(SoFloat fHeight)
 	{
 		m_fHeight = fHeight;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetColor(SoFloat fR, SoFloat fG, SoFloat fB)
@@ -105,51 +98,25 @@ namespace GGUI
 		m_fColorR = fR;
 		m_fColorG = fG;
 		m_fColorB = fB;
-		m_bShouldUpdateUITexture = true;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetAlpha(SoFloat fAlpha)
 	{
 		m_fColorA = fAlpha;
-		m_bShouldUpdateUITexture = true;
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetImage(IDirect3DTexture9* pTexture)
-	{
-		if (m_nMyTextureID == Invalid_TextureID)
-		{
-			CreateUITexture();
-		}
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-		if (pUITexture)
-		{
-			pUITexture->SetTexture(pTexture);
-		}
-	}
-	//-----------------------------------------------------------------------------
-	bool GGUIWindow::SetImageByFileName(const tchar* pFileName)
-	{
-		bool bResult = false;
-		if (m_nMyTextureID == Invalid_TextureID)
-		{
-			CreateUITexture();
-		}
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-		if (pUITexture)
-		{
-			bResult = pUITexture->LoadTexture(pFileName);
-		}
-		return bResult;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetImagesetID(ImagesetID theID)
 	{
 		m_nMyImagesetID = theID;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetImageRectID(ImageRectID theID)
 	{
 		m_nMyImageRectID = theID;
+		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetVisible(bool bVisible)
@@ -204,11 +171,6 @@ namespace GGUI
 		return m_nMyWindowID;
 	}
 	//-----------------------------------------------------------------------------
-	TextureID GGUIWindow::GetTextureID() const
-	{
-		return m_nMyTextureID;
-	}
-	//-----------------------------------------------------------------------------
 	ImagesetID GGUIWindow::GetImagesetID() const
 	{
 		return m_nMyImagesetID;
@@ -248,19 +210,6 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::OnMouseLeftButtonClickDown()
 	{
-		//<<<<<<<<<<<
-		GGUIFreeTypeFont* pFont = GGUIFontManager::GetInstance()->GetFont(0);
-		if (pFont)
-		{
-			GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-			if (pUITexture)
-			{
-				pFont->SetDrawParam(pUITexture->GetDXTexture(), 1.0f, 0.0f, 0.0f, true, 0.0f, 0.0f, 0.0f);
-				pFont->DrawString(TEXT("oil真棒！"), 6, 40, 20, 0, 0);
-			}
-		}
-		//>>>>>>>>>>>
-
 		GGUIWindowManager::GetInstance()->RaiseWindowEvent(m_nMyWindowID, m_nMyDelegateID, WindowEvent_MouseLeftButtonClickDown, 0);
 	}
 	//-----------------------------------------------------------------------------
@@ -295,38 +244,10 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::PostUpdateWindow()
 	{
-		if (m_bShouldUpdateUITexture)
+		if (m_bDirty)
 		{
-			m_bShouldUpdateUITexture = false;
-			UpdateUITexture();
-		}
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIWindow::CreateUITexture()
-	{
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->CreateUITexture();
-		if (pUITexture)
-		{
-			m_nMyTextureID = pUITexture->GetTextureID();
-		}
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIWindow::ReleaseUITexture()
-	{
-		if (m_nMyTextureID != Invalid_TextureID)
-		{
-			GGUITextureContainer::GetInstance()->ReleaseUITexture(m_nMyTextureID);
-			m_nMyTextureID = Invalid_TextureID;
-		}
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIWindow::UpdateUITexture()
-	{
-		GGUITexture* pUITexture = GGUITextureContainer::GetInstance()->GetUITexture(m_nMyTextureID);
-		if (pUITexture)
-		{
-			SoUInt32 uiColor = SoMakeColorRGBA(m_fColorR, m_fColorG, m_fColorB, m_fColorA);
-			pUITexture->UpdateVertexBuffer(m_fPositionX, m_fPositionY, m_fPositionZ, m_fWidth, m_fHeight, uiColor);
+			m_bDirty = false;
+			//UpdateUITexture();
 		}
 	}
 }

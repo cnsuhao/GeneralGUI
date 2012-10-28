@@ -37,12 +37,15 @@ namespace SoComponent
 
 	//-----------------------------------------------------------------------------
 	//自定义索引缓冲区的结构体,索引值一般为16位
+	#pragma pack(push) //保存对齐状态
+	#pragma pack(2) //设定为2字节对齐
 	struct SoIndexBufferUnit
 	{
 		SoUInt16 _0;
 		SoUInt16 _1;
 		SoUInt16 _2;
 	};
+	#pragma pack(pop) //恢复对齐状态
 
 } //namespace SoComponent
 //-----------------------------------------------------------------------------

@@ -23,6 +23,8 @@ namespace GGUI
 		bool LoadTextureFromDisk(const tchar* pszFileName, DXTextureID* pDXTextureID);
 		//删除一个贴图。
 		void ReleaseDXTexture(DXTextureID theTextureID);
+		//获取DXTexture指针。
+		IDirect3DTexture9* GetDXTexture(DXTextureID theTextureID);
 
 	private:
 		//
@@ -34,9 +36,21 @@ namespace GGUI
 		SoInt m_nIndexEnd;
 	};
 	//-----------------------------------------------------------------------------
-	inline static GGUIDXTextureManager* GetInstance()
+	inline GGUIDXTextureManager* GGUIDXTextureManager::GetInstance()
 	{
 		return GGUIDXTextureManager::Instance();
+	}
+	//-----------------------------------------------------------------------------
+	inline IDirect3DTexture9* GGUIDXTextureManager::GetDXTexture(DXTextureID theTextureID)
+	{
+		if (theTextureID >= 0 && theTextureID < m_nCapacity)
+		{
+			return m_arrayDXTexture[theTextureID];
+		}
+		else
+		{
+			return NULL;
+		}
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

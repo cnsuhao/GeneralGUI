@@ -27,9 +27,6 @@ namespace GGUI
 		ePictureShow GetPictureShowType();
 
 	protected:
-		virtual void UpdateUITexture();
-
-	protected:
 		ePictureShow m_ePictureShow;
 
 	};

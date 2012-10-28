@@ -18,7 +18,7 @@ namespace GGUI
 
 	protected:
 		virtual void SetEnable(bool bEnable);
-		virtual void UpdateUITexture();
+
 	protected:
 		//事件响应函数
 		virtual void OnMouseEnterWindowArea();
