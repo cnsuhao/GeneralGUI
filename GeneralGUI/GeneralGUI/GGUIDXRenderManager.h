@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
-	class GGUIWindow;
 	//-----------------------------------------------------------------------------
 	class GGUIDXRenderManager : public SoTSingleton<GGUIDXRenderManager>
 	{
@@ -20,7 +19,7 @@ namespace GGUI
 		void ReleaseDXRenderManager();
 		//
 		void PreRender();
-		void AddRnederUnit(const GGUIWindow* pUIWindow);
+		void AddRnederUnit(const stRenderUnit& theRenderUnit);
 		void DoRender();
 		void PostRender();
 
@@ -77,7 +76,7 @@ namespace GGUI
 
 	};
 	//-----------------------------------------------------------------------------
-	GGUIDXRenderManager* GGUIDXRenderManager::GetInstance()
+	inline GGUIDXRenderManager* GGUIDXRenderManager::GetInstance()
 	{
 		return GGUIDXRenderManager::Instance();
 	}

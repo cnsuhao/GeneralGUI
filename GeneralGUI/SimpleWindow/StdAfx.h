@@ -5,13 +5,14 @@
 using namespace SoComponent;
 
 #include "../GeneralGUI/GGUIInputDefine.h"
-#include "../GeneralGUI/GGUITextureDefine.h"
 #include "../GeneralGUI/GGUIWindowDefine.h"
+#include "../GeneralGUI/GGUIImagesetDefine.h"
+#include "../GeneralGUI/GGUITinyString.h"
+#include "../GeneralGUI/GGUIRect.h"
+#include "../GeneralGUI/GGUIDXTextureDefine.h"
 #include "../GeneralGUI/GGUISystem.h"
 #include "../GeneralGUI/GGUIWindow.h"
 #include "../GeneralGUI/GGUIWindowManager.h"
-#include "../GeneralGUI/GGUITexture.h"
-#include "../GeneralGUI/GGUITextureContainer.h"
 #include "../GeneralGUI/GGUIFontManager.h"
 using namespace GGUI;
 
@@ -20,3 +21,6 @@ using namespace GGUI;
 #include "SoEngine.h"
 #include "SoNSD3D.h"
 #include "SoDebug.h"
+
+#include <vector>
+#include <map>

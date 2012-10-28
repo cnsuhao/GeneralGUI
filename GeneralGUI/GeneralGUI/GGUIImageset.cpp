@@ -70,10 +70,10 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	const GGUITinyString* GGUIImageset::GetImageRectNameByID(ImageRectID theRectID)
+	const GGUITinyString* GGUIImageset::GetImageRectNameByID(ImageRectID theRectID) const
 	{
 		GGUITinyString* pResult = NULL;
-		for (mapRectName2RectID::iterator it = m_mapRectName2RectID.begin();
+		for (mapRectName2RectID::const_iterator it = m_mapRectName2RectID.begin();
 			it != m_mapRectName2RectID.end();
 			++it)
 		{
@@ -87,13 +87,48 @@ namespace GGUI
 		return pResult;
 	}
 	//-----------------------------------------------------------------------------
+	bool GGUIImageset::GetImageRectPixel(ImageRectID theRectID, GGUIRect& theRect) const
+	{
+		const GGUIRect* pRect = GetImageRect(theRectID);
+		if (pRect)
+		{
+			theRect.m_fLeft = pRect->m_fLeft * m_nDXTextureWidth;
+			theRect.m_fRight = pRect->m_fRight * m_nDXTextureWidth;
+			theRect.m_fTop = pRect->m_fTop * m_nDXTextureHeight;
+			theRect.m_fBottom = pRect->m_fBottom * m_nDXTextureHeight;
+			if (theRect.m_fLeft < 0.0f)
+			{
+				theRect.m_fLeft = 0.0f;
+			}
+			if (theRect.m_fRight > (SoFloat)m_nDXTextureWidth)
+			{
+				theRect.m_fRight = (SoFloat)m_nDXTextureWidth;
+			}
+			if (theRect.m_fTop < 0.0f)
+			{
+				theRect.m_fTop = 0.0f;
+			}
+			if (theRect.m_fBottom > (SoFloat)m_nDXTextureHeight)
+			{
+				theRect.m_fBottom = (SoFloat)m_nDXTextureHeight;
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	//-----------------------------------------------------------------------------
 	GGUIImageset::GGUIImageset()
-	:m_MyImagesetID(Invalid_ImagesetID)
-	,m_MyImagesetName()
-	,m_MyDXTextureID(Invalid_DXTextureID)
-	,m_pImageRectID2Rect(NULL)
+	:m_pImageRectID2Rect(NULL)
 	,m_nCapacity(0)
 	,m_nIndexEnd(0)
+	,m_MyImagesetID(Invalid_ImagesetID)
+	,m_MyDXTextureID(Invalid_DXTextureID)
+	,m_MyImagesetName()
+	,m_nDXTextureWidth(0)
+	,m_nDXTextureHeight(0)
 	{
 		//初始化GGUIRect数组。
 		m_nCapacity = 10;
@@ -120,10 +155,20 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIImageset::SetDXTextureID(DXTextureID theTextureID)
 	{
-		//尝试删除旧贴图。
-		GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(theTextureID);
-		//
 		m_MyDXTextureID = theTextureID;
+		if (theTextureID != Invalid_DXTextureID)
+		{
+			IDirect3DTexture9* pDXTexture = GGUIDXTextureManager::GetInstance()->GetDXTexture(theTextureID);
+			if (pDXTexture)
+			{
+				D3DSURFACE_DESC stDesc;
+				if (pDXTexture->GetLevelDesc(0, &stDesc) == D3D_OK)
+				{
+					m_nDXTextureWidth = (SoInt)stDesc.Width;
+					m_nDXTextureHeight = (SoInt)stDesc.Height;
+				}
+			}
+		}
 	}
 	//-----------------------------------------------------------------------------
 } //namespace GGUI

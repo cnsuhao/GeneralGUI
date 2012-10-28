@@ -5,6 +5,7 @@
 //-----------------------------------------------------------------------------
 #include "GGUIStdAfx.h"
 #include "GGUIWindowManager.h"
+#include "GGUIDXRenderManager.h"
 #include "GGUIWindow.h"
 #include "GGUIButton.h"
 #include "GGUIPicture.h"
@@ -13,11 +14,10 @@ namespace GGUI
 {
 	//-----------------------------------------------------------------------------
 	GGUIWindowManager::GGUIWindowManager()
-	:m_pWindowID2Window(0)
+	:m_pWindowID2Window(NULL)
+	,m_pDelegateID2Delegate(NULL)
 	,m_nCapacity(0)
 	,m_nIndexEnd(0)
-	,m_bOperationByWindowContainer(SoFalse)
-	,m_pDelegateID2Delegate(0)
 	,m_nDelegateCapacity(0)
 	,m_nDelegateIndexEnd(0)
 	{
@@ -39,36 +39,28 @@ namespace GGUI
 		m_nDelegateCapacity = 100;
 		m_pDelegateID2Delegate = new stWindowEventDelegate*[m_nDelegateCapacity];
 		memset(m_pDelegateID2Delegate, 0, sizeof(stWindowEventDelegate*)*m_nDelegateCapacity);
-
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::ReleaseWindowManager()
 	{
-		m_bOperationByWindowContainer = SoTrue;
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
 			if (m_pWindowID2Window[i])
 			{
-				delete m_pWindowID2Window[i];
-				m_pWindowID2Window[i] = 0;
+				SAFE_DELETE(m_pWindowID2Window[i]);
 			}
 		}
-		m_bOperationByWindowContainer = SoFalse;
-		delete [] m_pWindowID2Window;
-		m_pWindowID2Window = 0;
+		SAFE_DELETE_ARRAY(m_pWindowID2Window);
 		//
-		m_bOperationByWindowContainer = SoTrue;
 		for (SoInt i=0; i<m_nDelegateIndexEnd; ++i)
 		{
 			if (m_pDelegateID2Delegate[i])
 			{
-				delete m_pDelegateID2Delegate[i];
-				m_pDelegateID2Delegate[i] = 0;
+				SAFE_DELETE(m_pDelegateID2Delegate[i]);
 			}
 		}
-		m_bOperationByWindowContainer = SoFalse;
-		delete [] m_pDelegateID2Delegate;
+		SAFE_DELETE_ARRAY(m_pDelegateID2Delegate);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::UpdateWindowManager(SoFloat fFrameTime)
@@ -87,11 +79,17 @@ namespace GGUI
 		//绘制之前，对每个窗口的Mesh顶点做最后的更新。
 		PostUpdateWindowManager();
 		//
+		GGUIDXRenderManager* pDXRenderMgr = GGUIDXRenderManager::GetInstance();
+		stRenderUnit theRenderUnit;
 		for (SoInt i=0; i<m_nIndexEnd; ++i)
 		{
-			if (m_pWindowID2Window[i])
+			if (m_pWindowID2Window[i] && m_pWindowID2Window[i]->GetVisible())
 			{
-				m_pWindowID2Window[i]->RenderWindow();
+				pDXRenderMgr->PreRender();
+				m_pWindowID2Window[i]->GenerateRenderUnit(theRenderUnit);
+				pDXRenderMgr->AddRnederUnit(theRenderUnit);
+				pDXRenderMgr->DoRender();
+				pDXRenderMgr->PostRender();
 			}
 		}
 	}
@@ -107,10 +105,9 @@ namespace GGUI
 			SoUInt sizeOfNewArray = sizeof(GGUIWindow*) * m_nCapacity;
 			memset(pNewArray, 0, sizeOfNewArray);
 			memcpy_s(pNewArray, sizeOfNewArray, m_pWindowID2Window, sizeOfOldArray);
-			delete [] m_pWindowID2Window;
+			SAFE_DELETE_ARRAY(m_pWindowID2Window);
 			m_pWindowID2Window = pNewArray;
 		}
-		m_bOperationByWindowContainer = SoTrue;
 		GGUIWindow* pNewWindow = NULL;
 		switch (theType)
 		{
@@ -132,7 +129,6 @@ namespace GGUI
 			m_pWindowID2Window[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
 			++m_nIndexEnd;
 		}
-		m_bOperationByWindowContainer = SoFalse;
 		return pNewWindow;
 	}
 	//-----------------------------------------------------------------------------
@@ -142,10 +138,7 @@ namespace GGUI
 		{
 			if (m_pWindowID2Window[theWindowID])
 			{
-				m_bOperationByWindowContainer = SoTrue;
-				delete m_pWindowID2Window[theWindowID];
-				m_pWindowID2Window[theWindowID] = 0;
-				m_bOperationByWindowContainer = SoFalse;
+				SAFE_DELETE(m_pWindowID2Window[theWindowID]);
 			}
 		}
 		else
@@ -164,9 +157,7 @@ namespace GGUI
 			if (theDelegateID == Invalid_DelegateID)
 			{
 				theDelegateID = CreateDelegate();
-				m_bOperationByWindowContainer = SoTrue;
 				pTheWindow->SetDelegateID(theDelegateID);
-				m_bOperationByWindowContainer = SoFalse;
 			}
 			if (theDelegateID >= 0 && theDelegateID < m_nDelegateIndexEnd)
 			{
@@ -221,7 +212,7 @@ namespace GGUI
 			SoUInt sizeOfNewArray = sizeof(stWindowEventDelegate*) * m_nDelegateCapacity;
 			memset(pNewArray, 0, sizeOfNewArray);
 			memcpy_s(pNewArray, sizeOfNewArray, m_pDelegateID2Delegate, sizeOfOldArray);
-			delete [] m_pDelegateID2Delegate;
+			SAFE_DELETE_ARRAY(m_pDelegateID2Delegate);
 			m_pDelegateID2Delegate = pNewArray;
 		}
 		//

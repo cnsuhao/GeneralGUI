@@ -77,6 +77,10 @@ namespace GGUI
 		//
 		m_arrayDXTexture[m_nIndexEnd] = pNewDXTexture;
 		++m_nIndexEnd;
+		if (pDXTextureID)
+		{
+			*pDXTextureID = m_nIndexEnd - 1;
+		}
 		return true;
 	}
 	//-----------------------------------------------------------------------------

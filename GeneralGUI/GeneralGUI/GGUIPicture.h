@@ -12,6 +12,7 @@ namespace GGUI
 {
 	class GGUIPicture : public GGUIWindow
 	{
+		friend class GGUIWindowManager;
 	public:
 		enum ePictureShow
 		{
@@ -20,15 +21,16 @@ namespace GGUI
 		};
 
 	public:
+		void SetPictureShowType(ePictureShow theShowType);
+		ePictureShow GetPictureShowType() const;
+
+	protected:
 		GGUIPicture();
 		virtual ~GGUIPicture();
-
-		void SetPictureShowType(ePictureShow theShowType);
-		ePictureShow GetPictureShowType();
+		virtual void GenerateRenderUnit(stRenderUnit& theRenderUnit);
 
 	protected:
 		ePictureShow m_ePictureShow;
-
 	};
 }
 //-----------------------------------------------------------------------------

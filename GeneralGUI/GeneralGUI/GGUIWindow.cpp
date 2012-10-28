@@ -6,8 +6,6 @@
 #include "GGUIStdAfx.h"
 #include "GGUIWindow.h"
 #include "GGUIWindowManager.h"
-#include "GGUITexture.h"
-#include "GGUITextureContainer.h"
 //<<<<<<<<<<<
 #include "GGUIFontManager.h"
 #include "GGUIFreeTypeFont.h"
@@ -16,7 +14,12 @@
 namespace GGUI
 {
 	GGUIWindow::GGUIWindow()
-	:m_fPositionX(0.0f)
+	:m_eMyWindowType(WindowType_Base)
+	,m_nMyWindowID(Invalid_WindowID)
+	,m_nMyImagesetID(Invalid_ImagesetID)
+	,m_nMyImageRectID(Invalid_ImageRectID)
+	,m_nMyDelegateID(Invalid_DelegateID)
+	,m_fPositionX(0.0f)
 	,m_fPositionY(0.0f)
 	,m_fPositionZ(0.0f)
 	,m_fWidth(0.0f)
@@ -25,28 +28,17 @@ namespace GGUI
 	,m_fColorG(0.0f)
 	,m_fColorB(0.0f)
 	,m_fColorA(0.0f)
-	,m_eMyWindowType(WindowType_Base)
-	,m_nMyWindowID(Invalid_WindowID)
-	,m_nMyImagesetID(Invalid_ImagesetID)
-	,m_nMyImageRectID(Invalid_ImageRectID)
-	,m_nMyDelegateID(Invalid_DelegateID)
 	,m_bDirty(false)
 	,m_bVisible(true)
 	,m_bEnable(true)
 	,m_bMouseInWindowArea(false)
 	{
-		if (!GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
-		{
-			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来创建GGUIWindow！"), TEXT("GGUI Error"), MB_OK);
-		}
+
 	}
 	//-----------------------------------------------------------------------------
 	GGUIWindow::~GGUIWindow()
 	{
-		if (!GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
-		{
-			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来释放GGUIWindow！"), TEXT("GGUI Error"), MB_OK);
-		}
+
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::UpdateWindow(SoFloat fFrameTime)
@@ -220,26 +212,12 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetWindowID(WindowID theID)
 	{
-		if (GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
-		{
-			m_nMyWindowID = theID;
-		}
-		else
-		{
-			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来赋值WindowID！"), TEXT("GGUI Error"), MB_OK);
-		}
+		m_nMyWindowID = theID;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::SetDelegateID(DelegateID theID)
 	{
-		if (GGUIWindowManager::GetInstance()->IsOperationByWindowContainer())
-		{
-			m_nMyDelegateID = theID;
-		}
-		else
-		{
-			::MessageBox(NULL, TEXT("一定要使用GGUIWindowContainer来赋值DelegateID！"), TEXT("GGUI Error"), MB_OK);
-		}
+		m_nMyDelegateID = theID;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::PostUpdateWindow()
@@ -247,8 +225,22 @@ namespace GGUI
 		if (m_bDirty)
 		{
 			m_bDirty = false;
-			//UpdateUITexture();
 		}
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::GenerateRenderUnit(stRenderUnit& theRenderUnit)
+	{
+		theRenderUnit.fPositionX = m_fPositionX;
+		theRenderUnit.fPositionY = m_fPositionY;
+		theRenderUnit.fPositionZ = m_fPositionZ;
+		theRenderUnit.fWidth = m_fWidth;
+		theRenderUnit.fHeight = m_fHeight;
+		theRenderUnit.fColorR = m_fColorR;
+		theRenderUnit.fColorG = m_fColorG;
+		theRenderUnit.fColorB = m_fColorB;
+		theRenderUnit.fColorA = m_fColorA;
+		theRenderUnit.theImagesetID = m_nMyImagesetID;
+		theRenderUnit.theImageRectID = m_nMyImageRectID;
 	}
 }
 //-----------------------------------------------------------------------------

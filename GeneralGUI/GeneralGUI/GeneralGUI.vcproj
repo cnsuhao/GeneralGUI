@@ -318,50 +318,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\GGUITextTexture.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUITextTexture.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUITexture.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="2"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\GGUITexture.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUITextureContainer.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					UsePrecompiledHeader="2"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\GGUITextureContainer.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUITextureDefine.h"
-			>
-		</File>
-		<File
 			RelativePath=".\GGUITinyString.cpp"
 			>
 		</File>

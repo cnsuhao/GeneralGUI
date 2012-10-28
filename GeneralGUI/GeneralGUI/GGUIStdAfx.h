@@ -16,7 +16,6 @@ using namespace SoComponent;
 
 //包含GGUI内部的常用头文件
 #include "GGUIWindowDefine.h"
-#include "GGUITextureDefine.h"
 #include "GGUIInputDefine.h"
 #include "GGUIImagesetDefine.h"
 #include "GGUITinyString.h"

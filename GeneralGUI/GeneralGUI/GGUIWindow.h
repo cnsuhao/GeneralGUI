@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI´°¿Ú»ùÀà
+ï»¿//-----------------------------------------------------------------------------
+// GGUIçª—å£åŸºç±»
 // (C) oil
 // 2012-09-16
 //-----------------------------------------------------------------------------
@@ -13,15 +13,12 @@ namespace GGUI
 		friend class GGUIWindowManager;
 		friend class GGUIInputProcess;
 	public:
-		GGUIWindow();
-		virtual ~GGUIWindow();
+		//æ›´æ–°å‡½æ•°
+		virtual void UpdateWindow(SoFloat fFrameTime);
+		//ç»˜åˆ¶å‡½æ•°
+		virtual void RenderWindow();
 
-		//¸üĞÂº¯Êı
-		void UpdateWindow(SoFloat fFrameTime);
-		//»æÖÆº¯Êı
-		void RenderWindow();
-
-		//ÉèÖÃÊôĞÔº¯Êı
+		//è®¾ç½®å±æ€§å‡½æ•°
 		void SetPositionX(SoFloat fPosX);
 		void SetPositionY(SoFloat fPosY);
 		void SetPositionZ(SoFloat fPosZ);
@@ -31,10 +28,10 @@ namespace GGUI
 		void SetAlpha(SoFloat fAlpha);
 		void SetImagesetID(ImagesetID theID);
 		void SetImageRectID(ImageRectID theID);
-		void SetVisible(bool bVisible);
+		virtual void SetVisible(bool bVisible);
 		virtual void SetEnable(bool bEnable);
 
-		//»ñÈ¡ÊôĞÔº¯Êı
+		//è·å–å±æ€§å‡½æ•°
 		SoFloat GetPositionX() const;
 		SoFloat GetPositionY() const;
 		SoFloat GetPositionZ() const;
@@ -49,25 +46,37 @@ namespace GGUI
 		bool GetVisible() const;
 		bool GetEnable() const;
 
-		//¸ù¾İÊó±ê×ø±êºÍ±¾´°¿ÚµÄ¾ØĞÎÇøÓò£¬ÅĞ¶ÏÊó±êÊÇ·ñÂäÔÚ±¾´°¿ÚÄÚ²¿¡£
-		//µ¥´¿µÄÎ»ÖÃÅĞ¶Ï£¬²»¿¼ÂÇ´°¿ÚÊÇ·ñ¿É¼û£¬ÊÇ·ñ±»½ûÓÃµÈµÈ¡£
+		//æ ¹æ®é¼ æ ‡åæ ‡å’Œæœ¬çª—å£çš„çŸ©å½¢åŒºåŸŸï¼Œåˆ¤æ–­é¼ æ ‡æ˜¯å¦è½åœ¨æœ¬çª—å£å†…éƒ¨ã€‚
+		//å•çº¯çš„ä½ç½®åˆ¤æ–­ï¼Œä¸è€ƒè™‘çª—å£æ˜¯å¦å¯è§ï¼Œæ˜¯å¦è¢«ç¦ç”¨ç­‰ç­‰ã€‚
 		bool CheckMouseInWindowArea(SoFloat fMousePosX, SoFloat fMousePosY) const;
 
 	protected:
-		//ÊÂ¼şÏìÓ¦º¯Êı¡£ÔÚº¯ÊıÄÚ²¿»áÖ´ĞĞÓÃ»§×¢²áµÄDelegateº¯Êı¡£
-		//ÅÉÉúÀàÈç¹ûÒªÖØĞ´ÕâĞ©º¯ÊıµÄ»°£¬Ó¦¸ÃÏÈÖ´ĞĞ×Ô¼ºµÄÂß¼­£¬ÔÙµ÷ÓÃ»ùÀàµÄÊÂ¼şÏìÓ¦º¯Êı¡£
+		//äº‹ä»¶å“åº”å‡½æ•°ã€‚åœ¨å‡½æ•°å†…éƒ¨ä¼šæ‰§è¡Œç”¨æˆ·æ³¨å†Œçš„Delegateå‡½æ•°ã€‚
+		//æ´¾ç”Ÿç±»å¦‚æœè¦é‡å†™è¿™äº›å‡½æ•°çš„è¯ï¼Œåº”è¯¥å…ˆæ‰§è¡Œè‡ªå·±çš„é€»è¾‘ï¼Œå†è°ƒç”¨åŸºç±»çš„äº‹ä»¶å“åº”å‡½æ•°ã€‚
 		virtual void OnMouseEnterWindowArea();
 		virtual void OnMouseLeaveWindowArea();
 		virtual void OnMouseLeftButtonClickDown();
 		virtual void OnMouseLeftButtonClickUp();
 
 	protected:
+		GGUIWindow();
+		virtual ~GGUIWindow();
 		void SetWindowID(WindowID theID);
 		void SetDelegateID(DelegateID theID);
-		//ÔÚ»æÖÆÖ®Ç°£¬¶ÔMesh¶¥µãĞÅÏ¢×ö×îÖÕµÄ¸üĞÂ¡£
 		void PostUpdateWindow();
+		virtual void GenerateRenderUnit(stRenderUnit& theRenderUnit);
 
 	protected:
+		//æœ¬çª—å£çš„ç±»å‹ã€‚
+		eWindowType m_eMyWindowType;
+		//æœ¬çª—å£çš„IDã€‚
+		WindowID m_nMyWindowID;
+		//æœ¬çª—å£çš„è´´å›¾ã€‚
+		ImagesetID m_nMyImagesetID;
+		ImageRectID m_nMyImageRectID;
+		//æœ¬çª—å£çš„Delegateäº‹ä»¶å“åº”å‡½æ•°çš„IDã€‚
+		DelegateID m_nMyDelegateID;
+		//
 		SoFloat m_fPositionX;
 		SoFloat m_fPositionY;
 		SoFloat m_fPositionZ;
@@ -77,22 +86,13 @@ namespace GGUI
 		SoFloat m_fColorG;
 		SoFloat m_fColorB;
 		SoFloat m_fColorA;
-		//±¾´°¿ÚµÄÀàĞÍ¡£
-		eWindowType m_eMyWindowType;
-		//±¾´°¿ÚµÄID¡£
-		WindowID m_nMyWindowID;
-		//±¾´°¿ÚµÄÌùÍ¼¡£
-		ImagesetID m_nMyImagesetID;
-		ImageRectID m_nMyImageRectID;
-		//±¾´°¿ÚµÄDelegateÊÂ¼şÏìÓ¦º¯ÊıµÄID¡£
-		DelegateID m_nMyDelegateID;
-		//¼ÇÂ¼ÊÇ·ñĞèÒª¸üĞÂUITexture¶ÔÏó¡£
+		//è®°å½•çª—å£å±æ€§æ•°æ®æ˜¯å¦å‘ç”Ÿäº†å˜åŒ–ã€‚å¦‚æœå‘ç”Ÿäº†å˜åŒ–ï¼Œå°±åº”è¯¥é‡ç»˜ã€‚
 		bool m_bDirty;
-		//¼ÇÂ¼´°¿ÚÊÇ·ñ¿É¼û¡£
+		//è®°å½•çª—å£æ˜¯å¦å¯è§ã€‚
 		bool m_bVisible;
-		//¼ÇÂ¼´°¿ÚÊÇ·ñ¿ÉÓÃ¡£
+		//è®°å½•çª—å£æ˜¯å¦å¯ç”¨ã€‚
 		bool m_bEnable;
-		//¼ÇÂ¼Êó±êµÄ×ø±êÊÇ·ñÂäÔÚ±¾´°¿ÚµÄ¾ØĞÎÇøÓòÄÚ¡£
+		//è®°å½•é¼ æ ‡çš„åæ ‡æ˜¯å¦è½åœ¨æœ¬çª—å£çš„çŸ©å½¢åŒºåŸŸå†…ã€‚
 		bool m_bMouseInWindowArea;
 
 	};

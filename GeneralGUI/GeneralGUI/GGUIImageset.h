@@ -24,9 +24,11 @@ namespace GGUI
 		//如果已经存在名字为strRectName的ImageRect，则返回false。
 		bool AddImageRect(const GGUITinyString& strRectName, SoFloat fLeft, SoFloat fRight, SoFloat fTop, SoFloat fBottom, ImageRectID* pRectID);
 		void RemoveImageRect(ImageRectID theRectID);
-		const GGUIRect* GetImageRect(ImageRectID theRectID);
-		ImageRectID GetImageRectIDByName(const GGUITinyString& strRectName);
-		const GGUITinyString* GetImageRectNameByID(ImageRectID theRectID);
+		const GGUIRect* GetImageRect(ImageRectID theRectID) const;
+		ImageRectID GetImageRectIDByName(const GGUITinyString& strRectName) const;
+		const GGUITinyString* GetImageRectNameByID(ImageRectID theRectID) const;
+		//ImageRect中存储的是纹理UV坐标。这个函数用于获取ImageRect的像素坐标。
+		bool GetImageRectPixel(ImageRectID theRectID, GGUIRect& theRect) const;
 
 	protected:
 		GGUIImageset();
@@ -44,18 +46,23 @@ namespace GGUI
 		typedef std::map<GGUITinyString, ImageRectID> mapRectName2RectID;
 
 	private:
-		ImagesetID m_MyImagesetID;
-		GGUITinyString m_MyImagesetName;
-		DXTextureID m_MyDXTextureID;
-		//存储从ImageRectName到ImageRectID的映射。
-		mapRectName2RectID m_mapRectName2RectID;
-		//
+		//GGUIRect指针数组。
 		GGUIRect** m_pImageRectID2Rect;
 		//记录数组中最多存储多少个元素。
 		SoInt m_nCapacity;
 		//记录数组中索引号最大的有效元素的下一个索引号。
 		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
 		SoInt m_nIndexEnd;
+		//
+		ImagesetID m_MyImagesetID;
+		DXTextureID m_MyDXTextureID;
+		GGUITinyString m_MyImagesetName;
+		//记录DX贴图资源的宽高。
+		SoInt m_nDXTextureWidth;
+		SoInt m_nDXTextureHeight;
+		//存储从ImageRectName到ImageRectID的映射。
+		mapRectName2RectID m_mapRectName2RectID;
+
 	};
 	//-----------------------------------------------------------------------------
 	inline ImagesetID GGUIImageset::GetImagesetID() const
@@ -73,7 +80,7 @@ namespace GGUI
 		return m_MyDXTextureID;
 	}
 	//-----------------------------------------------------------------------------
-	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID)
+	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID) const
 	{
 		if (theRectID >= 0 && theRectID < m_nIndexEnd)
 		{
@@ -85,9 +92,9 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	inline ImageRectID GGUIImageset::GetImageRectIDByName(const GGUITinyString& strRectName)
+	inline ImageRectID GGUIImageset::GetImageRectIDByName(const GGUITinyString& strRectName) const
 	{
-		mapRectName2RectID::iterator it = m_mapRectName2RectID.find(strRectName);
+		mapRectName2RectID::const_iterator it = m_mapRectName2RectID.find(strRectName);
 		if (it == m_mapRectName2RectID.end())
 		{
 			return Invalid_ImageRectID;

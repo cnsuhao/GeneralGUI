@@ -1,17 +1,16 @@
-//-----------------------------------------------------------------------------
-// GGUI Buttonøÿº˛
+Ôªø//-----------------------------------------------------------------------------
+// GGUI ButtonÊéß‰ª∂
 // (C) oil
 // 2012-09-30
 //-----------------------------------------------------------------------------
 #include "GGUIStdAfx.h"
 #include "GGUIButton.h"
-#include "GGUITexture.h"
-#include "GGUITextureContainer.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
 	GGUIButton::GGUIButton()
-	:m_eButtonState(ButtonState_Normal)
+	:GGUIWindow()
+	,m_eButtonState(ButtonState_Normal)
 	{
 		m_eMyWindowType = WindowType_Button;
 	}
@@ -23,7 +22,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIButton::SetEnable(bool bEnable)
 	{
-		//∞—æ…÷µ±£¥Êœ¬¿¥°£
+		//ÊääÊóßÂÄº‰øùÂ≠ò‰∏ãÊù•„ÄÇ
 		bool bOldValue = m_bEnable;
 		__super::SetEnable(bEnable);
 		//
@@ -99,6 +98,58 @@ namespace GGUI
 			}
 		}
 		__super::OnMouseLeftButtonClickUp();
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIButton::GenerateRenderUnit(stRenderUnit& theRenderUnit)
+	{
+		static SoFloat s_fColorReduce = 1.0f;
+		static SoFloat s_fDeltaX = 2.0f;
+		static SoFloat s_fDeltaY = 2.0f;
+
+		SoFloat fDestColorR = m_fColorR;
+		SoFloat fDestColorG = m_fColorG;
+		SoFloat fDestColorB = m_fColorB;
+		SoFloat fDestPosX = m_fPositionX;
+		SoFloat fDestPosY = m_fPositionY;
+		switch (m_eButtonState)
+		{
+		case ButtonState_Normal:
+			break;
+		case ButtonState_Hover:
+			{
+				fDestColorR = m_fColorR * s_fColorReduce;
+				fDestColorG = m_fColorG * s_fColorReduce;
+				fDestPosX = m_fPositionX - s_fDeltaX;
+				fDestPosY = m_fPositionY - s_fDeltaY;
+			}
+			break;
+		case ButtonState_PushDown:
+			{
+				fDestColorG = m_fColorG * s_fColorReduce;
+				fDestColorB = m_fColorB * s_fColorReduce;
+				fDestPosX = m_fPositionX + s_fDeltaX;
+				fDestPosY = m_fPositionY + s_fDeltaY;
+			}
+			break;
+		case ButtonState_Disable:
+			{
+				fDestColorR = m_fColorR * s_fColorReduce;
+				fDestColorG = m_fColorG * s_fColorReduce;
+				fDestColorB = m_fColorB * s_fColorReduce;
+			}
+			break;
+		}
+		theRenderUnit.fPositionX = fDestPosX;
+		theRenderUnit.fPositionY = fDestPosY;
+		theRenderUnit.fPositionZ = m_fPositionZ;
+		theRenderUnit.fWidth = m_fWidth;
+		theRenderUnit.fHeight = m_fHeight;
+		theRenderUnit.fColorR = fDestColorR;
+		theRenderUnit.fColorG = fDestColorG;
+		theRenderUnit.fColorB = fDestColorB;
+		theRenderUnit.fColorA = m_fColorA;
+		theRenderUnit.theImagesetID = m_nMyImagesetID;
+		theRenderUnit.theImageRectID = m_nMyImageRectID;
 	}
 }
 //-----------------------------------------------------------------------------

@@ -13,6 +13,22 @@ namespace GGUI
 	typedef SoInt ImageRectID;
 	static const ImageRectID Invalid_ImageRectID = -1;
 
+	//窗口的绘制参数。
+	struct stRenderUnit
+	{
+		SoFloat fPositionX;
+		SoFloat fPositionY;
+		SoFloat fPositionZ;
+		SoFloat fWidth;
+		SoFloat fHeight;
+		SoFloat fColorR;
+		SoFloat fColorG;
+		SoFloat fColorB;
+		SoFloat fColorA;
+		ImagesetID theImagesetID;
+		ImageRectID theImageRectID;
+	};
+
 } //namespace GGUI
 //-----------------------------------------------------------------------------
 #endif //_GGUIImagesetDefine_h_

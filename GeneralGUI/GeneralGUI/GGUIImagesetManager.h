@@ -41,15 +41,15 @@ namespace GGUI
 		typedef std::map<GGUITinyString, ImagesetID> mapImagesetName2ImagesetID;
 
 	private:
-		//维护从ImagesetName到ImagesetID的映射。
-		mapImagesetName2ImagesetID m_mapImagesetName2ID;
-		//
+		//GGUIImageset指针数组。
 		GGUIImageset** m_arrayImageset;
 		//记录数组中最多存储多少个元素。
 		SoInt m_nCapacity;
 		//记录数组中索引号最大的有效元素的下一个索引号。
 		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
 		SoInt m_nIndexEnd;
+		//维护从ImagesetName到ImagesetID的映射。
+		mapImagesetName2ImagesetID m_mapImagesetName2ID;
 
 	};
 	//-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
-//-----------------------------------------------------------------------------
-// GGUI Button¿Ø¼ş
+ï»¿//-----------------------------------------------------------------------------
+// GGUI Buttonæ§ä»¶
 // (C) oil
 // 2012-09-30
 //-----------------------------------------------------------------------------
@@ -12,19 +12,20 @@ namespace GGUI
 {
 	class GGUIButton : public GGUIWindow
 	{
-	public:
+		friend class GGUIWindowManager;
+	protected:
 		GGUIButton();
 		virtual ~GGUIButton();
-
-	protected:
 		virtual void SetEnable(bool bEnable);
 
 	protected:
-		//ÊÂ¼şÏìÓ¦º¯Êı
+		//äº‹ä»¶å“åº”å‡½æ•°
 		virtual void OnMouseEnterWindowArea();
 		virtual void OnMouseLeaveWindowArea();
 		virtual void OnMouseLeftButtonClickDown();
 		virtual void OnMouseLeftButtonClickUp();
+		//
+		virtual void GenerateRenderUnit(stRenderUnit& theRenderUnit);
 
 	protected:
 		enum eButtonState

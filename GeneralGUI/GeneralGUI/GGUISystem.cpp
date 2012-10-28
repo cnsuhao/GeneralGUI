@@ -6,10 +6,12 @@
 #include "GGUIStdAfx.h"
 #include "GGUISystem.h"
 #include "GGUIWindowManager.h"
-#include "GGUITextureContainer.h"
 #include "GGUIInputProcess.h"
 #include "GGUIScreenParam.h"
 #include "GGUIFontManager.h"
+#include "GGUIDXRenderManager.h"
+#include "GGUIDXTextureManager.h"
+#include "GGUIImagesetManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -31,12 +33,6 @@ namespace GGUI
 		GGUIScreenParam::ms_fScreenWidth = fScreenWidth;
 		GGUIScreenParam::ms_fScreenHeight = fScreenHeight;
 		//
-		GGUITextureContainer::CreateInstance();
-		if (!GGUITextureContainer::GetInstance()->InitTextureContainer())
-		{
-			return false;
-		}
-		//
 		GGUIWindowManager::CreateInstance();
 		if (!GGUIWindowManager::GetInstance()->InitWindowManager())
 		{
@@ -49,6 +45,24 @@ namespace GGUI
 			return false;
 		}
 		//
+		GGUIDXRenderManager::CreateInstance();
+		if (!GGUIDXRenderManager::GetInstance()->InitDXRenderManager())
+		{
+			return false;
+		}
+		//
+		GGUIDXTextureManager::CreateInstance();
+		if (!GGUIDXTextureManager::GetInstance()->InitDXTextureManager())
+		{
+			return false;
+		}
+		//
+		GGUIImagesetManager::CreateInstance();
+		if (!GGUIImagesetManager::GetInstance()->InitImagesetManager())
+		{
+			return false;
+		}
+		//
 		GGUIFontManager::CreateInstance();
 		//
 		return true;
@@ -57,10 +71,12 @@ namespace GGUI
 	void GGUISystem::ReleaseUISystem()
 	{
 		GGUIFontManager::ReleaseInstance();
+		GGUIImagesetManager::ReleaseInstance();
+		GGUIDXTextureManager::ReleaseInstance();
+		GGUIDXRenderManager::ReleaseInstance();
 		GGUIInputProcess::ReleaseInstance();
 		GGUIWindowManager::ReleaseInstance();
-		GGUITextureContainer::ReleaseInstance();
-		m_pD3DDevice = 0;
+		m_pD3DDevice = NULL;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUISystem::UpdateGGUI(SoFloat fFrameTime)

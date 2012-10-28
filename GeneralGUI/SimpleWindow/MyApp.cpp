@@ -2,7 +2,7 @@
 #include "StdAfx.h"
 #include "MyApp.h"
 #include "SoNSD3D.h"
-
+#include "../GeneralGUI/GGUIImagesetManager.h"
 //-----------------------------------------------------------------------------
 SoD3DApp* SoD3DApp::CreateInstance(void)
 {
@@ -43,8 +43,8 @@ bool MyApp::InitResource(void)
 	//
 	GGUIFontManager::GetInstance()->AddFont(0, "simhei.ttf", 0, 24, 1);
 	//
-	CreateUIWindowA();
-	//CreateWindowList();
+	//CreateUIWindowA();
+	CreateWindowList();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	return true;
 }
@@ -239,7 +239,12 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetHeight(403.0f);
 	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
 	m_pUIWindow->SetAlpha(1.0f);
-	m_pUIWindow->SetImageByFileName(TEXT("A.jpg"));
+
+	ImagesetID theImagesetID = Invalid_ImagesetID;
+	ImageRectID theImageRectID = Invalid_ImageRectID;
+	GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(TEXT("A.jpg"), GGUITinyString(TEXT("Ajpg")), &theImagesetID, &theImageRectID);
+	m_pUIWindow->SetImagesetID(theImagesetID);
+	m_pUIWindow->SetImageRectID(theImageRectID);
 	//m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
 
@@ -271,7 +276,11 @@ void MyApp::CreateWindowList()
 			pWindow->SetColor(1.0f, 1.0f, 1.0f);
 			pWindow->SetAlpha(1.0f);
 			SoPrintf(szBuff, sizeof(szBuff), TEXT("Pic/%d.bmp"), y*PictureCountX+x);
-			pWindow->SetImageByFileName(szBuff);
+			ImagesetID theImagesetID = Invalid_ImagesetID;
+			ImageRectID theImageRectID = Invalid_ImageRectID;
+			GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(szBuff, GGUITinyString(szBuff), &theImagesetID, &theImageRectID);
+			pWindow->SetImagesetID(theImagesetID);
+			pWindow->SetImageRectID(theImageRectID);
 			RegisterWindowEventB(pWindow->GetWindowID(), WindowEvent_MouseLeftButtonClickDown, this, &MyApp::OnMouseClickWindowList);
 			m_theWindowList.push_back(pWindow->GetWindowID());
 		}

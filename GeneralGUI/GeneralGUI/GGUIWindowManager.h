@@ -50,7 +50,6 @@ namespace GGUI
 		GGUIWindow* CreateUIWindow(eWindowType theType);
 		void ReleaseUIWindow(WindowID theWindowID);
 		GGUIWindow* GetUIWindow(WindowID theWindowID);
-		bool IsOperationByWindowContainer();
 
 		//根据WindowID获取这个窗口所对应的Delegate结构体。
 		//如果这个窗口没有对应的Delegate，则为其申请一个。
@@ -78,22 +77,17 @@ namespace GGUI
 		//数组中存储的是窗口指针，用意是，当扩充数组时，我们只需要把窗口指针从
 		//旧数组的内存中拷贝到新数组的内存中即可，不必拷贝窗口对象。
 		GGUIWindow** m_pWindowID2Window;
-		//记录数组中最多存储多少个元素。
-		SoInt m_nCapacity;
-		//记录数组中索引号最大的有效元素的下一个索引号。
-		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
-		SoInt m_nIndexEnd;
-		//对GGUIWindow的创建，删除，赋值WindowID等操作，必须通过调用GGUIWindowContainer
-		//的函数来操作；如果不按照这个规则，则报错。
-		//m_bOperationByWindowContainer的取值只有SoTrue和SoFalse两种。
-		SoBool m_bOperationByWindowContainer;
-
 		//如果用户为一个窗口注册了事件响应函数，则这个窗口就拥有一个有效的DelegateID，
 		//这个ID就是事件响应结构体stWindowEventDelegate在数组中的索引号。
 		//如果一个窗口没有注册任何事件响应函数，则它的DelegateID为无效值。
 		//数组中存储的是结构体指针，用意是，当扩充数组时，我们只需要把结构体指针从
 		//旧数组的内存中拷贝到新数组的内存中即可，不必拷贝结构体对象。
 		stWindowEventDelegate** m_pDelegateID2Delegate;
+		//记录数组中最多存储多少个元素。
+		SoInt m_nCapacity;
+		//记录数组中索引号最大的有效元素的下一个索引号。
+		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
+		SoInt m_nIndexEnd;
 		//记录Delegate数组中最多存储多少个元素。
 		SoInt m_nDelegateCapacity;
 		//记录数组中索引号最大的有效元素的下一个索引号。
@@ -117,11 +111,6 @@ namespace GGUI
 		{
 			return NULL;
 		}
-	}
-	//-----------------------------------------------------------------------------
-	inline bool GGUIWindowManager::IsOperationByWindowContainer()
-	{
-		return (m_bOperationByWindowContainer == SoTrue);
 	}
 	//-----------------------------------------------------------------------------
 	inline void GGUIWindowManager::RaiseWindowEvent(WindowID theWindowID, DelegateID theDelegateID, eWindowEvent theEvent, SoUInt uiParam)

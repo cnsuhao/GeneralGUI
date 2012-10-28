@@ -10,7 +10,6 @@
 #include "GGUIStdAfx.h"
 #include "GGUIDXRenderManager.h"
 #include "GGUISystem.h"
-#include "GGUIWindow.h"
 #include "GGUIImagesetManager.h"
 #include "GGUIImageset.h"
 #include "GGUIDXTextureManager.h"
@@ -99,12 +98,8 @@ namespace GGUI
 		pD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIDXRenderManager::AddRnederUnit(const GGUIWindow* pUIWindow)
+	void GGUIDXRenderManager::AddRnederUnit(const stRenderUnit& theRenderUnit)
 	{
-		if (pUIWindow == NULL)
-		{
-			return;
-		}
 		//检查数组容量是否足够。
 		if (m_nVertexContentIndexEnd+4 >= m_nVertexContentCapacity)
 		{
@@ -122,17 +117,12 @@ namespace GGUI
 			CreateDXIndexBuffer(m_nVertexContentCapacity / 2);
 		}
 		//
-		SoFloat fLeft = pUIWindow->GetPositionX();
-		SoFloat fRight = fLeft + pUIWindow->GetWidth();
-		SoFloat fTop = pUIWindow->GetPositionY();
-		SoFloat fBottom = fTop + pUIWindow->GetHeight();
-		SoFloat fDepth = pUIWindow->GetPositionZ();
-		SoFloat fColorR = 0.0f;
-		SoFloat fColorG = 0.0f;
-		SoFloat fColorB = 0.0f;
-		pUIWindow->GetColor(fColorR, fColorG, fColorB);
-		SoFloat fColorA = pUIWindow->GetAlpha();
-		SoUInt32 uiColor = SoMakeColorRGBA(fColorR, fColorG, fColorB, fColorA);
+		SoFloat fLeft = theRenderUnit.fPositionX;
+		SoFloat fRight = fLeft + theRenderUnit.fWidth;
+		SoFloat fTop = theRenderUnit.fPositionY;
+		SoFloat fBottom = fTop + theRenderUnit.fHeight;
+		SoFloat fDepth = theRenderUnit.fPositionZ;
+		SoUInt32 uiColor = SoMakeColorRGBA(theRenderUnit.fColorR, theRenderUnit.fColorG, theRenderUnit.fColorB, theRenderUnit.fColorA);
 		SoFloat fUVLeft = 0.0f;
 		SoFloat fUVRight = 0.0f;
 		SoFloat fUVTop = 0.0f;
@@ -143,7 +133,7 @@ namespace GGUI
 		//这样做有缺陷，如果在一系列的AddRnederUnit()调用过程中做了删除Imageset的操作，
 		//s_pTargetImageset有可能变成野指针。
 		static GGUIImageset* s_pTargetImageset = NULL;
-		ImagesetID destImagesetID = pUIWindow->GetImagesetID();
+		ImagesetID destImagesetID = theRenderUnit.theImagesetID;
 		if (m_theTargetImagesetID != destImagesetID)
 		{
 			m_theTargetImagesetID = destImagesetID;
@@ -152,7 +142,7 @@ namespace GGUI
 		}
 		if (s_pTargetImageset)
 		{
-			const GGUIRect* pRect = s_pTargetImageset->GetImageRect(pUIWindow->GetImageRectID());
+			const GGUIRect* pRect = s_pTargetImageset->GetImageRect(theRenderUnit.theImageRectID);
 			if (pRect)
 			{
 				fUVLeft = pRect->m_fLeft;
