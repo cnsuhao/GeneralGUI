@@ -21,4 +21,5 @@ using namespace SoComponent;
 #include "GGUITinyString.h"
 #include "GGUIRect.h"
 #include "GGUIDXTextureDefine.h"
+#include "GGUIArray.h"
 //-----------------------------------------------------------------------------

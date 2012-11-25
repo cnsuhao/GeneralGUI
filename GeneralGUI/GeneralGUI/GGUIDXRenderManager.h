@@ -8,7 +8,7 @@
 namespace GGUI
 {
 	//-----------------------------------------------------------------------------
-	class GGUIDXRenderManager : public SoTSingleton<GGUIDXRenderManager>
+	class GGUIDXRenderManager
 	{
 	public:
 		GGUIDXRenderManager();
@@ -16,7 +16,6 @@ namespace GGUI
 		static GGUIDXRenderManager* GetInstance();
 		//
 		bool InitDXRenderManager();
-		void ReleaseDXRenderManager();
 		//
 		void PreRender();
 		void AddRnederUnit(const stRenderUnit& theRenderUnit);
@@ -48,6 +47,8 @@ namespace GGUI
 		bool CreateDXIndexBuffer(SoInt nCapacity);
 
 	private:
+		static GGUIDXRenderManager* ms_pInstance;
+	private:
 		//DX顶点缓冲区。
 		//顶点缓冲区会频繁做写操作，所以适合D3DPOOL_DEFAULT和D3DUSAGE_WRITEONLY搭配使用。
 		//需要主动处理设备丢失。当设备丢失时释放资源，设备重置后重新创建。
@@ -78,7 +79,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	inline GGUIDXRenderManager* GGUIDXRenderManager::GetInstance()
 	{
-		return GGUIDXRenderManager::Instance();
+		return ms_pInstance;
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

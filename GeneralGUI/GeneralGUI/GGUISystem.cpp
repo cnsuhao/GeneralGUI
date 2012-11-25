@@ -45,13 +45,13 @@ namespace GGUI
 			return false;
 		}
 		//
-		GGUIDXRenderManager::CreateInstance();
+		new GGUIDXRenderManager;
 		if (!GGUIDXRenderManager::GetInstance()->InitDXRenderManager())
 		{
 			return false;
 		}
 		//
-		GGUIDXTextureManager::CreateInstance();
+		new GGUIDXTextureManager;
 		if (!GGUIDXTextureManager::GetInstance()->InitDXTextureManager())
 		{
 			return false;
@@ -72,8 +72,8 @@ namespace GGUI
 	{
 		GGUIFontManager::ReleaseInstance();
 		GGUIImagesetManager::ReleaseInstance();
-		GGUIDXTextureManager::ReleaseInstance();
-		GGUIDXRenderManager::ReleaseInstance();
+		delete GGUIDXTextureManager::GetInstance();
+		delete GGUIDXRenderManager::GetInstance();
 		GGUIInputProcess::ReleaseInstance();
 		GGUIWindowManager::ReleaseInstance();
 		m_pD3DDevice = NULL;

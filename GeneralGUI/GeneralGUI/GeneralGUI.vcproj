@@ -154,6 +154,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\GGUIArray.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIArray.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIButton.cpp"
 			>
 			<FileConfiguration

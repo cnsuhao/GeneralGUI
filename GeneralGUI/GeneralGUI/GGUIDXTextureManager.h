@@ -8,14 +8,13 @@
 namespace GGUI
 {
 	//-----------------------------------------------------------------------------
-	class GGUIDXTextureManager : public SoTSingleton<GGUIDXTextureManager>
+	class GGUIDXTextureManager
 	{
 	public:
 		GGUIDXTextureManager();
 		~GGUIDXTextureManager();
 		static GGUIDXTextureManager* GetInstance();
 		bool InitDXTextureManager();
-		void ReleaseDXTextureManager();
 
 		//从磁盘上加载贴图文件。
 		//--pFileName 磁盘上的文件名。
@@ -27,30 +26,20 @@ namespace GGUI
 		IDirect3DTexture9* GetDXTexture(DXTextureID theTextureID);
 
 	private:
-		//
-		IDirect3DTexture9** m_arrayDXTexture;
-		//记录数组中最多存储多少个元素。
-		SoInt m_nCapacity;
-		//记录数组中索引号最大的有效元素的下一个索引号。
-		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
-		SoInt m_nIndexEnd;
+		static GGUIDXTextureManager* ms_pInstance;
+	private:
+		GGUIArray<IDirect3DTexture9*> m_arrayDXTexture;
+
 	};
 	//-----------------------------------------------------------------------------
 	inline GGUIDXTextureManager* GGUIDXTextureManager::GetInstance()
 	{
-		return GGUIDXTextureManager::Instance();
+		return ms_pInstance;
 	}
 	//-----------------------------------------------------------------------------
 	inline IDirect3DTexture9* GGUIDXTextureManager::GetDXTexture(DXTextureID theTextureID)
 	{
-		if (theTextureID >= 0 && theTextureID < m_nCapacity)
-		{
-			return m_arrayDXTexture[theTextureID];
-		}
-		else
-		{
-			return NULL;
-		}
+		return m_arrayDXTexture.GetElement(theTextureID);
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

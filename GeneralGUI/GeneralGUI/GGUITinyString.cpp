@@ -11,19 +11,22 @@ namespace GGUI
 	void GGUITinyString::SetValue(const tchar* pszString)
 	{
 		SoInt i = 0;
-		for (; i<MaxSize_TinyString; ++i)
+		if (pszString)
 		{
-			if (pszString[i] == 0)
-				break;
-			else
-				m_szBuffer[i] = pszString[i];
+			for (; i<MaxCharCount_TinyString; ++i)
+			{
+				if (pszString[i] == 0)
+					break;
+				else
+					m_szBuffer[i] = pszString[i];
+			}
 		}
 		m_szBuffer[i] = 0;
 	}
 	//-----------------------------------------------------------------------------
 	bool operator < (const GGUITinyString& left, const GGUITinyString& right)
 	{
-		for (SoInt i=0; i<MaxSize_TinyString; ++i)
+		for (SoInt i=0; i<MaxCharCount_TinyString; ++i)
 		{
 			if (left.m_szBuffer[i] && right.m_szBuffer[i])
 			{

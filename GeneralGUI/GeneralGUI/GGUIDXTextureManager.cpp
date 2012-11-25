@@ -8,39 +8,28 @@
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
+	GGUIDXTextureManager* GGUIDXTextureManager::ms_pInstance = NULL;
 	//-----------------------------------------------------------------------------
 	GGUIDXTextureManager::GGUIDXTextureManager()
-	:m_arrayDXTexture(NULL)
-	,m_nCapacity(0)
-	,m_nIndexEnd(0)
+	:m_arrayDXTexture(NULL, 20)
 	{
-
+		ms_pInstance = this;
 	}
 	//-----------------------------------------------------------------------------
 	GGUIDXTextureManager::~GGUIDXTextureManager()
 	{
-		ReleaseDXTextureManager();
+		SoInt nValidCount = m_arrayDXTexture.GetWriteIndex();
+		for (SoInt i=0; i<nValidCount; ++i)
+		{
+			ReleaseDXTexture(i);
+		}
+		//
+		ms_pInstance = NULL;
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIDXTextureManager::InitDXTextureManager()
 	{
-		//初始化m_arrayDXTexture数组。
-		m_nCapacity = 20;
-		m_arrayDXTexture = new IDirect3DTexture9*[m_nCapacity];
-		memset(m_arrayDXTexture, 0, sizeof(IDirect3DTexture9*)*m_nCapacity);
 		return true;
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIDXTextureManager::ReleaseDXTextureManager()
-	{
-		for (SoInt i=0; i<m_nIndexEnd; ++i)
-		{
-			if (m_arrayDXTexture[i])
-			{
-				SAFE_D3D_RELEASE(m_arrayDXTexture[i]);
-			}
-		}
-		SAFE_DELETE_ARRAY(m_arrayDXTexture);
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIDXTextureManager::LoadTextureFromDisk(const tchar* pszFileName, DXTextureID* pDXTextureID)
@@ -61,8 +50,8 @@ namespace GGUI
 		D3DFORMAT eFormat = D3DFMT_UNKNOWN;
 		//使用托管内存池，因为贴图的数据不会被频繁改变（甚至不会改变），用托管内存池的好处是设备丢失后不必重新创建。
 		D3DPOOL ePool = D3DPOOL_MANAGED;
-		//图片过滤方式。不需要过滤，因为Texture并没有做缩放。
-		SoUInt uiFilter = D3DX_FILTER_NONE; //D3DX_FILTER_LINEAR;
+		//图片过滤方式。
+		SoUInt uiFilter = D3DX_FILTER_LINEAR; //;D3DX_FILTER_NONE
 		SoUInt uiMipFilter = D3DX_FILTER_NONE;
 		//不使用关键色替换。
 		D3DCOLOR dwColorKey = 0;
@@ -75,23 +64,21 @@ namespace GGUI
 			return false;
 		}
 		//
-		m_arrayDXTexture[m_nIndexEnd] = pNewDXTexture;
-		++m_nIndexEnd;
+		m_arrayDXTexture.AddElement(pNewDXTexture);
 		if (pDXTextureID)
 		{
-			*pDXTextureID = m_nIndexEnd - 1;
+			*pDXTextureID = m_arrayDXTexture.GetWriteIndex() - 1;
 		}
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIDXTextureManager::ReleaseDXTexture(DXTextureID theTextureID)
 	{
-		if (theTextureID >= 0 && theTextureID < m_nCapacity)
+		IDirect3DTexture9* pDXTexture = m_arrayDXTexture.GetElement(theTextureID);
+		if (pDXTexture)
 		{
-			if (m_arrayDXTexture[theTextureID])
-			{
-				SAFE_D3D_RELEASE(m_arrayDXTexture[theTextureID]);
-			}
+			SAFE_D3D_RELEASE(pDXTexture);
+			m_arrayDXTexture.RemoveElement(theTextureID);
 		}
 	}
 } //namespace GGUI

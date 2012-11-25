@@ -17,6 +17,7 @@
 namespace GGUI
 {
 	const SoUInt32 g_DXVertexFVF = (D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1);
+	GGUIDXRenderManager* GGUIDXRenderManager::ms_pInstance = NULL;
 	//-----------------------------------------------------------------------------
 	GGUIDXRenderManager::GGUIDXRenderManager()
 	:m_pDXVertexBuffer(NULL)
@@ -30,12 +31,19 @@ namespace GGUI
 	,m_theTargetImagesetID(Invalid_ImagesetID)
 	,m_theTargetDXTextureID(Invalid_DXTextureID)
 	{
-
+		ms_pInstance = this;
 	}
 	//-----------------------------------------------------------------------------
 	GGUIDXRenderManager::~GGUIDXRenderManager()
 	{
-		ReleaseDXRenderManager();
+		//
+		SAFE_D3D_RELEASE(m_pDXVertexBuffer);
+		SAFE_D3D_RELEASE(m_pDXIndexBuffer);
+		SAFE_D3D_RELEASE(m_pDXStateBlock);
+		//
+		SAFE_DELETE_ARRAY(m_arrayVertexContent);
+		//
+		ms_pInstance = NULL;
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIDXRenderManager::InitDXRenderManager()
@@ -56,16 +64,6 @@ namespace GGUI
 		m_arrayVertexContent = new stVertexContent[m_nVertexContentCapacity];
 		memset(m_arrayVertexContent, 0, sizeof(stVertexContent)*m_nVertexContentCapacity);
 		return true;
-	}
-	//-----------------------------------------------------------------------------
-	void GGUIDXRenderManager::ReleaseDXRenderManager()
-	{
-		//
-		SAFE_D3D_RELEASE(m_pDXVertexBuffer);
-		SAFE_D3D_RELEASE(m_pDXIndexBuffer);
-		SAFE_D3D_RELEASE(m_pDXStateBlock);
-		//
-		SAFE_DELETE_ARRAY(m_arrayVertexContent);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIDXRenderManager::PreRender()
