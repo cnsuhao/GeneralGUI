@@ -60,12 +60,13 @@ namespace GGUI
 		//所以，如果字符宽度为N，且处于[0,32]之间，我们就把字符高度认定为(N+6)；
 		//如果处于[33,60]之间，我们就把字符高度认定为(N+10)；
 		//如果大于60，我们就把字符高度认定为(N+20)。
+		//--strName 用户给这个字体定义一个名字。名字的字符个数不要大于(MaxCharCount_TinyString-2)个。
 		//--pFontFileName 字体文件完整路径。必须是ASCII字符。
 		//--nFontFaceIndex 使用字体的哪个字形，一般取默认值即可，默认值为0。
 		//--nFontSizeWidth 字号宽度。
 		//--nEdge 值为0表示不描边；大于0，表示描几个像素的边缘。
 		//返回是否执行成功。如果返回false，则本对象不能使用，外界应该删除掉。
-		bool InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge);
+		bool InitFont(const GGUITinyString& strName, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge);
 		//当你把一个字符串绘制到指定的贴图上时，在调用DrawCharacter()之前，
 		//你必须调用本函数设置必要的参数信息。
 		//--pDestTexture 目标纹理贴图。目标纹理必须是D3DFMT_A8R8G8B8格式。
@@ -115,6 +116,8 @@ namespace GGUI
 	private:
 		//FreeType中一种外观的句柄。
 		FT_Face m_FontFace;
+		//用户给这个字体定义一个名字。名字的字符个数不要大于(MaxCharCount_TinyString-2)个。
+		GGUITinyString m_strName;
 		//使用字体的哪个字形，一般取默认值即可，默认值为0。
 		SoInt m_nFontFaceIndex;
 		//本字体对象的字号。

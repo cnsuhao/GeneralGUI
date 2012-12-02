@@ -57,7 +57,7 @@ namespace GGUI
 			return false;
 		}
 		//
-		GGUIImagesetManager::CreateInstance();
+		new GGUIImagesetManager;
 		if (!GGUIImagesetManager::GetInstance()->InitImagesetManager())
 		{
 			return false;
@@ -71,7 +71,7 @@ namespace GGUI
 	void GGUISystem::ReleaseUISystem()
 	{
 		GGUIFontManager::ReleaseInstance();
-		GGUIImagesetManager::ReleaseInstance();
+		delete GGUIImagesetManager::GetInstance();
 		delete GGUIDXTextureManager::GetInstance();
 		delete GGUIDXRenderManager::GetInstance();
 		GGUIInputProcess::ReleaseInstance();

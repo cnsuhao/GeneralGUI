@@ -41,7 +41,12 @@ namespace GGUI
 		//如果大于的话，会被截断。
 		//如果pszString值为NULL，则m_szBuffer被置为空字符串""。
 		void SetValue(const tchar* pszString);
-		//
+		//-----------------------------------------------------------------------------
+		void operator = (const GGUITinyString& other)
+		{
+			SetValue(other.GetValue());
+		}
+		//-----------------------------------------------------------------------------
 		friend bool operator < (const GGUITinyString& left, const GGUITinyString& right);
 
 	protected:

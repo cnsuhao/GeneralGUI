@@ -28,6 +28,7 @@ namespace GGUI
 	//--------------------------------------------------------------------
 	GGUIFreeTypeFont::GGUIFreeTypeFont()
 	:m_FontFace(0)
+	,m_strName()
 	,m_nFontFaceIndex(0)
 	,m_nFontSizeWidth(0)
 	,m_nFontSizeHeight(0)
@@ -62,13 +63,14 @@ namespace GGUI
 		}
 	}
 	//--------------------------------------------------------------------
-	bool GGUIFreeTypeFont::InitFont(const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge)
+	bool GGUIFreeTypeFont::InitFont(const GGUITinyString& strName, const char* pFontFileName, SoInt nFontFaceIndex, SoInt nFontSizeWidth, SoInt16 nEdge)
 	{
 		//检查参数
 		if (!pFontFileName)
 		{
 			return false;
 		}
+		m_strName = strName;
 		m_nFontFaceIndex = nFontFaceIndex;
 		m_nFontSizeWidth = nFontSizeWidth<MinFontSize ? MinFontSize : nFontSizeWidth;
 		if (m_nFontSizeWidth <= 32)

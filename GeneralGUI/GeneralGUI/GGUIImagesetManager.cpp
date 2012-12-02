@@ -9,41 +9,36 @@
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
+	GGUIImagesetManager* GGUIImagesetManager::ms_pInstance = NULL;
 	//-----------------------------------------------------------------------------
 	GGUIImagesetManager::GGUIImagesetManager()
-	:m_arrayImageset(NULL)
-	,m_nCapacity(0)
-	,m_nIndexEnd(0)
+	:m_arrayImageset(NULL, 10)
 	{
-
+		ms_pInstance = this;
 	}
 	//-----------------------------------------------------------------------------
 	GGUIImagesetManager::~GGUIImagesetManager()
 	{
 		ReleaseImagesetManager();
+		ms_pInstance = NULL;
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIImagesetManager::InitImagesetManager()
 	{
-		//初始化GGUIImageset数组。
-		m_nCapacity = 10;
-		m_arrayImageset = new GGUIImageset*[m_nCapacity];
-		memset(m_arrayImageset, 0, sizeof(GGUIImageset*)*m_nCapacity);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIImagesetManager::ReleaseImagesetManager()
 	{
+		//先清零m_mapImagesetName2ID，再清除m_arrayImageset，
+		//当m_mapImagesetName2ID为空后，调用ReleaseImageset()时遍历空map就会快很多。
 		m_mapImagesetName2ID.clear();
 		//
-		for (SoInt i=0; i<m_nIndexEnd; ++i)
+		SoInt nValidCount = m_arrayImageset.GetWriteIndex();
+		for (SoInt i=0; i<nValidCount; ++i)
 		{
-			if (m_arrayImageset[i])
-			{
-				SAFE_DELETE(m_arrayImageset[i]);
-			}
+			ReleaseImageset(i);
 		}
-		SAFE_DELETE_ARRAY(m_arrayImageset);
 	}
 	//-----------------------------------------------------------------------------
 	bool GGUIImagesetManager::CreateImagesetByFile(const tchar* pszImagesetFile, ImagesetID* pImagesetID)
@@ -53,9 +48,8 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIImagesetManager::CreateImagesetByTextureFile(const tchar* pszTextureFile, const GGUITinyString& strImagesetName, ImagesetID* pImagesetID, ImageRectID* pImageRectID)
 	{
-		DXTextureID newDXTextureID = Invalid_DXTextureID;
-		bool bLoadTexture = GGUIDXTextureManager::GetInstance()->LoadTextureFromDisk(pszTextureFile, &newDXTextureID);
-		if (!bLoadTexture)
+		DXTextureID newDXTextureID = GGUIDXTextureManager::GetInstance()->LoadTextureFromDisk(pszTextureFile);
+		if (newDXTextureID == Invalid_DXTextureID)
 		{
 			return false;
 		}
@@ -100,25 +94,12 @@ namespace GGUI
 			}
 			return false;
 		}
-		//分配一个新的数组元素。
-		if (m_nIndexEnd >= m_nCapacity)
-		{
-			//容器空间不够了，则把容器空间扩大到原来的2倍。
-			SoUInt sizeOfOldArray = sizeof(GGUIImageset*) * m_nCapacity;
-			m_nCapacity *= 2;
-			GGUIImageset** pNewArray = new GGUIImageset*[m_nCapacity];
-			SoUInt sizeOfNewArray = sizeof(GGUIImageset*) * m_nCapacity;
-			memset(pNewArray, 0, sizeOfNewArray);
-			memcpy_s(pNewArray, sizeOfNewArray, m_arrayImageset, sizeOfOldArray);
-			SAFE_DELETE_ARRAY(m_arrayImageset);
-			m_arrayImageset = pNewArray;
-		}
-		ImagesetID newImagesetID = m_nIndexEnd;
-		++m_nIndexEnd;
 		//
-		m_arrayImageset[newImagesetID] = new GGUIImageset;
-		m_arrayImageset[newImagesetID]->SetImagesetID(newImagesetID);
-		m_arrayImageset[newImagesetID]->SetImagesetName(strImagesetName.GetValue());
+		GGUIImageset* pImageset = new GGUIImageset;
+		m_arrayImageset.AddElement(pImageset);
+		ImagesetID newImagesetID = m_arrayImageset.GetWriteIndex() - 1;
+		pImageset->SetImagesetID(newImagesetID);
+		pImageset->SetImagesetName(strImagesetName.GetValue());
 		//维护在map中。
 		m_mapImagesetName2ID.insert(std::make_pair(strImagesetName, newImagesetID));
 		if (pImagesetID)
@@ -130,12 +111,11 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIImagesetManager::ReleaseImageset(ImagesetID theImagesetID)
 	{
-		if (theImagesetID >= 0 && theImagesetID < m_nIndexEnd)
+		GGUIImageset* pImageset = m_arrayImageset.GetElement(theImagesetID);
+		if (pImageset)
 		{
-			if (m_arrayImageset[theImagesetID])
-			{
-				SAFE_DELETE(m_arrayImageset[theImagesetID]);
-			}
+			SAFE_DELETE(pImageset);
+			m_arrayImageset.RemoveElement(theImagesetID);
 		}
 		//
 		for (mapImagesetName2ImagesetID::iterator it = m_mapImagesetName2ID.begin();

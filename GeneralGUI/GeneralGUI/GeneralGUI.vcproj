@@ -254,6 +254,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUILog.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUILog.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIPicture.cpp"
 			>
 			<FileConfiguration

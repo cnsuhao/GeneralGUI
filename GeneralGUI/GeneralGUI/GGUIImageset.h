@@ -46,13 +46,8 @@ namespace GGUI
 		typedef std::map<GGUITinyString, ImageRectID> mapRectName2RectID;
 
 	private:
-		//GGUIRect指针数组。
-		GGUIRect** m_pImageRectID2Rect;
-		//记录数组中最多存储多少个元素。
-		SoInt m_nCapacity;
-		//记录数组中索引号最大的有效元素的下一个索引号。
-		//如果数组中最后一个有效元素的下标为M，则该值为(M+1）。
-		SoInt m_nIndexEnd;
+		//存储GGUIRect*的数组。
+		GGUIArray<GGUIRect*> m_arrayRect;
 		//
 		ImagesetID m_MyImagesetID;
 		DXTextureID m_MyDXTextureID;
@@ -82,14 +77,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID) const
 	{
-		if (theRectID >= 0 && theRectID < m_nIndexEnd)
-		{
-			return m_pImageRectID2Rect[theRectID];
-		}
-		else
-		{
-			return NULL;
-		}
+		return m_arrayRect.GetElement(theRectID);
 	}
 	//-----------------------------------------------------------------------------
 	inline ImageRectID GGUIImageset::GetImageRectIDByName(const GGUITinyString& strRectName) const

@@ -18,8 +18,9 @@ namespace GGUI
 
 		//从磁盘上加载贴图文件。
 		//--pFileName 磁盘上的文件名。
-		//--pDXTextureID 如果为有效值，则把新的DXTextureID赋值给它。
-		bool LoadTextureFromDisk(const tchar* pszFileName, DXTextureID* pDXTextureID);
+		//如果加载成功，返回新IDirect3DTexture9的DXTextureID；
+		//如果加载失败，返回Invalid_DXTextureID。
+		DXTextureID LoadTextureFromDisk(const tchar* pszFileName);
 		//删除一个贴图。
 		void ReleaseDXTexture(DXTextureID theTextureID);
 		//获取DXTexture指针。

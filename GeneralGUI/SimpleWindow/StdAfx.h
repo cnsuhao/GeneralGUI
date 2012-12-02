@@ -10,6 +10,7 @@ using namespace SoComponent;
 #include "../GeneralGUI/GGUITinyString.h"
 #include "../GeneralGUI/GGUIRect.h"
 #include "../GeneralGUI/GGUIDXTextureDefine.h"
+#include "../GeneralGUI/GGUIArray.h"
 #include "../GeneralGUI/GGUISystem.h"
 #include "../GeneralGUI/GGUIWindow.h"
 #include "../GeneralGUI/GGUIWindowManager.h"

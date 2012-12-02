@@ -23,28 +23,19 @@ namespace GGUI
 		void PostRender();
 
 	private:
+		//创建DX顶点缓冲区。
+		bool CreateDXVertexBuffer(SoInt nCapacity);
+		//创建DX索引缓冲区。
+		bool CreateDXIndexBuffer(SoInt nCapacity);
+
+	private:
 		//顶点数据格式。
-		//sizeof(stVertexContent)的值是多少？
-		//由于字节对齐的关系，在32位和64位操作系统上结果可能不一样。
-		//要使用memcpy，所以要考虑一下。
-		//因为顶点格式是(D3DFVF_XYZRHW|D3DFVF_DIFFUSE|D3DFVF_TEX1)，
-		//DX对顶点的各个元素的寻址就是按照顶点格式，我猜测，DX不会为字节对齐而分配
-		//空白的内存或显存资源。所以，要限定stVertexContent按照4字节对齐。
-		#pragma pack(push) //保存对齐状态
-		#pragma pack(4) //设定为4字节对齐
 		struct stVertexContent
 		{
 			SoFloat fX, fY, fZ, fRHW;
 			SoUInt32 uiColor;
 			SoFloat fCoordX, fCoordY;
 		};
-		#pragma pack(pop) //恢复对齐状态
-
-	private:
-		//创建DX顶点缓冲区。
-		bool CreateDXVertexBuffer(SoInt nCapacity);
-		//创建DX索引缓冲区。
-		bool CreateDXIndexBuffer(SoInt nCapacity);
 
 	private:
 		static GGUIDXRenderManager* ms_pInstance;

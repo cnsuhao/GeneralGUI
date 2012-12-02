@@ -46,7 +46,7 @@ namespace GGUI
 			return false;
 		}
 		m_pFontList[nID] = new GGUIFreeTypeFont;
-		if (!m_pFontList[nID]->InitFont(pFontFileName, nFontFaceIndex, nFontSizeWidth, nEdge))
+		if (!m_pFontList[nID]->InitFont(GGUITinyString(TEXT("oil")), pFontFileName, nFontFaceIndex, nFontSizeWidth, nEdge))
 		{
 			delete m_pFontList[nID];
 			m_pFontList[nID] = 0;

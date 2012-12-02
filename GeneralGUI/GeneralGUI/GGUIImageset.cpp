@@ -23,22 +23,9 @@ namespace GGUI
 			return false;
 		}
 		//分配一个新的数组元素。
-		if (m_nIndexEnd >= m_nCapacity)
-		{
-			//容器空间不够了，则把容器空间扩大到原来的2倍。
-			SoUInt sizeOfOldArray = sizeof(GGUIRect*) * m_nCapacity;
-			m_nCapacity *= 2;
-			GGUIRect** pNewArray = new GGUIRect*[m_nCapacity];
-			SoUInt sizeOfNewArray = sizeof(GGUIRect*) * m_nCapacity;
-			memset(pNewArray, 0, sizeOfNewArray);
-			memcpy_s(pNewArray, sizeOfNewArray, m_pImageRectID2Rect, sizeOfOldArray);
-			SAFE_DELETE_ARRAY(m_pImageRectID2Rect);
-			m_pImageRectID2Rect = pNewArray;
-		}
-		ImageRectID newRectID = m_nIndexEnd;
-		++m_nIndexEnd;
-		//
-		m_pImageRectID2Rect[newRectID] = new GGUIRect(fLeft, fRight, fTop, fBottom);
+		GGUIRect* pNewRect = new GGUIRect(fLeft, fRight, fTop, fBottom);
+		m_arrayRect.AddElement(pNewRect);
+		ImageRectID newRectID = m_arrayRect.GetWriteIndex() - 1;
 		m_mapRectName2RectID.insert(std::make_pair(strRectName, newRectID));
 		if (pRectID)
 		{
@@ -49,23 +36,21 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIImageset::RemoveImageRect(ImageRectID theRectID)
 	{
-		if (theRectID >= 0 && theRectID < m_nIndexEnd)
+		GGUIRect* pRect = m_arrayRect.GetElement(theRectID);
+		if (pRect)
 		{
-			//
-			if (m_pImageRectID2Rect[theRectID])
+			SAFE_DELETE(pRect);
+			m_arrayRect.RemoveElement(theRectID);
+		}
+		//
+		for (mapRectName2RectID::iterator it = m_mapRectName2RectID.begin();
+			it != m_mapRectName2RectID.end();
+			++it)
+		{
+			if (it->second == theRectID)
 			{
-				SAFE_DELETE(m_pImageRectID2Rect[theRectID]);
-			}
-			//
-			for (mapRectName2RectID::iterator it = m_mapRectName2RectID.begin();
-				it != m_mapRectName2RectID.end();
-				++it)
-			{
-				if (it->second == theRectID)
-				{
-					m_mapRectName2RectID.erase(it);
-					break;
-				}
+				m_mapRectName2RectID.erase(it);
+				break;
 			}
 		}
 	}
@@ -121,36 +106,29 @@ namespace GGUI
 	}
 	//-----------------------------------------------------------------------------
 	GGUIImageset::GGUIImageset()
-	:m_pImageRectID2Rect(NULL)
-	,m_nCapacity(0)
-	,m_nIndexEnd(0)
+	:m_arrayRect(NULL, 10)
 	,m_MyImagesetID(Invalid_ImagesetID)
 	,m_MyDXTextureID(Invalid_DXTextureID)
 	,m_MyImagesetName()
 	,m_nDXTextureWidth(0)
 	,m_nDXTextureHeight(0)
 	{
-		//初始化GGUIRect数组。
-		m_nCapacity = 10;
-		m_pImageRectID2Rect = new GGUIRect*[m_nCapacity];
-		memset(m_pImageRectID2Rect, 0, sizeof(GGUIRect*)*m_nCapacity);
+
 	}
 	//-----------------------------------------------------------------------------
 	GGUIImageset::~GGUIImageset()
 	{
 		//尝试删除贴图。
 		GGUIDXTextureManager::GetInstance()->ReleaseDXTexture(m_MyDXTextureID);
-		//
+		//先清零m_mapRectName2RectID，再清除m_arrayRect，
+		//把m_mapRectName2RectID清零后，在RemoveImageRect()中遍历一个空map会快很多。
 		m_mapRectName2RectID.clear();
 		//
-		for (SoInt i=0; i<m_nIndexEnd; ++i)
+		SoInt nValidCount = m_arrayRect.GetWriteIndex();
+		for (SoInt i=0; i<nValidCount; ++i)
 		{
-			if (m_pImageRectID2Rect[i])
-			{
-				SAFE_DELETE(m_pImageRectID2Rect[i]);
-			}
+			RemoveImageRect(i);
 		}
-		SAFE_DELETE_ARRAY(m_pImageRectID2Rect);
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIImageset::SetDXTextureID(DXTextureID theTextureID)

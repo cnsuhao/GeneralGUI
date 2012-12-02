@@ -25,8 +25,17 @@ namespace GGUI
 		void RemoveElement(SoInt nIndex);
 		//获取一个元素。
 		Temp& GetElement(SoInt nIndex);
+		const Temp& GetElement(SoInt nIndex) const;
+		//获取上一次AddElement操作是否导致数组容量扩大了。
+		bool GetCapacityIncreased() const;
+		//获取数组的地址。
+		const Temp* GetArray() const;
 		//获取写入指针的索引号。
-		SoInt GetWriteIndex();
+		SoInt GetWriteIndex() const;
+		//重置写入指针的位置，设置成0号位置。
+		void ResetWriteIndex();
+		//获取数组的容量。
+		SoInt GetCapacity() const;
 
 	private:
 		//记录数组元素的无效值。
@@ -37,6 +46,8 @@ namespace GGUI
 		SoInt m_nCapacity;
 		//记录执行“增加一个元素”操作时的写入指针，新增加的元素赋值给这个索引号的元素。
 		SoInt m_nWriteIndex;
+		//记录上一次AddElement操作是否导致数组容量扩大了。
+		bool m_bCapacityIncreased;
 	};
 	//-----------------------------------------------------------------------------
 	template <class Temp>
@@ -45,6 +56,7 @@ namespace GGUI
 	,m_Array(0)
 	,m_nCapacity(nInitCapacity)
 	,m_nWriteIndex(0)
+	,m_bCapacityIncreased(false)
 	{
 		m_Array = new Temp[m_nCapacity];
 		for (SoInt i=0; i<m_nCapacity; ++i)
@@ -66,6 +78,7 @@ namespace GGUI
 	template <class Temp>
 	inline void GGUIArray<Temp>::AddElement(const Temp& theElement)
 	{
+		m_bCapacityIncreased = false;
 		if (m_nWriteIndex >= m_nCapacity)
 		{
 			//数组容量不够了，则把容量扩大到原来的2倍。
@@ -80,6 +93,7 @@ namespace GGUI
 			memcpy_s(pNewArray, sizeOfNewArray, m_Array, sizeOfOldArray);
 			delete [] m_Array;
 			m_Array = pNewArray;
+			m_bCapacityIncreased = true;
 		}
 		m_Array[m_nWriteIndex] = theElement;
 		++m_nWriteIndex;
@@ -108,9 +122,46 @@ namespace GGUI
 	}
 	//-----------------------------------------------------------------------------
 	template <class Temp>
-	inline SoInt GGUIArray<Temp>::GetWriteIndex()
+	const Temp& GGUIArray<Temp>::GetElement(SoInt nIndex) const
+	{
+		if (nIndex>=0 && nIndex<m_nWriteIndex)
+		{
+			return m_Array[nIndex];
+		}
+		else
+		{
+			return m_theInvalidValue;
+		}
+	}
+	//-----------------------------------------------------------------------------
+	template <class Temp>
+	inline bool GGUIArray<Temp>::GetCapacityIncreased() const
+	{
+		return m_bCapacityIncreased;
+	}
+	//-----------------------------------------------------------------------------
+	template <class Temp>
+	inline const Temp* GGUIArray<Temp>::GetArray() const
+	{
+		return m_Array;
+	}
+	//-----------------------------------------------------------------------------
+	template <class Temp>
+	inline SoInt GGUIArray<Temp>::GetWriteIndex() const
 	{
 		return m_nWriteIndex;
+	}
+	//-----------------------------------------------------------------------------
+	template <class Temp>
+	inline void GGUIArray<Temp>::ResetWriteIndex()
+	{
+		m_nWriteIndex = 0;
+	}
+	//-----------------------------------------------------------------------------
+	template <class Temp>
+	inline SoInt GGUIArray<Temp>::GetCapacity() const
+	{
+		return m_nCapacity;
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

@@ -32,11 +32,12 @@ namespace GGUI
 		return true;
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIDXTextureManager::LoadTextureFromDisk(const tchar* pszFileName, DXTextureID* pDXTextureID)
+	DXTextureID GGUIDXTextureManager::LoadTextureFromDisk(const tchar* pszFileName)
 	{
+		DXTextureID theDXTextureID = Invalid_DXTextureID;
 		if (!pszFileName)
 		{
-			return false;
+			return theDXTextureID;
 		}
 		IDirect3DTexture9* pNewDXTexture = NULL;
 		//宽高使用图片的宽高，并且不要调整到2的幂。
@@ -61,15 +62,12 @@ namespace GGUI
 		if (FAILED(hr))
 		{
 			//Wait for add log
-			return false;
+			return theDXTextureID;
 		}
 		//
 		m_arrayDXTexture.AddElement(pNewDXTexture);
-		if (pDXTextureID)
-		{
-			*pDXTextureID = m_arrayDXTexture.GetWriteIndex() - 1;
-		}
-		return true;
+		theDXTextureID = m_arrayDXTexture.GetWriteIndex() - 1;
+		return theDXTextureID;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIDXTextureManager::ReleaseDXTexture(DXTextureID theTextureID)
