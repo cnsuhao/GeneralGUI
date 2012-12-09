@@ -22,4 +22,5 @@ using namespace SoComponent;
 #include "GGUIRect.h"
 #include "GGUIDXTextureDefine.h"
 #include "GGUIArray.h"
+#include "GGUILog.h"
 //-----------------------------------------------------------------------------

@@ -21,10 +21,17 @@ namespace GGUI
 		//如果加载成功，返回新IDirect3DTexture9的DXTextureID；
 		//如果加载失败，返回Invalid_DXTextureID。
 		DXTextureID LoadTextureFromDisk(const tchar* pszFileName);
+		//创建一个存储FreeType字体字形的贴图。
+		//返回新IDirect3DTexture9的DXTextureID。
+		DXTextureID CreateFontTexture(SoUInt uiWidth, SoUInt uiHeight);
 		//删除一个贴图。
 		void ReleaseDXTexture(DXTextureID theTextureID);
 		//获取DXTexture指针。
 		IDirect3DTexture9* GetDXTexture(DXTextureID theTextureID);
+
+		//
+		bool DrawFontGlyph(DXTextureID theDXTextureID, const RECT& dest_rect, 
+			unsigned char* pPixelBuffer, SoInt nWidth, SoInt nHeight, bool bEdge);
 
 	private:
 		static GGUIDXTextureManager* ms_pInstance;

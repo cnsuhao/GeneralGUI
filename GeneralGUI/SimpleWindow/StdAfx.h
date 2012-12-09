@@ -15,6 +15,7 @@ using namespace SoComponent;
 #include "../GeneralGUI/GGUIWindow.h"
 #include "../GeneralGUI/GGUIWindowManager.h"
 #include "../GeneralGUI/GGUIFontManager.h"
+#include "../GeneralGUI/GGUILog.h"
 using namespace GGUI;
 
 #include "SoDefines.h"

@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+ï»¿//-----------------------------------------------------------------------------
 // (C) oil
 // 2012-11-25
 //-----------------------------------------------------------------------------
@@ -12,42 +12,42 @@ namespace GGUI
 	class GGUIArray
 	{
 	public:
-		//--invalidValue Êı×éÔªËØµÄÎŞĞ§ÖµÊÇ¶àÉÙ¡£µ±Ö´ĞĞ¡°ÒÆ³ıÒ»¸öÔªËØ¡±²Ù×÷Ê±£¬
-		//               ±¾ÀàÖ»ÊÇ°ÑÕâ¸öÔªËØÖÃÎªÎŞĞ§Öµ£¬²¢ÇÒÕâ¸öÔªËØÔÙÒ²²»»á±»ÖÃÎªÓĞĞ§Öµ£¬
-		//               ÔÚÊı×éÖĞÔì³ÉÒ»¸ö¿Õ¶´£»Õâ¸ö²Ù×÷Ã»ÓĞÊÍ·ÅÄÚ´æÒ²Ã»ÓĞ¸Ä±äÊı×éÈİÁ¿¡£
-		//--nInitCapacity Êı×éµÄ³õÊ¼ÈİÁ¿ÊÇ¶à´ó¡£
+		//--invalidValue æ•°ç»„å…ƒç´ çš„æ— æ•ˆå€¼æ˜¯å¤šå°‘ã€‚å½“æ‰§è¡Œâ€œç§»é™¤ä¸€ä¸ªå…ƒç´ â€æ“ä½œæ—¶ï¼Œ
+		//               æœ¬ç±»åªæ˜¯æŠŠè¿™ä¸ªå…ƒç´ ç½®ä¸ºæ— æ•ˆå€¼ï¼Œå¹¶ä¸”è¿™ä¸ªå…ƒç´ å†ä¹Ÿä¸ä¼šè¢«ç½®ä¸ºæœ‰æ•ˆå€¼ï¼Œ
+		//               åœ¨æ•°ç»„ä¸­é€ æˆä¸€ä¸ªç©ºæ´ï¼›è¿™ä¸ªæ“ä½œæ²¡æœ‰é‡Šæ”¾å†…å­˜ä¹Ÿæ²¡æœ‰æ”¹å˜æ•°ç»„å®¹é‡ã€‚
+		//--nInitCapacity æ•°ç»„çš„åˆå§‹å®¹é‡æ˜¯å¤šå¤§ã€‚
 		GGUIArray(const Temp& invalidValue, SoInt nInitCapacity);
 		~GGUIArray();
 
-		//Ôö¼ÓÒ»¸öÓĞĞ§ÔªËØ¡£
+		//å¢åŠ ä¸€ä¸ªæœ‰æ•ˆå…ƒç´ ã€‚
 		void AddElement(const Temp& theElement);
-		//ÒÆ³ıÒ»¸öÔªËØ£¬°ÑÕâ¸öÔªËØÖÃÎªÎŞĞ§Öµ¡£
+		//ç§»é™¤ä¸€ä¸ªå…ƒç´ ï¼ŒæŠŠè¿™ä¸ªå…ƒç´ ç½®ä¸ºæ— æ•ˆå€¼ã€‚
 		void RemoveElement(SoInt nIndex);
-		//»ñÈ¡Ò»¸öÔªËØ¡£
+		//è·å–ä¸€ä¸ªå…ƒç´ ã€‚
 		Temp& GetElement(SoInt nIndex);
 		const Temp& GetElement(SoInt nIndex) const;
-		//»ñÈ¡ÉÏÒ»´ÎAddElement²Ù×÷ÊÇ·ñµ¼ÖÂÊı×éÈİÁ¿À©´óÁË¡£
-		bool GetCapacityIncreased() const;
-		//»ñÈ¡Êı×éµÄµØÖ·¡£
+		////è·å–ä¸Šä¸€æ¬¡AddElementæ“ä½œæ˜¯å¦å¯¼è‡´æ•°ç»„å®¹é‡æ‰©å¤§äº†ã€‚
+		//bool GetCapacityIncreased() const;
+		//è·å–æ•°ç»„çš„åœ°å€ã€‚
 		const Temp* GetArray() const;
-		//»ñÈ¡Ğ´ÈëÖ¸ÕëµÄË÷ÒıºÅ¡£
+		//è·å–å†™å…¥æŒ‡é’ˆçš„ç´¢å¼•å·ã€‚
 		SoInt GetWriteIndex() const;
-		//ÖØÖÃĞ´ÈëÖ¸ÕëµÄÎ»ÖÃ£¬ÉèÖÃ³É0ºÅÎ»ÖÃ¡£
+		//é‡ç½®å†™å…¥æŒ‡é’ˆçš„ä½ç½®ï¼Œè®¾ç½®æˆ0å·ä½ç½®ã€‚
 		void ResetWriteIndex();
-		//»ñÈ¡Êı×éµÄÈİÁ¿¡£
+		//è·å–æ•°ç»„çš„å®¹é‡ã€‚
 		SoInt GetCapacity() const;
 
 	private:
-		//¼ÇÂ¼Êı×éÔªËØµÄÎŞĞ§Öµ¡£
+		//è®°å½•æ•°ç»„å…ƒç´ çš„æ— æ•ˆå€¼ã€‚
 		Temp m_theInvalidValue;
-		//Êı×é¡£
+		//æ•°ç»„ã€‚
 		Temp* m_Array;
-		//¼ÇÂ¼Êı×éµÄÈİÁ¿¡£
+		//è®°å½•æ•°ç»„çš„å®¹é‡ã€‚
 		SoInt m_nCapacity;
-		//¼ÇÂ¼Ö´ĞĞ¡°Ôö¼ÓÒ»¸öÔªËØ¡±²Ù×÷Ê±µÄĞ´ÈëÖ¸Õë£¬ĞÂÔö¼ÓµÄÔªËØ¸³Öµ¸øÕâ¸öË÷ÒıºÅµÄÔªËØ¡£
+		//è®°å½•æ‰§è¡Œâ€œå¢åŠ ä¸€ä¸ªå…ƒç´ â€æ“ä½œæ—¶çš„å†™å…¥æŒ‡é’ˆï¼Œæ–°å¢åŠ çš„å…ƒç´ èµ‹å€¼ç»™è¿™ä¸ªç´¢å¼•å·çš„å…ƒç´ ã€‚
 		SoInt m_nWriteIndex;
-		//¼ÇÂ¼ÉÏÒ»´ÎAddElement²Ù×÷ÊÇ·ñµ¼ÖÂÊı×éÈİÁ¿À©´óÁË¡£
-		bool m_bCapacityIncreased;
+		////è®°å½•ä¸Šä¸€æ¬¡AddElementæ“ä½œæ˜¯å¦å¯¼è‡´æ•°ç»„å®¹é‡æ‰©å¤§äº†ã€‚
+		//bool m_bCapacityIncreased;
 	};
 	//-----------------------------------------------------------------------------
 	template <class Temp>
@@ -56,7 +56,7 @@ namespace GGUI
 	,m_Array(0)
 	,m_nCapacity(nInitCapacity)
 	,m_nWriteIndex(0)
-	,m_bCapacityIncreased(false)
+	//,m_bCapacityIncreased(false)
 	{
 		m_Array = new Temp[m_nCapacity];
 		for (SoInt i=0; i<m_nCapacity; ++i)
@@ -78,10 +78,10 @@ namespace GGUI
 	template <class Temp>
 	inline void GGUIArray<Temp>::AddElement(const Temp& theElement)
 	{
-		m_bCapacityIncreased = false;
+		//m_bCapacityIncreased = false;
 		if (m_nWriteIndex >= m_nCapacity)
 		{
-			//Êı×éÈİÁ¿²»¹»ÁË£¬Ôò°ÑÈİÁ¿À©´óµ½Ô­À´µÄ2±¶¡£
+			//æ•°ç»„å®¹é‡ä¸å¤Ÿäº†ï¼Œåˆ™æŠŠå®¹é‡æ‰©å¤§åˆ°åŸæ¥çš„2å€ã€‚
 			SoUInt sizeOfOldArray = sizeof(Temp) * m_nCapacity;
 			m_nCapacity *= 2;
 			SoUInt sizeOfNewArray = sizeof(Temp) * m_nCapacity;
@@ -93,7 +93,7 @@ namespace GGUI
 			memcpy_s(pNewArray, sizeOfNewArray, m_Array, sizeOfOldArray);
 			delete [] m_Array;
 			m_Array = pNewArray;
-			m_bCapacityIncreased = true;
+			//m_bCapacityIncreased = true;
 		}
 		m_Array[m_nWriteIndex] = theElement;
 		++m_nWriteIndex;
@@ -133,12 +133,12 @@ namespace GGUI
 			return m_theInvalidValue;
 		}
 	}
-	//-----------------------------------------------------------------------------
-	template <class Temp>
-	inline bool GGUIArray<Temp>::GetCapacityIncreased() const
-	{
-		return m_bCapacityIncreased;
-	}
+	////-----------------------------------------------------------------------------
+	//template <class Temp>
+	//inline bool GGUIArray<Temp>::GetCapacityIncreased() const
+	//{
+	//	return m_bCapacityIncreased;
+	//}
 	//-----------------------------------------------------------------------------
 	template <class Temp>
 	inline const Temp* GGUIArray<Temp>::GetArray() const

@@ -129,6 +129,53 @@ namespace GGUI
 			}
 		}
 	}
-
+	//-----------------------------------------------------------------------------
+	bool GGUIImagesetManager::CreateFontImageset(const GGUITinyString& strImagesetName, 
+		SoUInt uiWidth, SoUInt uiHeight, ImagesetID* pImagesetID)
+	{
+		ImagesetID newImagesetID = Invalid_ImagesetID;
+		bool bCreateImageset = CreateImageset(strImagesetName, &newImagesetID);
+		if (!bCreateImageset)
+		{
+			if (pImagesetID)
+			{
+				*pImagesetID = newImagesetID;
+			}
+			LOG_ERROR(TEXT("GGUIImagesetManager::CreateFontImageset : CreateImageset fail. ImagesetName[%s]"), strImagesetName.GetValue());
+			return false;
+		}
+		GGUIImageset* pNewImageset = GetImageset(newImagesetID);
+		if (pNewImageset == NULL)
+		{
+			if (pImagesetID)
+			{
+				*pImagesetID = newImagesetID;
+			}
+			LOG_ERROR(TEXT("GGUIImagesetManager::CreateFontImageset : pNewImageset == NULL"));
+			return false;
+		}
+		//
+		DXTextureID newDXTextureID = GGUIDXTextureManager::GetInstance()->CreateFontTexture(uiWidth, uiHeight);
+		pNewImageset->SetDXTextureID(newDXTextureID);
+		if (pImagesetID)
+		{
+			*pImagesetID = newImagesetID;
+		}
+		LOG_DEBUG(TEXT("GGUIImagesetManager::CreateFontImageset : success. ImagesetName[%s]"), strImagesetName.GetValue());
+		return false;
+	}
+	//-----------------------------------------------------------------------------
+	bool GGUIImagesetManager::AddFontGlyph(ImagesetID theImagesetID, const RECT& dest_rect, 
+		unsigned char* pPixelBuffer, SoInt nWidth, SoInt nHeight, bool bEdge)
+	{
+		GGUIImageset* pImageset = GetImageset(theImagesetID);
+		if (pImageset == NULL)
+		{
+			LOG_DEBUG(TEXT("GGUIImagesetManager::AddFontGlyph : pImageset == NULL; ImagesetID[%d]"), theImagesetID);
+			return false;
+		}
+		DXTextureID theDXTextureID = pImageset->GetDXTextureID();
+		return GGUIDXTextureManager::GetInstance()->DrawFontGlyph(theDXTextureID, dest_rect, pPixelBuffer, nWidth, nHeight, bEdge);
+	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------

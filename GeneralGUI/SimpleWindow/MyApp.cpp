@@ -43,6 +43,10 @@ bool MyApp::InitResource(void)
 	//
 	GGUIFontManager::GetInstance()->AddFont(0, "simhei.ttf", 0, 24, 1);
 	//
+	GGUILog* pLog = new GGUILog;
+	pLog->InitLog(TEXT("oil.txt"), true, true);
+	GGUILog::SetInstance(pLog);
+	//
 	//CreateUIWindowA();
 	CreateWindowList();
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -35,7 +35,18 @@ namespace GGUI
 		void ReleaseImageset(ImagesetID theImagesetID);
 		//获取一个GGUIImageset对象。
 		GGUIImageset* GetImageset(ImagesetID theImagesetID);
-		ImagesetID GetImagesetIDByName(const GGUITinyString& strImagesetName);
+		ImagesetID GetImagesetIDByName(const GGUITinyString& strImagesetName) const;
+
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		//与FreeType字体相关的函数。
+		//创建用于存储FreeType字体字形的Imageset文件。
+		//--strImagesetName 名字。
+		//--pImagesetID 如果为有效值，不管返回值为true还是false，都会把得到的ImagesetID赋值给它。
+		//如果名字为strImagesetName的Imageset文件已经存在，则返回false。
+		bool CreateFontImageset(const GGUITinyString& strImagesetName, SoUInt uiWidth, SoUInt uiHeight, ImagesetID* pImagesetID);
+		bool AddFontGlyph(ImagesetID theImagesetID, const RECT& dest_rect, 
+			unsigned char* pPixelBuffer, SoInt nWidth, SoInt nHeight, bool bEdge);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 	private:
 		typedef std::map<GGUITinyString, ImagesetID> mapImagesetName2ImagesetID;
@@ -60,9 +71,9 @@ namespace GGUI
 		return m_arrayImageset.GetElement(theImagesetID);
 	}
 	//-----------------------------------------------------------------------------
-	inline ImagesetID GGUIImagesetManager::GetImagesetIDByName(const GGUITinyString& strImagesetName)
+	inline ImagesetID GGUIImagesetManager::GetImagesetIDByName(const GGUITinyString& strImagesetName) const
 	{
-		mapImagesetName2ImagesetID::iterator it = m_mapImagesetName2ID.find(strImagesetName);
+		mapImagesetName2ImagesetID::const_iterator it = m_mapImagesetName2ID.find(strImagesetName);
 		if (it == m_mapImagesetName2ID.end())
 		{
 			return Invalid_ImagesetID;
