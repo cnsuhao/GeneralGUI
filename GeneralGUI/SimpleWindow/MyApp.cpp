@@ -322,7 +322,7 @@ void MyApp::ForceLarge(WindowID theWindowID)
 	{
 		return;
 	}
-	//
+	///////////
 	pWindow->SetPositionX(0.0f);
 	pWindow->SetPositionY(0.0f);
 	pWindow->SetPositionZ(0.3f);
